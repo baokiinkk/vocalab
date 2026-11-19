@@ -1,0 +1,108 @@
+/* 7 · Flashcard (#/flash) — design-v2/project/Flashcard.dc.html */
+.flash { --fx: 40px; --fmax: 880px; --wmax: 800px; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; background: var(--bg); color: var(--ink); }
+.device-ipad .flash { --fx: 32px; --fmax: 760px; --wmax: 680px; }
+.device-iphone .flash { --fx: 16px; --fmax: 760px; --wmax: 680px; }
+
+/* top bar */
+.flash-top { display: flex; align-items: center; gap: 14px; padding: 24px var(--fx); max-width: var(--fmax); width: 100%; margin: 0 auto; }
+.device-iphone .flash-top { padding: 14px var(--fx); }
+.flash-close { flex: 0 0 auto; width: 44px; height: 44px; border-radius: 10px; background: var(--surface); border: 1px solid var(--line); color: var(--ink); display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+.flash-close:hover { background: var(--surface-2); }
+.flash-top-mid { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.flash-top-row { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; font-weight: 700; }
+.flash-count { color: var(--muted); white-space: nowrap; }
+.flash-prog { height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.flash-prog-fill { height: 100%; background: var(--primary); border-radius: 999px; transition: width .3s; }
+
+/* main */
+.flash-main { flex: 1 1 auto; padding: 4px var(--fx) 12px; }
+.flash-wrap { max-width: var(--wmax); margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+
+/* card shell */
+.flash-card { width: 100%; border-radius: 16px; border: 1px solid var(--line); background: var(--surface); box-shadow: 0 14px 36px rgba(28, 28, 34, 0.07); display: flex; flex-direction: column; color: var(--ink); }
+:root[data-theme="dark"] .flash-card { box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35); }
+.flash-lv { padding: 4px 8px; border-radius: 6px; background: var(--surface-2); font-size: 12px; font-weight: 800; white-space: nowrap; }
+
+/* front */
+.flash-front { align-items: center; gap: 20px; min-height: 520px; padding: 28px; cursor: pointer; }
+.device-iphone .flash-front { min-height: 480px; padding: 18px; }
+.flash-front-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; }
+.flash-deck { font-size: 13px; color: var(--muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.flash-front-mid { display: flex; flex-direction: column; align-items: center; gap: 12px; margin: auto 0; text-align: center; max-width: 100%; }
+.flash-pos { font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.flash-word { margin: 0; font-family: var(--font-display); font-size: calc(var(--card-word) * 60 / 56); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; overflow-wrap: anywhere; }
+.device-iphone .flash-word { font-size: calc(var(--card-word) * 44 / 56); }
+.flash-say { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 16px; cursor: pointer; }
+.flash-say svg { color: var(--primary); }
+.flash-say:hover { background: var(--surface-2); }
+.flash-reveal { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 10px; border: 1.5px dashed color-mix(in srgb, var(--primary) 25%, var(--surface)); background: color-mix(in srgb, var(--primary-soft) 45%, var(--surface)); color: var(--primary-ink); font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; }
+.flash-reveal:hover { background: var(--primary-soft); }
+
+/* back */
+.flash-back { gap: 18px; padding: 24px 24px 12px; }
+.device-iphone .flash-back { padding: 14px 14px 10px; }
+.flash-back-top { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+.device-iphone .flash-back-top { gap: 14px; }
+.flash-illo { flex: 0 0 240px; height: 180px; border-radius: 12px; overflow: hidden; }
+.device-iphone .flash-illo { flex: 1 1 100%; height: 200px; }
+.flash-illo .word-img { width: 100%; height: 100%; aspect-ratio: auto; border-radius: 12px; background: var(--line-2); color: color-mix(in srgb, var(--muted) 70%, var(--line-2)); }
+.flash-illo .word-img-ph svg { width: 60px; height: 48px; }
+.flash-back-id { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.flash-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.flash-pos-pill { padding: 4px 8px; border-radius: 6px; background: var(--primary-soft); color: var(--primary-ink); font-size: 12px; font-weight: 700; }
+.flash-back-w { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; overflow-wrap: anywhere; }
+.flash-ipas { display: flex; flex-wrap: wrap; gap: 6px; }
+.flash-ipa { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+.flash-ipa b { font-size: 11px; color: var(--muted); }
+.flash-ipa:hover { background: var(--surface-2); }
+.flash-vi { font-family: var(--font-display); font-size: 22px; font-weight: 800; line-height: 1.3; color: var(--primary-ink); }
+.flash-def { font-size: 15px; line-height: 1.5; color: color-mix(in srgb, var(--ink) 70%, var(--muted)); }
+.flash-enrich { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.flash-enrich .spinner { width: 12px; height: 12px; }
+.flash-sec { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.flash-sec-t { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.flash-ex-box { padding: 12px 14px; border-radius: 10px; background: var(--surface-2); display: flex; flex-direction: column; gap: 4px; }
+.flash-ex { font-size: 15px; line-height: 1.5; }
+.flash-ex-vi { font-size: 14px; color: var(--muted); }
+.flash-info { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.flash-info.is-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.device-iphone .flash-info.is-2 { grid-template-columns: minmax(0, 1fr); }
+.flash-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.flash-chip { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.flash-chip.is-syn { border-color: transparent; background: var(--master-soft); color: var(--master-ink); }
+.flash-chip.is-ant { border-color: transparent; background: var(--danger-soft); color: var(--danger); }
+.flash-note { display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 10px; background: var(--learning-soft); color: color-mix(in srgb, var(--learning-ink) 75%, var(--ink)); font-size: 14px; line-height: 1.5; }
+.flash-note b { flex: 0 0 auto; }
+.flash-unflip { align-self: center; min-height: 40px; padding: 0 16px; border-radius: 10px; border: none; background: transparent; color: var(--primary); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.flash-unflip:hover { background: var(--surface-2); }
+
+/* feedback */
+.flash-fb { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: 12px; font-size: 14px; scroll-margin-bottom: 130px; }
+.device-iphone .flash-fb { scroll-margin-bottom: 12px; }
+.flash-fb.is-ok { background: var(--master-soft); color: var(--master-ink); }
+.flash-fb.is-bad { background: var(--danger-soft); color: color-mix(in srgb, var(--danger) 80%, var(--ink)); }
+.flash-fb-title { font-weight: 800; }
+.flash-fb-row { display: flex; align-items: center; gap: 10px; }
+.flash-fb-track { flex: 1; height: 8px; border-radius: 999px; background: var(--surface); overflow: hidden; display: block; }
+.flash-fb-bar { display: block; height: 100%; border-radius: 999px; transition: width 400ms ease; }
+.is-ok .flash-fb-bar { background: var(--master); }
+.is-bad .flash-fb-bar { background: var(--danger); }
+.flash-fb-text { white-space: nowrap; }
+
+/* bottom buttons (pinned) */
+.flash-bottom { position: sticky; bottom: 0; z-index: 5; display: flex; gap: 12px; padding: 16px var(--fx) 40px; max-width: var(--fmax); width: 100%; margin: 0 auto; background: var(--bg); }
+.device-iphone .flash-bottom { position: static; padding: 12px var(--fx) calc(30px + env(safe-area-inset-bottom, 0px)); }
+.flash-btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 58px; border-radius: 12px; border: none; font: inherit; font-size: 16px; font-weight: 800; cursor: pointer; padding: 0 12px; }
+.flash-btn:hover { filter: brightness(1.06); }
+.flash-btn-primary { background: var(--primary); color: var(--on-primary); }
+.flash-btn-right { background: var(--master); color: #FFF; }
+:root[data-theme="dark"] .flash-btn-right { background: color-mix(in srgb, var(--master) 72%, black); }
+.flash-btn-wrong { border: 1.5px solid color-mix(in srgb, var(--danger) 25%, var(--surface)); background: var(--surface); color: var(--danger); }
+.flash-btn-wrong:hover { filter: none; background: var(--danger-soft); }
+
+/* iPhone: full-height screen, only the card area scrolls, buttons stay at the bottom */
+.device-iphone .flash { height: 100vh; height: 100dvh; min-height: 0; }
+.device-iphone .flash-main { flex: 1 1 0; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+
+/* empty state */
+.flash-empty-wrap { justify-content: center; align-items: center; padding: 24px 16px; }

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Cài đặt</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F6F4}
+a{color:#3F4C9A}a:hover{color:#2E3A80}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <div style="{{ L.nav }}">
+    <dc-import name="Sidebar" active="{{ navActive }}" device="{{ device }}" hint-size="100%,100%"></dc-import>
+  </div>
+  <main style="{{ L.main }}">
+    <div style="max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px">
+      <header style="display: flex; flex-direction: column; gap: 6px">
+        <sc-if value="{{ scoped }}" hint-placeholder-val="{{ false }}"><a href="{{ ln.back }}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; font-size: 15px; font-weight: 700; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Luyện tập</a></sc-if>
+        <h1 style="{{ L.h1 }}">{{ title }}</h1>
+        <span style="font-size: 14px; color: #63636E">{{ subtitle }}</span>
+      </header>
+
+      <section aria-labelledby="h-nhac" style="display: flex; flex-direction: column; gap: 8px">
+        <h2 id="h-nhac" style="{{ L.h2 }}">Nhắc ôn</h2>
+        <div style="{{ L.group }}">
+          <div style="{{ L.row }}">
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Nhắc ôn mỗi ngày</span><span style="font-size: 13px; color: #63636E">Gửi thông báo khi có từ đến hạn</span></span>
+            <button type="button" role="switch" aria-label="Nhắc ôn mỗi ngày" aria-checked="{{ sw.notify.on }}" onClick="{{ sw.notify.t }}" style="{{ sw.notify.track }}"><span style="{{ sw.notify.knob }}"></span></button>
+          </div>
+          <div style="{{ L.rowLast }}">
+            <label for="remind" style="font-size: 15px; font-weight: 600">Giờ nhắc</label>
+            <input id="remind" type="time" defaultValue="20:30" style="min-height: 44px; padding: 0 12px; border: 1.5px solid #E6E5E0; border-radius: 10px; font: inherit; font-size: 15px; font-weight: 600; color: #1C1C22; background: #FFFFFF">
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-phien" style="display: flex; flex-direction: column; gap: 8px">
+        <h2 id="h-phien" style="{{ L.h2 }}">Phiên luyện</h2>
+        <div style="{{ L.group }}">
+          <div style="{{ L.row }}">
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Số từ mỗi phiên</span><span style="font-size: 13px; color: #63636E">Cho phiên “Ôn hôm nay”</span></span>
+            <div role="group" aria-label="Số từ mỗi phiên" style="display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 10px; background: #F6F6F4"><button type="button" onClick="{{ st.count.dec }}" aria-label="Giảm" style="width: 40px; height: 40px; border-radius: 8px; border: none; background: #FFFFFF; font: inherit; font-size: 18px; font-weight: 700; color: #1C1C22; cursor: pointer">−</button><span style="width: 40px; text-align: center; font-weight: 800">{{ st.count.v }}</span><button type="button" onClick="{{ st.count.inc }}" aria-label="Tăng" style="width: 40px; height: 40px; border-radius: 8px; border: none; background: #FFFFFF; font: inherit; font-size: 18px; font-weight: 700; color: #1C1C22; cursor: pointer">+</button></div>
+          </div>
+          <div style="{{ L.row }}">
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Từ mới mỗi ngày</span><span style="font-size: 13px; color: #63636E">Mở dần từ các bộ có sẵn</span></span>
+            <div role="group" aria-label="Từ mới mỗi ngày" style="display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 10px; background: #F6F6F4"><button type="button" onClick="{{ st.fresh.dec }}" aria-label="Giảm" style="width: 40px; height: 40px; border-radius: 8px; border: none; background: #FFFFFF; font: inherit; font-size: 18px; font-weight: 700; color: #1C1C22; cursor: pointer">−</button><span style="width: 40px; text-align: center; font-weight: 800">{{ st.fresh.v }}</span><button type="button" onClick="{{ st.fresh.inc }}" aria-label="Tăng" style="width: 40px; height: 40px; border-radius: 8px; border: none; background: #FFFFFF; font: inherit; font-size: 18px; font-weight: 700; color: #1C1C22; cursor: pointer">+</button></div>
+          </div>
+          <div style="{{ L.rowCol }}">
+            <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Trả lời sai thì trừ</span><span style="font-size: 13px; color: #63636E">Đúng luôn +10% · 10 lần đúng = 100%</span></span>
+            <div role="radiogroup" aria-label="Mức trừ khi sai" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; border-radius: 10px; background: #F6F6F4; max-width: 360px"><sc-for list="{{ pen }}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ o.sel }}" onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+          </div>
+          <div style="{{ L.noteRow }}">Từ có % thấp sẽ tự động xuất hiện nhiều hơn; từ đã 100% thỉnh thoảng được hỏi lại để không quên.</div>
+        </div>
+      </section>
+
+      <sc-if value="{{ all }}" hint-placeholder-val="{{ true }}">
+        <section aria-labelledby="h-chung" style="display: flex; flex-direction: column; gap: 8px">
+          <h2 id="h-chung" style="{{ L.h2 }}">Chung</h2>
+          <div style="{{ L.group }}">
+            <div style="{{ L.rowCol }}">
+              <span style="font-size: 15px; font-weight: 600">Giọng phát âm</span>
+              <div role="radiogroup" aria-label="Giọng phát âm" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; padding: 3px; border-radius: 10px; background: #F6F6F4; max-width: 360px"><sc-for list="{{ voice }}" as="o" hint-placeholder-count="2"><button type="button" role="radio" aria-checked="{{ o.sel }}" onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+            </div>
+            <div style="{{ L.rowColLast }}">
+              <span style="font-size: 15px; font-weight: 600">Giao diện</span>
+              <div role="radiogroup" aria-label="Giao diện" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; border-radius: 10px; background: #F6F6F4; max-width: 360px"><sc-for list="{{ theme }}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ o.sel }}" onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="h-dl" style="display: flex; flex-direction: column; gap: 8px">
+          <h2 id="h-dl" style="{{ L.h2 }}">Dữ liệu</h2>
+          <div style="{{ L.group }}">
+            <div style="{{ L.row }}">
+              <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Xuất từ vựng</span><span style="font-size: 13px; color: #63636E">Tự động sao lưu mỗi ngày</span></span>
+              <button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid #E6E5E0; background: #FFFFFF; color: #1C1C22; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Xuất</button>
+            </div>
+            <div style="{{ L.rowLast }}">
+              <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600; color: #B23A30">Đặt lại tiến độ</span><span style="font-size: 13px; color: #63636E">Đưa mọi từ về 0%, không xoá từ</span></span>
+              <button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid #EBCFCB; background: #FFFFFF; color: #B23A30; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Đặt lại</button>
+            </div>
+          </div>
+        </section>
+      </sc-if>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"scope":{"editor":"enum","options":["all","practice"],"default":"all"},"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { count: 24, fresh: 10, pen: 20, voice: 'uk', theme: 'sys', sw: { notify: true } };
+  }
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#F6F6F4', fontFamily: 'Inter, system-ui, sans-serif', color: '#1C1C22' };
+    const row = { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', padding: '12px 16px', minHeight: '64px', borderBottom: '1px solid #EFEEEA', boxSizing: 'border-box' };
+    const rowCol = { display: 'flex', flexDirection: 'column', gap: '10px', padding: '14px 16px', borderBottom: '1px solid #EFEEEA' };
+    return { d, laptop, tablet, phone, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', L: {
+      root: laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
+      nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
+      main: laptop ? { flex: '999 1 560px', minWidth: 0, padding: '28px 40px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '28px 28px 40px' : '16px 16px 24px', boxSizing: 'border-box' },
+      h1: { margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: laptop ? '32px' : tablet ? '28px' : '26px', fontWeight: 800, letterSpacing: '-0.02em' },
+      h2: { margin: '0 4px', fontSize: '13px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#63636E' },
+      group: { background: '#FFFFFF', border: '1px solid #E6E5E0', borderRadius: '14px', overflow: 'hidden' },
+      row, rowLast: { ...row, borderBottom: 'none' }, rowCol, rowColLast: { ...rowCol, borderBottom: 'none' },
+      noteRow: { padding: '12px 16px', background: '#FBFBFA', fontSize: '13px', lineHeight: 1.5, color: '#63636E' }
+    } };
+  }
+  renderVals() {
+    const { d, laptop, L } = this.layout();
+    const s = this.state;
+    const scoped = this.props.scope === 'practice';
+    const segBtn = (on) => ({ minHeight: '40px', borderRadius: '8px', border: 'none', background: on ? '#FFFFFF' : 'transparent', color: on ? '#1C1C22' : '#63636E', font: 'inherit', fontSize: '14px', fontWeight: 700, cursor: 'pointer', boxShadow: on ? '0 1px 3px rgba(28,28,34,0.12)' : 'none' });
+    const radio = (key, opts) => opts.map(([id, label]) => ({ label, sel: String(s[key] === id), pick: () => this.setState({ [key]: id }), style: segBtn(s[key] === id) }));
+    const sw = {};
+    Object.keys(s.sw).forEach((k) => { const on = s.sw[k];
+      sw[k] = { on: String(on), t: () => this.setState({ sw: { ...s.sw, [k]: !on } }),
+        track: { flex: '0 0 50px', width: '50px', height: '30px', borderRadius: '999px', border: 'none', padding: '3px', background: on ? '#3F4C9A' : '#D3D2CB', cursor: 'pointer', display: 'flex', justifyContent: on ? 'flex-end' : 'flex-start', transition: 'background 200ms ease', boxSizing: 'border-box' },
+        knob: { width: '24px', height: '24px', borderRadius: '999px', background: '#FFFFFF', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', display: 'block' } }; });
+    const step = (key, min, max, by) => ({ v: s[key], inc: () => this.setState({ [key]: Math.min(max, s[key] + by) }), dec: () => this.setState({ [key]: Math.max(min, s[key] - by) }) });
+    return {
+      device: d, L, sw, scoped, all: !scoped,
+      title: scoped ? 'Cài đặt luyện' : 'Cài đặt',
+      subtitle: scoped ? 'Áp dụng cho mọi phiên luyện.' : 'Chỉ những gì bạn cần chỉnh, còn lại đã được đặt sẵn.',
+      navActive: scoped ? 'practice' : 'settings',
+      ln: { back: 'PracticeSetup' + (laptop ? '' : d === 'ipad' ? 'Tablet' : 'Phone') + '.dc.html' },
+      pen: [10, 20, 30].map((n) => ({ label: '−' + n + '%', sel: String(s.pen === n), pick: () => this.setState({ pen: n }), style: segBtn(s.pen === n) })),
+      voice: radio('voice', [['uk', 'Anh-Anh (UK)'], ['us', 'Anh-Mỹ (US)']]),
+      theme: radio('theme', [['light', 'Sáng'], ['dark', 'Tối'], ['sys', 'Theo máy']]),
+      st: { count: step('count', 5, 50, 5), fresh: step('fresh', 0, 50, 5) }
+    };
+  }
+}
+</script>
+</body>
+</html>

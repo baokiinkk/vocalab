@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Hôm nay</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F6F4}
+a{color:#3F4C9A}a:hover{color:#2E3A80}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <div style="{{ L.nav }}">
+    <dc-import name="Sidebar" active="main" device="{{ device }}" hint-size="100%,100%"></dc-import>
+  </div>
+  <main style="{{ L.main }}">
+    <div style="max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px">
+
+      <header style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 4px">
+        <div style="display: flex; flex-direction: column; gap: 2px; min-width: 0">
+          <span style="font-size: 14px; color: #63636E">Thứ Năm, 19/11</span>
+          <h1 style="{{ L.h1 }}">Chào buổi tối</h1>
+        </div>
+        <span style="display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 10px; background: #F8EDE4; color: #94461F; font-weight: 700; font-size: 14px; white-space: nowrap">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 .2 1.8 1 3 2.5 3.5C11 8.5 11 5 12 2z"></path></svg>
+          Chuỗi 12 ngày
+        </span>
+      </header>
+
+      <div style="{{ L.grid }}">
+
+        <section aria-labelledby="h-today" style="{{ L.today }}">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+            <h2 id="h-today" style="margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 800; color: #1C1C22">Phiên hôm nay</h2>
+            <span style="font-size: 13px; font-weight: 600; color: #63636E">0 / 24 từ</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><span style="{{ L.stat }}">24</span><span style="font-size: 13px; color: #63636E">Cần ôn</span></div>
+            <div style="display: flex; flex-direction: column; gap: 2px"><span style="{{ L.stat }}">15</span><span style="font-size: 13px; color: #63636E">Từ yếu</span></div>
+            <div style="display: flex; flex-direction: column; gap: 2px"><span style="{{ L.stat }}">~10′</span><span style="font-size: 13px; color: #63636E">Thời gian</span></div>
+          </div>
+          <div role="progressbar" aria-label="Tiến độ hôm nay" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0" style="height: 8px; border-radius: 999px; background: #D9DCEE"><div style="width: 2%; height: 100%; border-radius: 999px; background: #3F4C9A"></div></div>
+          <a href="{{ ln.flash }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border-radius: 10px; background: #3F4C9A; color: #FFFFFF; font-weight: 800; font-size: 16px; text-decoration: none">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+            Bắt đầu ôn
+          </a>
+        </section>
+
+        <section aria-labelledby="h-mastery" style="{{ L.card }}">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+            <h2 id="h-mastery" style="{{ L.h2 }}">Thông thạo</h2>
+            <span style="font-size: 13px; color: #63636E">248 từ</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 8px">
+            <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 34px; font-weight: 800; letter-spacing: -0.02em">58%</span>
+            <span style="font-size: 14px; font-weight: 600; color: #2F7A55">+3% tuần này</span>
+          </div>
+          <div role="img" aria-label="Yếu 52, đang học 89, khá 46, thành thạo 61" style="display: flex; height: 10px; gap: 3px">
+            <div style="width: 21%; background: #B9532A; border-radius: 999px"></div>
+            <div style="width: 36%; background: #C9962E; border-radius: 999px"></div>
+            <div style="width: 18.5%; background: #3F4C9A; border-radius: 999px"></div>
+            <div style="width: 24.5%; background: #2F7A55; border-radius: 999px"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 12px; font-size: 13px">
+            <div style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #B9532A"></span><span style="flex: 1; color: #63636E">Yếu</span><strong>52</strong></div>
+            <div style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #C9962E"></span><span style="flex: 1; color: #63636E">Đang học</span><strong>89</strong></div>
+            <div style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #3F4C9A"></span><span style="flex: 1; color: #63636E">Khá</span><strong>46</strong></div>
+            <div style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 999px; background: #2F7A55"></span><span style="flex: 1; color: #63636E">Thành thạo</span><strong>61</strong></div>
+          </div>
+        </section>
+
+        <section aria-labelledby="h-add" style="{{ L.card }}">
+          <h2 id="h-add" style="{{ L.h2 }}">Thêm từ nhanh</h2>
+          <div style="display: flex; gap: 8px">
+            <label style="flex: 1; display: flex; min-width: 0">
+              <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Từ mới</span>
+              <input type="text" placeholder="Gõ một từ…" style="width: 100%; min-height: 48px; padding: 0 16px; border: 1.5px solid #E6E5E0; border-radius: 10px; background: #F6F6F4; font: inherit; font-size: 16px; color: #1C1C22; box-sizing: border-box">
+            </label>
+            <a href="{{ ln.add }}" aria-label="Thêm từ" style="flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 48px; padding: 0 16px; border-radius: 10px; background: #3F4C9A; color: #FFFFFF; font-weight: 700; font-size: 14px; text-decoration: none">
+              Thêm
+            </a>
+          </div>
+          <span style="font-size: 13px; color: #63636E">Tự nhập nghĩa, ví dụ. Cần thì bấm “Gợi ý bằng AI”.</span>
+        </section>
+
+        <section aria-labelledby="h-weak" style="{{ L.card }}">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+            <h2 id="h-weak" style="{{ L.h2 }}">Từ cần chú ý</h2>
+            <a href="{{ ln.quiz }}" style="font-size: 14px; font-weight: 700; text-decoration: none">Ôn ngay</a>
+          </div>
+          <div style="display: flex; flex-direction: column">
+            <sc-for list="{{ weak }}" as="w" hint-placeholder-count="3">
+              <a href="{{ ln.word }}" style="display: flex; align-items: center; gap: 12px; padding: 8px 0; min-height: 52px; text-decoration: none; color: #1C1C22">
+                <span style="{{ w.ring }}">{{ w.pct }}</span>
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column">
+                  <span style="font-weight: 700; font-size: 15px">{{ w.w }}</span>
+                  <span style="font-size: 13px; color: #63636E; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ w.vi }}</span>
+                </div>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+
+        <section aria-labelledby="h-decks" style="{{ L.decks }}">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+            <h2 id="h-decks" style="{{ L.h2 }}">Bộ đang học</h2>
+            <a href="{{ ln.vocab }}" style="font-size: 14px; font-weight: 700; text-decoration: none">Xem thư viện</a>
+          </div>
+          <div style="{{ L.deckRow }}">
+            <sc-for list="{{ decks }}" as="k" hint-placeholder-count="3">
+              <a href="{{ ln.deck }}" style="{{ k.card }}">
+                <span style="{{ k.icon }}">{{ k.abbr }}</span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px">
+                  <span style="font-weight: 700; font-size: 15px; color: #1C1C22; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ k.name }}</span>
+                  <span style="height: 6px; border-radius: 999px; background: #EFEEEA; overflow: hidden; display: block"><span style="{{ k.bar }}"></span></span>
+                </span>
+                <span style="font-size: 14px; font-weight: 800; color: #1C1C22">{{ k.pct }}</span>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#F6F6F4', fontFamily: 'Inter, system-ui, sans-serif', color: '#1C1C22' };
+    const pad = phone ? '18px' : '22px';
+    const card = { background: '#FFFFFF', border: '1px solid #E6E5E0', borderRadius: '14px', padding: pad, boxShadow: '0 1px 2px rgba(28,28,34,0.04)', display: 'flex', flexDirection: 'column', gap: '14px', minWidth: 0, boxSizing: 'border-box' };
+    const cols = laptop ? 3 : tablet ? 2 : 1;
+    return { d, laptop, tablet, phone, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', L: {
+      root: laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
+      nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
+      main: laptop ? { flex: '999 1 560px', minWidth: 0, padding: '28px 40px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '28px 28px 40px' : '16px 16px 24px', boxSizing: 'border-box' },
+      h1: { margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: laptop ? '32px' : tablet ? '28px' : '26px', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.15 },
+      h2: { margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 800 },
+      grid: { display: 'grid', gridTemplateColumns: 'repeat(' + cols + ', minmax(0, 1fr))', gap: '16px', alignItems: 'stretch' },
+      today: { ...card, background: '#ECEEF8', border: '1px solid #DCE0F0', color: '#1C1C22', boxShadow: 'none', gridColumn: laptop ? 'span 2' : 'auto' },
+      stat: { fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: phone ? '30px' : '36px', fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1, color: '#1C1C22' },
+      card,
+      decks: { ...card, gridColumn: tablet ? 'span 2' : 'auto' },
+      deckRow: { display: 'grid', gridTemplateColumns: 'repeat(' + (tablet ? 3 : 1) + ', minmax(0, 1fr))', gap: '10px' }
+    } };
+  }
+  renderVals() {
+    const { d, sfx, L } = this.layout();
+    const ln = { add: 'AddWord' + sfx + '.dc.html', flash: 'Flashcard' + sfx + '.dc.html', vocab: 'Vocab' + sfx + '.dc.html', quiz: 'Quiz' + sfx + '.dc.html', word: 'WordDetail' + sfx + '.dc.html', deck: 'DeckDetail' + sfx + '.dc.html' };
+    const deckDefs = [
+      { abbr: 'GT', name: '300 từ giao tiếp', p: 62, bg: '#ECEEF8', fg: '#2E3A80' },
+      { abbr: 'IE', name: 'IELTS Academic', p: 31, bg: '#F8EDE4', fg: '#94461F' },
+      { abbr: 'TC', name: 'Từ của tôi', p: 48, bg: '#1C1C22', fg: '#FFFFFF' }
+    ];
+    const decks = deckDefs.map((k) => ({ ...k, pct: k.p + '%',
+      card: { display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '10px', background: '#F6F6F4', textDecoration: 'none', minWidth: 0, minHeight: '64px', boxSizing: 'border-box' },
+      icon: { flex: '0 0 40px', height: '40px', borderRadius: '8px', background: k.bg, color: k.fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '14px' },
+      bar: { display: 'block', width: k.p + '%', height: '100%', background: k.fg, borderRadius: '999px' } }));
+    const col = (p) => p >= 100 ? '#2F7A55' : p >= 70 ? '#3F4C9A' : p >= 30 ? '#9A6A12' : '#B9532A';
+    const weak = [
+      { w: 'albeit', vi: 'mặc dù, dẫu cho', p: 0 },
+      { w: 'meticulous', vi: 'tỉ mỉ, kỹ lưỡng', p: 10 },
+      { w: 'ubiquitous', vi: 'có mặt ở khắp nơi', p: 20 }
+    ].map((x) => ({ ...x, pct: x.p + '%',
+      ring: { flex: '0 0 44px', width: '44px', height: '44px', borderRadius: '999px', border: '3px solid ' + col(x.p), color: col(x.p), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800, boxSizing: 'border-box' } }));
+    return { device: d, L, ln, decks, weak };
+  }
+}
+</script>
+</body>
+</html>

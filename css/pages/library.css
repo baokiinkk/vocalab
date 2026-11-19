@@ -1,0 +1,75 @@
+/* Thư viện (#/library) — design/project/Vocab.dc.html */
+.page-library .lib-inner { max-width: 1160px; gap: 28px; }
+.lib-head { display: flex; flex-direction: column; gap: 14px; }
+.lib-body { display: flex; flex-direction: column; gap: 28px; }
+
+/* search box */
+.lib-search-box { position: relative; display: flex; align-items: center; }
+.lib-search-box > svg { position: absolute; left: 18px; color: var(--muted); pointer-events: none; }
+.lib-input { width: 100%; min-height: 54px; padding: 0 18px 0 50px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); font: inherit; font-size: 16px; color: var(--ink); box-shadow: var(--shadow); -webkit-appearance: none; appearance: none; }
+.lib-input::placeholder { color: var(--muted); }
+.lib-input:focus { outline: none; border-color: var(--primary); }
+.lib-input::-webkit-search-cancel-button { cursor: pointer; }
+
+/* search results */
+.lib-search { display: flex; flex-direction: column; gap: 16px; }
+.lib-sum-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.lib-sum { font-size: 14px; color: var(--muted); min-width: 0; overflow-wrap: anywhere; }
+.lib-clear { flex: 0 0 auto; min-height: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+.lib-clear:hover { background: var(--surface-2); }
+.lib-hits { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 6px 18px; }
+.lib-hits-title { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding: 10px 0 4px; }
+.lib-hit { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line-2); text-decoration: none; color: var(--ink); }
+.lib-hit:hover { color: var(--ink); }
+.lib-hit:hover strong { color: var(--primary); }
+.lib-word-hit { min-height: 60px; }
+.lib-deck-hit { min-height: 64px; }
+.lib-hit-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.lib-word-hit strong { font-size: 16px; }
+.lib-deck-hit strong { font-size: 15px; }
+.lib-word-hit .lib-hit-text > span { font-size: 14px; color: var(--muted); }
+.lib-deck-hit .lib-hit-text > span { font-size: 13px; color: var(--muted); }
+.lib-hit-deck { padding: 4px 8px; border-radius: 8px; background: var(--surface-2); font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; max-width: 45%; overflow: hidden; text-overflow: ellipsis; }
+.lib-none { background: var(--surface); border: 1px dashed var(--line); border-radius: 14px; padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; overflow-wrap: anywhere; }
+:root:not([data-theme="dark"]) .lib-none { border-color: #D3D2CB; }
+.lib-none strong { font-size: 16px; }
+.lib-none span { font-size: 14px; color: var(--muted); }
+.lib-none-add { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 10px; background: var(--primary); color: var(--on-primary); font-weight: 700; font-size: 15px; text-decoration: none; max-width: 100%; }
+.lib-none-add:hover { color: var(--on-primary); filter: brightness(1.08); }
+
+/* sections */
+.lib-sec { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.lib-mine-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.lib-count, .lib-cat-sub { font-size: 14px; color: var(--muted); }
+.lib-cat-head { display: flex; flex-direction: column; gap: 2px; }
+
+/* Bộ của tôi */
+.lib-mine-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.device-ipad .lib-mine-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.device-iphone .lib-mine-grid { grid-template-columns: minmax(0, 1fr); }
+.lib-mine-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px; min-width: 0; color: var(--ink); text-decoration: none; text-align: left; }
+.lib-mine-card.is-mine { border: 1.5px solid var(--primary); }
+.lib-mine-card:hover { color: var(--ink); border-color: var(--primary); }
+.lib-mine-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.lib-mine-text { display: flex; flex-direction: column; min-width: 0; }
+.lib-mine-name { font-weight: 800; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lib-mine-meta { font-size: 13px; color: var(--muted); }
+.lib-mine-prog { display: flex; align-items: center; gap: 10px; }
+.lib-bar { flex: 1; height: 6px; border-radius: 999px; background: var(--line-2); overflow: hidden; display: block; }
+.lib-bar > span { display: block; height: 100%; border-radius: 999px; }
+.lib-pct { font-size: 13px; font-weight: 800; }
+:root[data-theme="dark"] .lib-mine-card.is-mine .deck-icon { box-shadow: inset 0 0 0 1px var(--line); }
+
+/* categories */
+.lib-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.device-ipad .lib-row, .device-iphone .lib-row { display: flex; gap: 12px; overflow-x: auto; margin: 0 -28px; padding: 2px 28px 6px; scroll-snap-type: x proximity; scroll-padding: 0 28px; }
+.device-iphone .lib-row { margin: 0 -16px; padding: 2px 16px 6px; scroll-padding: 0 16px; }
+.lib-deck-card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-height: 156px; min-width: 0; color: var(--ink); text-decoration: none; }
+.lib-deck-card:hover { color: var(--ink); border-color: var(--primary); }
+.device-ipad .lib-deck-card { flex: 0 0 230px; scroll-snap-align: start; }
+.device-iphone .lib-deck-card { flex: 0 0 210px; scroll-snap-align: start; }
+.lib-deck-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; width: 100%; }
+.lib-badge { padding: 4px 8px; border-radius: 8px; background: var(--surface-2); color: var(--muted); font-size: 12px; font-weight: 700; white-space: nowrap; }
+.lib-badge.is-added { background: var(--master-soft); color: var(--master-ink); }
+.lib-deck-name { font-family: var(--font-display); font-weight: 800; font-size: 16px; line-height: 1.3; text-align: left; }
+.lib-deck-meta { font-size: 13px; color: var(--muted); }

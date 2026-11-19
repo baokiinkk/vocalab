@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Thư viện</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#F6F6F4}
+a{color:#3F4C9A}a:hover{color:#2E3A80}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <div style="{{ L.nav }}">
+    <dc-import name="Sidebar" active="vocab" device="{{ device }}" hint-size="100%,100%"></dc-import>
+  </div>
+  <main style="{{ L.main }}">
+    <sc-if value="{{ isOpen }}" hint-placeholder-val="{{ false }}">
+      <dc-import name="DeckDetail" deck="{{ openId }}" device="{{ device }}" embedded="{{ true }}" on-back="{{ close }}" added="{{ openAdded }}" on-toggle-add="{{ toggleAdd }}" hint-size="100%,900px"></dc-import>
+    </sc-if>
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width: 1160px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+
+      <header style="display: flex; flex-direction: column; gap: 14px">
+        <h1 style="{{ L.h1 }}">Thư viện</h1>
+        <label style="position: relative; display: flex; align-items: center">
+          <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Tìm kiếm</span>
+          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#63636E" stroke-width="2" stroke-linecap="round" style="position: absolute; left: 18px"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+          <input type="search" value="{{ q }}" onChange="{{ onQ }}" placeholder="Tìm bộ từ hoặc một từ bất kỳ…" style="width: 100%; min-height: 54px; padding: 0 18px 0 50px; border: 1px solid #E6E5E0; border-radius: 12px; background: #FFFFFF; font: inherit; font-size: 16px; color: #1C1C22; box-sizing: border-box; box-shadow: 0 1px 2px rgba(28,28,34,0.04)">
+        </label>
+      </header>
+
+      <sc-if value="{{ searching }}" hint-placeholder-val="{{ false }}">
+        <section aria-label="Kết quả tìm kiếm" style="display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+            <span style="font-size: 14px; color: #63636E">{{ resultSum }}</span>
+            <button type="button" onClick="{{ clearQ }}" style="min-height: 40px; padding: 0 14px; border-radius: 10px; border: 1px solid #E6E5E0; background: #FFFFFF; color: #1C1C22; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Xoá tìm kiếm</button>
+          </div>
+          <sc-if value="{{ hasWords }}" hint-placeholder-val="{{ true }}">
+            <div style="background: #FFFFFF; border: 1px solid #E6E5E0; border-radius: 14px; padding: 6px 18px">
+              <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #63636E; padding: 10px 0 4px">Từ</div>
+              <sc-for list="{{ wordHits }}" as="w" hint-placeholder-count="3">
+                <a href="{{ ln.word }}" style="display: flex; align-items: center; gap: 12px; min-height: 60px; border-top: 1px solid #EFEEEA; text-decoration: none; color: #1C1C22">
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column"><strong style="font-size: 16px">{{ w.w }}</strong><span style="font-size: 14px; color: #63636E">{{ w.vi }}</span></span>
+                  <span style="padding: 4px 8px; border-radius: 8px; background: #F6F6F4; font-size: 12px; font-weight: 700; color: #63636E; white-space: nowrap">{{ w.deck }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ hasDecks }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FFFFFF; border: 1px solid #E6E5E0; border-radius: 14px; padding: 6px 18px">
+              <div style="font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #63636E; padding: 10px 0 4px">Bộ từ</div>
+              <sc-for list="{{ deckHits }}" as="k" hint-placeholder-count="2">
+                <button type="button" onClick="{{ k.open }}" style="display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; border: none; border-top: 1px solid #EFEEEA; background: transparent; font: inherit; color: #1C1C22; text-align: left; cursor: pointer">
+                  <span style="{{ k.icon }}">{{ k.abbr }}</span>
+                  <span style="flex: 1; min-width: 0; display: flex; flex-direction: column"><strong style="font-size: 15px">{{ k.name }}</strong><span style="font-size: 13px; color: #63636E">{{ k.meta }}</span></span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noHits }}" hint-placeholder-val="{{ false }}">
+            <div style="background: #FFFFFF; border: 1px dashed #D3D2CB; border-radius: 14px; padding: 28px 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center">
+              <strong style="font-size: 16px">Không tìm thấy “{{ q }}”</strong>
+              <span style="font-size: 14px; color: #63636E">Từ này chưa có trong thư viện của bạn hay các bộ có sẵn.</span>
+              <a href="{{ ln.add }}" style="display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 10px; background: #3F4C9A; color: #FFFFFF; font-weight: 700; font-size: 15px; text-decoration: none">+ Thêm “{{ q }}” vào Từ của tôi</a>
+            </div>
+          </sc-if>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ browsing }}" hint-placeholder-val="{{ true }}">
+      <section aria-labelledby="c-mine" style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px">
+          <h2 id="c-mine" style="{{ L.h2 }}">Bộ của tôi</h2>
+          <span style="font-size: 14px; color: #63636E">{{ mineCount }}</span>
+        </div>
+        <div style="{{ L.mineGrid }}">
+          <sc-for list="{{ mine }}" as="k" hint-placeholder-count="3">
+            <button type="button" onClick="{{ k.open }}" style="{{ k.card }}">
+              <span style="display: flex; align-items: center; gap: 12px; min-width: 0">
+                <span style="{{ k.icon }}">{{ k.abbr }}</span>
+                <span style="display: flex; flex-direction: column; min-width: 0; text-align: left">
+                  <span style="font-weight: 800; font-size: 15px; color: #1C1C22; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ k.name }}</span>
+                  <span style="font-size: 13px; color: #63636E">{{ k.meta }}</span>
+                </span>
+              </span>
+              <span style="display: flex; align-items: center; gap: 10px">
+                <span style="flex: 1; height: 6px; border-radius: 999px; background: #EFEEEA; overflow: hidden; display: block"><span style="{{ k.bar }}"></span></span>
+                <span style="font-size: 13px; font-weight: 800; color: #1C1C22">{{ k.pct }}</span>
+              </span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+      <sc-for list="{{ cats }}" as="c" hint-placeholder-count="4">
+        <section style="display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; flex-direction: column; gap: 2px">
+            <h2 style="{{ L.h2 }}">{{ c.title }}</h2>
+            <span style="font-size: 14px; color: #63636E">{{ c.sub }}</span>
+          </div>
+          <div style="{{ L.row }}">
+            <sc-for list="{{ c.decks }}" as="k" hint-placeholder-count="3">
+              <button type="button" onClick="{{ k.open }}" style="{{ k.card }}">
+                <span style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; width: 100%">
+                  <span style="{{ k.icon }}">{{ k.abbr }}</span>
+                  <span style="{{ k.badge }}">{{ k.badgeText }}</span>
+                </span>
+                <span style="font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 16px; line-height: 1.3; color: #1C1C22; text-align: left">{{ k.name }}</span>
+                <span style="font-size: 13px; color: #63636E">{{ k.meta }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </section>
+      </sc-for>
+      </sc-if>
+
+    </div>
+    </sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { open: null, q: '', added: { comm: true, ielts: true } };
+    this.index = [['meticulous','tỉ mỉ, kỹ lưỡng','Từ của tôi'],['albeit','mặc dù, dẫu cho','Từ của tôi'],['resilient','kiên cường, mau phục hồi','Từ của tôi'],['reluctant','miễn cưỡng','Từ của tôi'],['appreciate','trân trọng, cảm kích','300 từ giao tiếp'],['awkward','ngượng ngùng, khó xử','300 từ giao tiếp'],['analyse','phân tích','IELTS AWL'],['allocate','phân bổ','IELTS AWL'],['agenda','chương trình họp','Văn phòng (có sẵn)'],['applicant','người nộp đơn','TOEIC (có sẵn)'],['appetizer','món khai vị','Ăn uống (có sẵn)'],['deadline','hạn chót','Từ của tôi'],['deploy','triển khai','IT (có sẵn)'],['itinerary','lịch trình','Du lịch (có sẵn)'],['invoice','hoá đơn','TOEIC (có sẵn)']];
+    const D = (id, abbr, name, n, level, bg, fg, p) => ({ id, abbr, name, n, level, bg, fg, p: p || 0 });
+    this.decks = {
+      comm: D('comm', 'GT', '300 từ giao tiếp thông dụng', 300, 'A2–B1', '#ECEEF8', '#2E3A80', 62),
+      phr: D('phr', 'PV', '200 phrasal verbs thông dụng', 200, 'B1–B2', '#E5F0EF', '#2C625E'),
+      idiom: D('idiom', 'ID', '150 thành ngữ hay dùng', 150, 'B2', '#F6EAEE', '#8C3A58'),
+      daily: D('daily', 'HN', '300 từ vựng hằng ngày', 300, 'A1–A2', '#E7F2EC', '#2A6B4B'),
+      travel: D('travel', 'DL', '300 từ du lịch', 300, 'A2–B1', '#F6EAEE', '#8C3A58'),
+      food: D('food', 'AU', '200 từ ăn uống & nấu ăn', 200, 'A2', '#F8EDE4', '#94461F'),
+      it: D('it', 'IT', '300 từ IT & công nghệ', 300, 'B1–B2', '#E5F0EF', '#2C625E'),
+      work: D('work', 'VP', '300 từ văn phòng & kinh doanh', 300, 'B1–B2', '#F6F0E1', '#7A5A1E'),
+      mkt: D('mkt', 'MK', '300 từ marketing', 300, 'B1–B2', '#F6EAEE', '#8C3A58'),
+      toeic: D('toeic', 'TO', '600 từ TOEIC thiết yếu', 600, 'B1–B2', '#F8EDE4', '#94461F'),
+      ielts: D('ielts', 'IE', 'IELTS Academic Word List', 570, 'B2–C1', '#F1ECF6', '#5E3F87', 31),
+      iw: D('iw', 'IW', 'IELTS Writing theo chủ đề', 400, 'B2–C1', '#ECEEF8', '#2E3A80')
+    };
+    this.cats = [
+      { title: 'Giao tiếp', sub: 'Nói chuyện tự nhiên mỗi ngày', ids: ['comm', 'phr', 'idiom'] },
+      { title: 'Hằng ngày', sub: 'Nhà cửa, ăn uống, mua sắm, đi lại', ids: ['daily', 'travel', 'food'] },
+      { title: 'Chuyên ngành', sub: 'Từ vựng theo lĩnh vực công việc', ids: ['it', 'work', 'mkt'] },
+      { title: 'Luyện thi', sub: 'TOEIC, IELTS', ids: ['toeic', 'ielts', 'iw'] }
+    ];
+  }
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#F6F6F4', fontFamily: 'Inter, system-ui, sans-serif', color: '#1C1C22' };
+    return { d, laptop, tablet, phone, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', L: {
+      root: laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
+      nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
+      main: laptop ? { flex: '999 1 560px', minWidth: 0, padding: '28px 40px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '28px 28px 40px' : '16px 16px 24px', boxSizing: 'border-box' },
+      h1: { margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: laptop ? '32px' : tablet ? '28px' : '26px', fontWeight: 800, letterSpacing: '-0.02em' },
+      h2: { margin: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontSize: '18px', fontWeight: 800 },
+      mineGrid: { display: 'grid', gridTemplateColumns: 'repeat(' + (laptop ? 3 : phone ? 1 : 2) + ', minmax(0, 1fr))', gap: '10px' },
+      row: laptop ? { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '12px' } : { display: 'flex', gap: '12px', overflowX: 'auto', margin: tablet ? '0 -28px' : '0 -16px', padding: tablet ? '2px 28px 6px' : '2px 16px 6px' }
+    }, cardW: laptop ? 'auto' : tablet ? '230px' : '210px' };
+  }
+  renderVals() {
+    const { d, L, cardW, sfx } = this.layout();
+    const s = this.state;
+    const icon = (k, n) => ({ flex: '0 0 ' + n + 'px', width: n + 'px', height: n + 'px', borderRadius: Math.round(n / 4.5) + 'px', background: k.bg, color: k.fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: Math.round(n / 3) + 'px' });
+    const open = (id) => () => this.setState({ open: id });
+    const mineCard = { background: '#FFFFFF', border: '1px solid #E6E5E0', borderRadius: '12px', padding: '14px', display: 'flex', flexDirection: 'column', gap: '12px', minWidth: 0, font: 'inherit', color: '#1C1C22', cursor: 'pointer', textAlign: 'left', boxSizing: 'border-box' };
+    const myWords = { id: 'mine', abbr: 'TC', name: 'Từ của tôi', meta: '64 từ tự thêm', p: 48, bg: '#1C1C22', fg: '#FFFFFF' };
+    const addedDecks = Object.keys(s.added).filter((id) => s.added[id]).map((id) => ({ ...this.decks[id], meta: this.decks[id].n + ' từ · bộ có sẵn' }));
+    const mine = [myWords].concat(addedDecks).map((k) => ({ ...k, pct: k.p + '%', open: open(k.id), icon: icon(k, 44),
+      card: k.id === 'mine' ? { ...mineCard, border: '1.5px solid #3F4C9A' } : mineCard,
+      bar: { display: 'block', width: Math.max(k.p, 2) + '%', height: '100%', background: k.fg === '#FFFFFF' ? '#1C1C22' : k.fg, borderRadius: '999px' } }));
+    const qq = s.q.trim().toLowerCase();
+    const wordHits = qq ? this.index.filter(([w, vi]) => w.toLowerCase().includes(qq) || vi.toLowerCase().includes(qq)).slice(0, 8).map(([w, vi, deck]) => ({ w, vi, deck })) : [];
+    const deckHits = qq ? Object.values(this.decks).filter((k) => k.name.toLowerCase().includes(qq)).map((k) => ({ ...k, meta: k.n + ' từ · ' + k.level, open: open(k.id), icon: icon(k, 40) })) : [];
+    const cats = this.cats.map((c) => ({ ...c, decks: c.ids.map((id) => { const k = this.decks[id]; const a = !!s.added[id];
+      return { ...k, meta: k.n + ' từ · ' + k.level, open: open(id), icon: icon(k, 48),
+        badgeText: a ? '✓ Đã thêm' : 'Có sẵn',
+        badge: { padding: '4px 8px', borderRadius: '8px', background: a ? '#E7F2EC' : '#F6F6F4', color: a ? '#2A6B4B' : '#63636E', fontSize: '12px', fontWeight: 700, whiteSpace: 'nowrap' },
+        card: { flex: '0 0 ' + cardW, background: '#FFFFFF', border: '1px solid #E6E5E0', borderRadius: '14px', padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '10px', minHeight: '156px', minWidth: 0, font: 'inherit', cursor: 'pointer', boxSizing: 'border-box' } }; }) }));
+    return {
+      q: s.q, onQ: (e) => this.setState({ q: e.target.value }), clearQ: () => this.setState({ q: '' }),
+      searching: !!qq, browsing: !qq, wordHits, deckHits, hasWords: wordHits.length > 0, hasDecks: deckHits.length > 0, noHits: !!qq && !wordHits.length && !deckHits.length,
+      resultSum: wordHits.length + ' từ · ' + deckHits.length + ' bộ khớp “' + s.q + '”',
+      ln: { word: 'WordDetail' + sfx + '.dc.html', add: 'AddWord' + sfx + '.dc.html' },
+      device: d, L, mine, cats, mineCount: mine.length + ' bộ',
+      isOpen: !!s.open, isList: !s.open, openId: s.open || 'mine',
+      openAdded: s.open === 'mine' ? true : !!s.added[s.open],
+      close: () => this.setState({ open: null }),
+      toggleAdd: (id) => this.setState({ added: { ...s.added, [id]: !s.added[id] } })
+    };
+  }
+}
+</script>
+</body>
+</html>

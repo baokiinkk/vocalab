@@ -1,0 +1,53 @@
+/* settings page styles — design-v2/project/Settings.dc.html */
+.page-settings .set-wrap { max-width: 640px; gap: 22px; }
+
+.set-head { display: flex; flex-direction: column; gap: 6px; }
+.set-back { align-self: flex-start; gap: 6px; }
+.set-subtitle { font-size: 14px; color: var(--muted); }
+
+.set-sec { display: flex; flex-direction: column; gap: 8px; }
+.set-h2 { margin: 0 4px; font-family: var(--font); font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.set-group { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+
+.set-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; min-height: 64px; border-bottom: 1px solid var(--line-2); }
+.set-row-col { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line-2); }
+.set-group > :last-child { border-bottom: none; }
+.set-note { padding: 12px 16px; background: color-mix(in srgb, var(--surface-2) 40%, var(--surface)); font-size: 13px; line-height: 1.5; color: var(--muted); }
+.set-label { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.set-title { font-size: 15px; font-weight: 600; }
+.set-sub { font-size: 13px; color: var(--muted); }
+.set-hint { margin-top: 2px; }
+.set-danger { color: var(--danger); }
+
+/* segmented control per v2: gap 3, padding 3, radius 10, max 360 */
+.page-settings .seg { width: 100%; max-width: 360px; gap: 3px; padding: 3px; border-radius: 10px; }
+
+/* switch per v2: 50 × 30, knob 24 */
+.page-settings .switch { width: 50px; height: 30px; flex: 0 0 50px; }
+.page-settings .switch-knob { width: 24px; height: 24px; }
+
+/* stepper per v2: no shadow, value 40 wide */
+.page-settings .stepper { gap: 2px; padding: 3px; border-radius: 10px; flex: 0 0 auto; }
+.page-settings .stepper-btn { border-radius: 8px; box-shadow: none; font-size: 18px; }
+.page-settings .stepper-val { min-width: 40px; width: 40px; font-size: 15px; }
+
+.set-time { min-height: 44px; padding: 0 12px; border: 1.5px solid var(--line); border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--ink); background: var(--surface); }
+.set-time:focus { outline: none; border-color: var(--primary); }
+
+/* row buttons (Xuất / Nhập / Đặt lại / Kiểm tra) */
+.set-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.set-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex: 0 0 auto; min-height: 40px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.set-btn:hover { background: var(--surface-2); }
+.set-btn:disabled { opacity: .7; cursor: progress; }
+.set-btn-danger { color: var(--danger); border-color: var(--danger-soft); }
+:root:not([data-theme="dark"]) .set-btn-danger { border-color: #EBCFCB; }
+.set-btn-danger:hover { background: var(--danger-soft); }
+
+/* GROQ key — input styled like the time field */
+.set-key { display: flex; gap: 8px; align-items: center; }
+.set-key-field { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; }
+.set-key-input { width: 100%; min-height: 44px; padding: 0 64px 0 12px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font-size: 15px; font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.set-key-input:focus { outline: none; border-color: var(--primary); }
+.set-key-eye { position: absolute; right: 2px; min-height: 40px; min-width: 44px; padding: 0 10px; border: none; border-radius: 8px; background: transparent; color: var(--primary); font-size: 13px; font-weight: 700; cursor: pointer; }
+.set-key-eye:hover { background: var(--surface-2); }
+.set-key .set-btn { min-height: 44px; }
