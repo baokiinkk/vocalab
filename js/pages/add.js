@@ -23,7 +23,7 @@
     const list = (x) => String(x || '').split(/[,;·\n]/).map((t) => t.trim()).filter(Boolean);
     return { syn: list(parts[0]), ant: list(parts.slice(1).join(',')) };
   };
-  const freshUi = (base) => ({ editKey: null, notFound: false, deck: 'mine', status: 'idle', snapshot: null, tried: false, dupKey: null, imgAI: false, autoDone: {}, origImg: '', origW: '', ...(base || {}) });
+  const freshUi = (base) => ({ editKey: null, notFound: false, deck: 'mine', status: 'idle', snapshot: null, tried: false, leaving: false, dupKey: null, imgAI: false, autoDone: {}, origImg: '', origW: '', ...(base || {}) });
 
   function enter(ctx) {
     gen++;
@@ -210,13 +210,22 @@
   // Which suggestion section feeds each form field (used to re-ask for anything the 'all' reply left out).
   const SECTION_OF = { pos: 'basic', ipa: 'basic', ipaUs: 'basic', vi: 'basic', examples: 'ex', gram: 'more', syn: 'more', note: 'more' };
   const isEmpty = (k) => (k === 'examples' ? !f.examples.some((e) => e && (e.en || '').trim()) : !String(f[k] || '').trim());
-  function applySuggestion(sugg) {
-    const merged = VL.ai.fillEmpty({ ...f, examples: isEmpty('examples') ? [] : f.examples }, toForm(sugg));
-    Object.keys(merged).forEach((k) => { if (k in f && k !== 'img' && isEmpty(k)) f[k] = merged[k]; });
+  /** Apply an AI reply. overwrite=true (the button): replace every field the AI returned (the word itself never
+      changes; fields the AI left out keep their value). overwrite=false (auto-fill on blur): fill empty fields only.
+      Returns the form keys the reply covered. */
+  function applySuggestion(sugg, overwrite) {
+    const got = toForm(sugg);
+    delete got.w; delete got.img;
+    if (overwrite) Object.keys(got).forEach((k) => { if (k in f) f[k] = got[k]; });
+    else {
+      const merged = VL.ai.fillEmpty({ ...f, examples: isEmpty('examples') ? [] : f.examples }, got);
+      Object.keys(got).forEach((k) => { if (k in f && isEmpty(k)) f[k] = merged[k]; });
+    }
     if (!f.examples.length) f.examples = [{ en: '', vi: '' }];
+    return Object.keys(got);
   }
 
-  /** One AI call ('all') fills every empty field of every section (+ image when none); typed values are never overwritten. */
+  /** One AI call ('all') fills every section + image. Button: overwrites (Hoàn tác restores); auto-fill: empty fields only. */
   async function runAI(auto) {
     const word = (f.w || '').trim();
     if (!word) { VL.ui.toast('Nhập từ trước khi gợi ý.'); const el = $('add-word'); if (el) el.focus(); return; }
@@ -229,22 +238,25 @@
     VL.refresh();
     let ok = false;
     try {
-      const ctx = { vi: f.vi.trim() };
+      // Automatic fill (on blur) never opens the key prompt; the explicit button may.
+      const ctx = { vi: f.vi.trim(), silent: !!auto };
       const sugg = await VL.ai.suggest(word, 'all', ctx);
       if (myGen !== gen) return;
-      applySuggestion(sugg);
+      const overwrite = !auto;
+      const covered = applySuggestion(sugg, overwrite);
       // The model sometimes drops a section from the combined reply: ask again just for those.
-      const missing = Array.from(new Set(Object.keys(SECTION_OF).filter(isEmpty).map((k) => SECTION_OF[k])));
-      const imgP = f.img ? Promise.resolve(null) : VL.media.image({ w: word, pos: f.pos, def: f.def }).catch(() => null);
+      const missing = Array.from(new Set(Object.keys(SECTION_OF).filter((k) => covered.indexOf(k) < 0 && (overwrite || isEmpty(k))).map((k) => SECTION_OF[k])));
+      const wantImg = overwrite || !f.img;
+      const imgP = wantImg ? VL.media.image({ w: word, pos: f.pos, def: f.def }).catch(() => null) : Promise.resolve(null);
       const extra = await Promise.all(missing.map((sec) => VL.ai.suggest(word, sec, ctx).catch(() => null)));
       if (myGen !== gen) return;
-      extra.forEach((x) => { if (x) applySuggestion(x); });
+      extra.forEach((x) => { if (x) applySuggestion(x, overwrite); });
       const url = await imgP;
       if (myGen !== gen) return;
-      if (url && !f.img) { f.img = url; ui.imgAI = true; }
+      if (url && wantImg) { f.img = url; ui.imgAI = true; }
       ok = true;
       if (JSON.stringify(f) === before) {
-        if (!auto) VL.ui.toast('Các ô đã có nội dung — AI không ghi đè phần bạn đã nhập.');
+        if (!auto) VL.ui.toast('AI không có gợi ý mới cho từ này.');
         ui.status = prevStatus === 'filled' ? 'filled' : 'idle';
       } else {
         ui.status = 'filled';
@@ -252,7 +264,7 @@
       }
       if (ui.tried) paintMissing();
     } catch (e) {
-      if (myGen === gen) VL.ui.toast((e && e.message) || 'AI lỗi, thử lại nhé.', 'error');
+      if (myGen === gen && !auto) VL.ui.toast((e && e.message) || 'AI lỗi, thử lại nhé.', 'error');
     } finally {
       if (myGen === gen) {
         if (!ok) ui.status = prevStatus;
@@ -270,6 +282,7 @@
     };
   }
   function doSave() {
+    if (ui.leaving) return null; // already saved, navigation pending (double click / double Enter)
     if (isMissing()) {
       ui.tried = true;
       paintMissing();
@@ -319,7 +332,7 @@
         if (!key) return;
         const w = VL.words.get(key);
         const deckName = (VL.CATALOG[ui.deck] || VL.CATALOG.mine).name;
-        if (ui.editKey) { VL.ui.toast('Đã lưu “' + (w ? w.w : '') + '”'); VL.go(VL.href.add({ deck: ui.deck })); return; }
+        if (ui.editKey) { ui.leaving = true; VL.ui.toast('Đã lưu “' + (w ? w.w : '') + '”'); VL.go(VL.href.add({ deck: ui.deck })); return; }
         VL.ui.toast('Đã lưu “' + (w ? w.w : '') + '” vào ' + deckName);
         gen++; // drop pending AI replies for the previous word
         f = blankForm();
@@ -330,6 +343,7 @@
       save: () => {
         const key = doSave();
         if (!key) return;
+        ui.leaving = true;
         const w = VL.words.get(key);
         VL.ui.toast(ui.editKey ? 'Đã lưu thay đổi' : 'Đã lưu “' + (w ? w.w : '') + '”');
         gen++;
@@ -368,7 +382,7 @@
         if (active && active.id === 'add-word') return; // re-render restored focus
         const word = (f.w || '').trim();
         const set = VL.store.settings();
-        if (ui.editKey || !word || f.vi.trim() || !(set.sw && set.sw.auto)) return;
+        if (ui.editKey || !word || f.vi.trim() || !(set.sw && set.sw.auto) || !VL.ai.hasKey()) return;
         const nk = VL.norm(word);
         if (ui.autoDone[nk] || loading()) return;
         ui.autoDone[nk] = true;

@@ -330,3 +330,51 @@ for (const device of DEVICES) {
     await page.context().close();
   });
 }
+
+test('laptop: Back button leaves a running session (no #/flash ⇄ #/quiz trap); auto-advance does not fire after leaving', async () => {
+  const page = await open(browser, 'laptop', '#/today', { seed });
+  await page.evaluate(() => { location.hash = '#/practice'; });
+  await page.waitForFunction(() => location.hash === '#/practice');
+  await page.evaluate(() => {
+    const VL = window.VL;
+    VL.session.start({ keys: ['comm:appreciate', 'comm:suggest', 'comm:mention'], modes: ['flash', 'mean'], order: 'seq', count: 3 });
+    const s = VL.store.state.session;
+    s.queue = [{ key: 'comm:appreciate', mode: 'flash' }, { key: 'comm:suggest', mode: 'mean' }, { key: 'comm:mention', mode: 'mean' }];
+    VL.store.save(); VL.session.go(true);
+  });
+  await page.waitForFunction(() => location.hash === '#/flash' && document.querySelector('.flash-btn-right'));
+  await page.click('.flash-btn-right');
+  await page.click('[data-action="next"]');
+  await page.waitForFunction(() => location.hash === '#/quiz' && document.querySelector('.quiz-opt'));
+  await page.goBack();
+  await page.waitForFunction(() => location.hash === '#/practice', null, { timeout: 3000 });
+  await page.waitForTimeout(150);
+  assert.equal(await page.evaluate(() => location.hash), '#/practice', 'Back left the session screens');
+
+  // correct answer starts the 3 s auto-advance; leaving the page must cancel it
+  await page.evaluate(() => window.VL.session.go());
+  await page.waitForFunction(() => location.hash === '#/quiz' && document.querySelector('.quiz-opt'));
+  await clickRight(page);
+  await page.waitForSelector('.quiz-detail');
+  await page.evaluate(() => { location.hash = '#/today'; });
+  await page.waitForTimeout(3400);
+  assert.equal(await page.evaluate(() => location.hash), '#/today');
+  assert.equal(await page.evaluate(() => window.VL.session.current().idx), 1);
+  assert.deepEqual(page.errors, []);
+  await page.context().close();
+});
+
+test('laptop: a word deleted mid-session is skipped instead of a dead end', async () => {
+  const page = await open(browser, 'laptop', '#/today', { seed });
+  await page.evaluate(() => {
+    const VL = window.VL;
+    VL.session.start({ keys: ['mine:albeit', 'comm:suggest'], modes: ['mean'], order: 'seq', count: 2 });
+    VL.store.state.session.queue = [{ key: 'mine:albeit', mode: 'mean' }, { key: 'comm:suggest', mode: 'mean' }];
+    VL.words.remove('mine:albeit');
+    VL.refresh();
+  });
+  await page.waitForFunction(() => document.querySelector('.quiz-word'));
+  assert.equal((await page.textContent('.quiz-word')).trim(), 'suggest');
+  assert.deepEqual(page.errors, []);
+  await page.context().close();
+});

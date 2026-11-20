@@ -321,3 +321,41 @@ for (const device of DEVICES) {
     await page.context().close();
   });
 }
+
+test('laptop: background AI enrichment is silent (never opens the GROQ key sheet) and skipped without a key', async () => {
+  const page = await startFlash('laptop', { keys: ['comm:appreciate', 'ielts:analyse'], modes: ['flash'], count: 2, order: 'seq' });
+  await page.evaluate(() => {
+    window.__ctx = [];
+    const orig = VL.ai.suggest;
+    VL.ai.suggest = (w, sec, ctx) => { window.__ctx.push(ctx); return orig(w, sec, ctx); };
+  });
+  await page.route(/api\.groq\.com/, (route) => route.fulfill({ status: 500, body: 'x' }));
+  await page.click('.flash-reveal');
+  await page.waitForFunction(() => window.__ctx.length === 1);
+  assert.equal(await page.evaluate(() => window.__ctx[0].silent), true);
+  // no key → no AI call at all and no key sheet during the session
+  await page.keyboard.press('2');
+  await page.evaluate(() => VL.store.setSetting('groqKey', ''));
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => document.querySelector('.flash-count').textContent.trim() === '2 / 2');
+  await page.click('.flash-reveal');
+  await page.waitForTimeout(300);
+  assert.equal(await page.evaluate(() => window.__ctx.length), 1);
+  assert.equal(await page.$('.sheet-backdrop'), null);
+  assert.deepEqual(page.errors, []);
+  await page.context().close();
+});
+
+test('laptop: stale flash → quiz redirect does not pull the user back after they navigated away', async () => {
+  const page = await open(browser, 'laptop', '#/today', { seed });
+  await page.evaluate(() => {
+    VL.session.start({ keys: ['comm:suggest'], modes: ['mean'], count: 1 });
+  });
+  await page.waitForFunction(() => location.hash === '#/quiz');
+  // land on #/flash (wrong screen) and immediately leave before the deferred redirect runs
+  await page.evaluate(() => { history.replaceState(null, '', '#/flash'); VL.refresh(); history.replaceState(null, '', '#/library'); VL.refresh(); });
+  await page.waitForTimeout(200);
+  assert.equal(await page.evaluate(() => location.hash), '#/library');
+  assert.deepEqual(page.errors, []);
+  await page.context().close();
+});

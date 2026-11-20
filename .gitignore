@@ -3,3 +3,4 @@ tests/shots/
 .DS_Store
 design/
 *.log
+tools/.images-cache.json

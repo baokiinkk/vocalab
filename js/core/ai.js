@@ -7,6 +7,7 @@
   const CACHE_KEY = 'vocalab.aicache';
   const cache = VL.ls.get(CACHE_KEY, {});
   const FALLBACK_MODEL = 'openai/gpt-oss-120b';
+  VL.on('quota', () => { Object.keys(cache).forEach((k) => { delete cache[k]; }); });
 
   const ai = (VL.ai = {
     hasKey() { return !!(VL.store.settings().groqKey || '').trim(); },
@@ -112,7 +113,8 @@
         { role: 'system', content: 'You are an expert English teacher for Vietnamese learners. Reply ONLY with a JSON object. Be accurate; Vietnamese must have correct diacritics.' },
         { role: 'user', content: 'English word or phrase: "' + word + '"' + (ctx && ctx.vi ? ' (meaning the learner has in mind: "' + ctx.vi + '")' : '') + '. Return JSON with keys: ' + fields + '.' }
       ];
-      const out = await ai.chatJSON(messages);
+      // ctx.silent: background/automatic calls never open the key prompt (they just fail quietly without a key)
+      const out = await ai.chatJSON(messages, { noPrompt: !!(ctx && ctx.silent) });
       const norm = ai.normalize(out);
       cache[ck] = norm;
       const keys = Object.keys(cache);

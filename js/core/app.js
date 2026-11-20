@@ -44,10 +44,11 @@
     const s = (hash || location.hash || '').replace(/^#/, '');
     const [path, qs] = s.split('?');
     const query = {};
-    (qs || '').split('&').filter(Boolean).forEach((p) => { const [k, v] = p.split('='); query[decodeURIComponent(k)] = decodeURIComponent((v || '').replace(/\+/g, ' ')); });
+    const dec = (x) => { try { return decodeURIComponent(x); } catch (e) { return x; } };
+    (qs || '').split('&').filter(Boolean).forEach((p) => { const [k, ...rest] = p.split('='); query[dec(k)] = dec(rest.join('=').replace(/\+/g, ' ')); });
     for (const [re, name, param] of ROUTES) {
       const m = (path || '').match(re);
-      if (m) { const params = {}; if (param) params[param] = decodeURIComponent(m[1]); return { name, params, query }; }
+      if (m) { const params = {}; if (param) params[param] = dec(m[1]); return { name, params, query }; }
     }
     return { name: 'today', params: {}, query, notFound: true };
   };
@@ -123,7 +124,9 @@
   /* ---------- theme & font size ---------- */
   function applyTheme() {
     const set = VL.store.settings();
-    const dark = set.theme === 'dark' || (set.theme === 'sys' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+    // "Theo máy": follow the device clock — dark from 20:00 until 05:00 the next morning.
+    const h = new Date().getHours();
+    const dark = set.theme === 'dark' || (set.theme === 'sys' && (h >= 20 || h < 5));
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
     document.documentElement.setAttribute('data-card-size', set.size || 'm');
   }
@@ -175,6 +178,7 @@
     VL._navCount = 1;
     render(true);
     setInterval(VL.reminder.check, 60000);
+    setInterval(applyTheme, 60000); // switch light/dark at 20:00 and 05:00 while the app stays open
     setTimeout(VL.reminder.check, 3000);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else setTimeout(boot, 0);

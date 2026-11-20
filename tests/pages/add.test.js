@@ -212,7 +212,7 @@ test('edit mode: prefilled, no self-duplicate, saves to the same key and returns
   await page.context().close();
 });
 
-test('AI: one button fills every empty field (incl. image), keeps typed values, status, undo, error toast', async () => {
+test('AI button: one call overwrites every field (incl. new image), status, Hoàn tác restores, partial reply, error toast', async () => {
   const page = await open(browser, 'laptop', '#/add', { seed });
   await page.evaluate((b64) => {
     VL.store.setSetting('sw.auto', false);
@@ -226,9 +226,9 @@ test('AI: one button fills every empty field (incl. image), keeps typed values, 
     if (mode === 'wait') await new Promise((r) => { release = r; });
     if (mode === 'err') return route.fulfill({ status: 401, contentType: 'application/json', body: '{}' });
     if (mode === 'partial') {
-      // 'all' reply without the "more" section → page asks again for that section only
-      const body = JSON.parse(lastBody); const prompt = body.messages[1].content;
-      return route.fulfill(fakeAI(/"gram"/.test(prompt) && !/"examples"/.test(prompt) ? { gram: 'g1', syn: ['s1'], ant: [], note: 'n1' } : { pos: 'v', ipa: '/a/', ipaUs: '/b/', vi: 'nghĩa', examples: [{ en: 'E1.', vi: 'V1.' }] }));
+      // 'all' reply without the "more" section → page asks again for that section only, which returns just gram
+      const prompt = JSON.parse(lastBody).messages[1].content;
+      return route.fulfill(fakeAI(/"gram"/.test(prompt) && !/"examples"/.test(prompt) ? { gram: 'g1' } : { pos: 'v', ipa: '/a/', ipaUs: '/b/', vi: 'nghĩa', examples: [{ en: 'E1.', vi: 'V1.' }] }));
     }
     return route.fulfill(fakeAI(ALL));
   });
@@ -236,93 +236,103 @@ test('AI: one button fills every empty field (incl. image), keeps typed values, 
   await page.click('#add-ai');
   assert.equal(await page.textContent('#toast'), 'Nhập từ trước khi gợi ý.');
   assert.equal(calls, 0);
+  // user-typed content that the AI will replace
   await page.fill('#add-word', 'resilient');
-  await page.fill('#add-ipa', '/mine/'); // typed by the user → must be kept
+  await page.fill('#add-vi', 'nghĩa của tôi');
+  await page.fill('#add-ipa', '/mine/');
+  await page.click('.add-chip:has-text("Danh từ")');
+  await page.fill('#add-ex-en-0', 'My own sentence.');
+  await page.click('[data-action="exAdd"]');
+  await page.fill('#add-ex-en-1', 'Second.');
+  await page.fill('#add-note', 'my note');
+  await page.setInputFiles('#add-file', { name: 'x.png', mimeType: 'image/png', buffer: PNG });
+  await page.waitForSelector('#add-img');
+  const uploaded = await page.getAttribute('#add-img', 'src');
   mode = 'wait';
   await page.click('#add-ai');
   await page.waitForSelector('#add-ai[aria-disabled="true"]');
   assert.equal(await page.textContent('#add-ai'), 'Đang điền…');
   assert.ok(await page.isVisible('text=AI đang điền phiên âm, nghĩa, ví dụ, ngữ pháp và hình minh hoạ…'));
   assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('.add-dim')).opacity), '0.45');
-  // user keeps typing in another field while waiting
-  await page.click('#add-ex-en-0');
-  await page.keyboard.type('My own sentence.');
+  await page.click('#add-syn'); // focus somewhere while waiting
   release();
   await page.waitForSelector('#add-ai:not([aria-disabled])');
   assert.equal(calls, 1, 'single call');
   assert.match(lastBody, /examples/); assert.match(lastBody, /gram/); assert.match(lastBody, /ipaUs/);
   assert.equal(await page.textContent('#add-ai'), 'Gợi ý lại');
-  assert.equal(await page.evaluate(() => document.activeElement.id), 'add-ex-en-0', 'focus kept');
-  // every section filled, typed values kept
-  assert.equal(await page.inputValue('#add-ipa'), '/mine/');
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'add-syn', 'focus kept');
+  assert.ok(await page.isVisible('text=AI đã điền toàn bộ. Kiểm tra và sửa lại nếu cần.'));
+  // every field overwritten, the word itself unchanged
+  assert.equal(await page.inputValue('#add-word'), 'resilient');
+  assert.equal(await page.inputValue('#add-vi'), 'kiên cường', 'user meaning replaced');
+  assert.equal(await page.inputValue('#add-ipa'), '/rɪˈzɪliənt/');
   assert.equal(await page.inputValue('#add-ipaus'), '/rɪˈzɪliənt/');
-  assert.equal(await page.inputValue('#add-vi'), 'kiên cường');
   assert.equal(await page.getAttribute('.add-chip.is-on', 'data-value'), 'adj');
-  assert.equal(await page.locator('.add-ex').count(), 1, 'user example not overwritten');
-  assert.equal(await page.inputValue('#add-ex-en-0'), 'My own sentence.');
+  assert.equal(await page.locator('.add-ex').count(), 2, 'examples list replaced');
+  assert.equal(await page.inputValue('#add-ex-en-0'), ALL.examples[0].en);
+  assert.equal(await page.inputValue('#add-ex-vi-1'), ALL.examples[1].vi);
   assert.equal(await page.inputValue('#add-gram'), 'be resilient to + N');
   assert.equal(await page.inputValue('#add-syn'), 'tough, adaptable / fragile');
   assert.equal(await page.inputValue('#add-note'), 'Nhấn âm 2.');
-  // image fetched automatically → "AI tạo" badge
-  await page.waitForSelector('#add-img');
+  assert.notEqual(await page.getAttribute('#add-img', 'src'), uploaded, 'new automatic image');
   assert.ok(await page.isVisible('.add-img-badge:has-text("AI tạo")'));
   assert.deepEqual(await page.evaluate(() => window.__imgCalls.map((w) => [w.w, w.pos, w.def])), [['resilient', 'adj', 'able to recover quickly']]);
-  assert.ok(await page.isVisible('text=AI đã điền toàn bộ. Kiểm tra và sửa lại nếu cần.'));
   await page.screenshot({ path: path.join(SHOTS, 'add-ai-filled-laptop.png'), fullPage: true });
   // Hoàn tác → form exactly as before the fill
   await page.click('[data-action="undo"]');
   assert.equal(await page.locator('.add-filled').count(), 0);
   assert.equal(await page.textContent('#add-ai'), 'Gợi ý bằng AI');
-  assert.equal(await page.inputValue('#add-word'), 'resilient');
+  assert.equal(await page.inputValue('#add-vi'), 'nghĩa của tôi');
   assert.equal(await page.inputValue('#add-ipa'), '/mine/');
-  for (const id of ['#add-vi', '#add-ipaus', '#add-gram', '#add-syn', '#add-note', '#add-ex-en-0']) assert.equal(await page.inputValue(id), '', id + ' restored');
-  assert.equal(await page.locator('.add-chip.is-on').count(), 0);
-  assert.equal(await page.locator('#add-img').count(), 0);
-  // fill again (cached reply), then keep my own example
-  await page.fill('#add-ex-en-0', 'My own sentence.');
+  assert.equal(await page.inputValue('#add-ipaus'), '');
+  assert.equal(await page.getAttribute('.add-chip.is-on', 'data-value'), 'n');
+  assert.equal(await page.locator('.add-ex').count(), 2);
+  assert.equal(await page.inputValue('#add-ex-en-0'), 'My own sentence.');
+  assert.equal(await page.inputValue('#add-ex-en-1'), 'Second.');
+  assert.equal(await page.inputValue('#add-gram'), '');
+  assert.equal(await page.inputValue('#add-note'), 'my note');
+  assert.equal(await page.getAttribute('#add-img', 'src'), uploaded);
+  assert.equal(await page.locator('.add-img-badge').count(), 0);
+  // fill again (cached reply) and save: AI def/cefr kept
   await page.click('#add-ai');
   await page.waitForSelector('.add-filled');
   assert.equal(calls, 1, 'cached');
-  assert.equal(await page.inputValue('#add-ex-en-0'), 'My own sentence.');
-  // save keeps AI def/cefr
   await page.click('[data-action="save"]');
   await page.waitForFunction(() => location.hash.startsWith('#/word/'));
   const key = await page.evaluate(() => decodeURIComponent(location.hash.slice(7)));
   const w = await page.evaluate((k) => VL.words.get(k), key);
+  assert.equal(w.vi, 'kiên cường');
   assert.equal(w.def, 'able to recover quickly');
   assert.equal(w.cefr, 'C1');
-  assert.equal(w.ipa, '/mine/');
-  assert.deepEqual(w.examples, [{ en: 'My own sentence.', vi: '' }]);
-  // fresh form: all empty → examples from AI too
-  await page.evaluate(() => { location.hash = '#/add'; });
-  await page.waitForSelector('#add-word');
-  mode = 'ok';
-  await page.fill('#add-word', 'sturdy');
-  await page.click('#add-ai');
-  await page.waitForFunction(() => document.querySelectorAll('.add-ex').length === 2);
-  assert.equal(await page.inputValue('#add-ex-en-0'), ALL.examples[0].en);
-  assert.equal(await page.inputValue('#add-ex-vi-1'), ALL.examples[1].vi);
-  assert.equal(await page.inputValue('#add-ipa'), '/rɪˈzɪliənt/');
-  // partial reply → follow-up for the missing section only
+  assert.equal(w.examples.length, 2);
+  assert.match(w.img, /^data:image\/png/);
+  // partial reply → follow-up for the missing section; fields the AI returned nothing for keep their value
   await page.evaluate(() => { location.hash = '#/add?n=2'; });
   await page.waitForFunction(() => document.getElementById('add-word') && !document.getElementById('add-word').value);
   mode = 'partial'; calls = 0;
   await page.fill('#add-word', 'wobble');
+  await page.fill('#add-note', 'keep me');
+  await page.fill('#add-syn', 'shake');
   await page.click('#add-ai');
   await page.waitForFunction(() => document.getElementById('add-gram').value === 'g1');
   assert.equal(calls, 2);
   assert.equal(await page.inputValue('#add-vi'), 'nghĩa');
-  assert.equal(await page.inputValue('#add-note'), 'n1');
   assert.equal(await page.inputValue('#add-ex-en-0'), 'E1.');
-  // error → toast with message
+  assert.equal(await page.inputValue('#add-note'), 'keep me');
+  assert.equal(await page.inputValue('#add-syn'), 'shake');
+  assert.equal(await page.locator('#add-img').count(), 0, 'no image found → stays empty');
+  // error → toast with message, form untouched
   await page.evaluate(() => { location.hash = '#/add?n=3'; });
   await page.waitForFunction(() => document.getElementById('add-word') && !document.getElementById('add-word').value);
   mode = 'err';
   await page.fill('#add-word', 'quixotic');
+  await page.fill('#add-vi', 'viển vông');
   await page.click('#add-ai');
   await page.waitForSelector('#toast.toast-error');
   assert.match(await page.textContent('#toast'), /GROQ API key không hợp lệ/);
   assert.equal(await page.textContent('#add-ai'), 'Gợi ý bằng AI');
+  assert.equal(await page.inputValue('#add-vi'), 'viển vông');
+  assert.equal(await page.locator('.add-filled').count(), 0);
   assert.deepEqual(page.errors, []);
   await page.context().close();
 });
@@ -331,11 +341,13 @@ test('AI auto-fill on word blur when sw.auto is on (once, new words only, meanin
   const page = await open(browser, 'iphone', '#/add', { seed });
   let calls = 0;
   await page.route('https://api.groq.com/**', (route) => { calls++; route.fulfill(fakeAI(ALL)); });
+  await page.fill('#add-note', 'typed note');
   await page.fill('#add-word', 'resilient');
   await page.click('#add-ipa');
   await page.waitForFunction(() => document.getElementById('add-vi').value === 'kiên cường');
   assert.equal(calls, 1);
   assert.equal(await page.inputValue('#add-ipa'), '/rɪˈzɪliənt/');
+  assert.equal(await page.inputValue('#add-note'), 'typed note', 'auto-fill only fills empty fields');
   assert.equal(await page.inputValue('#add-ex-en-0'), ALL.examples[0].en);
   assert.equal(await page.inputValue('#add-gram'), 'be resilient to + N');
   assert.equal(await page.evaluate(() => document.activeElement.id), 'add-ipa');
@@ -354,6 +366,55 @@ test('AI auto-fill on word blur when sw.auto is on (once, new words only, meanin
   await page.waitForTimeout(200);
   assert.equal(calls, 1);
   assert.equal(await page.textContent('.add-chip.is-on'), 'Liên từ', 'non-listed pos shown as extra chip');
+  assert.deepEqual(page.errors, []);
+  await page.context().close();
+});
+
+test('double click / double Enter on "Lưu từ" saves the word only once', async () => {
+  const page = await open(browser, 'laptop', '#/add', { seed });
+  await page.evaluate(() => VL.store.setSetting('sw.auto', false));
+  await page.fill('#add-word', 'zebra');
+  await page.fill('#add-vi', 'ngựa vằn');
+  await page.evaluate(() => { const b = document.querySelector('.add-btn-save'); b.click(); b.click(); });
+  await page.waitForFunction(() => location.hash === '#/word/' + encodeURIComponent('mine:zebra'));
+  assert.deepEqual(await page.evaluate(() => Object.keys(VL.store.state.custom).filter((k) => k.includes('zebra'))), ['mine:zebra']);
+  // and the next visit to #/add is not stuck in the "leaving" state
+  await page.evaluate(() => { location.hash = '#/add'; });
+  await page.waitForSelector('#add-word');
+  await page.fill('#add-word', 'yak');
+  await page.fill('#add-vi', 'bò Tây Tạng');
+  await page.click('.add-btn-save');
+  await page.waitForFunction(() => location.hash === '#/word/' + encodeURIComponent('mine:yak'));
+  assert.deepEqual(page.errors, []);
+  await page.context().close();
+});
+
+test('no GROQ key: auto-fill on blur never opens the key sheet; the explicit button does and continues the fill', async () => {
+  const page = await open(browser, 'iphone', '#/add', { seed });
+  let calls = 0;
+  await page.route('https://api.groq.com/**', (route) => { calls++; route.fulfill(fakeAI(ALL)); });
+  await page.evaluate(() => { VL.store.setSetting('groqKey', ''); VL.store.setSetting('sw.auto', true); VL.media.image = () => Promise.resolve(null); });
+  await page.fill('#add-word', 'stoic');
+  await page.click('#add-ipa');
+  await page.waitForTimeout(300);
+  assert.equal(await page.locator('#key-input').count(), 0, 'no key sheet on blur');
+  assert.equal(await page.locator('#toast.toast-error').count(), 0);
+  assert.equal(calls, 0);
+  await page.fill('#add-vi', 'khắc kỷ');
+  await page.click('[data-action="save"]');
+  await page.waitForFunction(() => location.hash === '#/word/' + encodeURIComponent('mine:stoic'));
+  // explicit button → sheet → saving a key continues the fill
+  await page.evaluate(() => { location.hash = '#/add'; });
+  await page.waitForSelector('#add-word');
+  await page.fill('#add-word', 'tenacious');
+  await page.click('#add-ai');
+  await page.waitForSelector('#key-input');
+  await page.fill('#key-input', 'gsk_new');
+  await page.click('.sheet button[type="submit"]');
+  await page.waitForSelector('.add-filled');
+  assert.equal(await page.inputValue('#add-vi'), 'kiên cường');
+  assert.equal(await page.evaluate(() => VL.store.settings().groqKey), 'gsk_new');
+  assert.ok(calls >= 1);
   assert.deepEqual(page.errors, []);
   await page.context().close();
 });

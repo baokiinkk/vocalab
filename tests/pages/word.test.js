@@ -215,3 +215,13 @@ for (const device of DEVICES) {
     await page.context().close();
   });
 }
+
+test('iphone: long unbroken word/meaning/notes/synonyms never cause horizontal scroll', async () => {
+  const page = await open(browser, 'iphone', '#/today', { seed });
+  const key = await page.evaluate(() => VL.words.save({ w: "don't-" + 'x'.repeat(60), vi: 'x'.repeat(200), note: 'y'.repeat(200), def: 'z'.repeat(200), gram: 'g'.repeat(200), syn: ['s'.repeat(100)], ant: ['a'.repeat(90)], examples: [{ en: 'e'.repeat(200), vi: 'v'.repeat(200) }] }));
+  await page.evaluate((k) => { location.hash = '#/word/' + encodeURIComponent(k); }, key);
+  await page.waitForSelector('.wd-chip-syn');
+  assert.equal(await page.evaluate(() => document.documentElement.scrollWidth), 390);
+  assert.deepEqual(page.errors, []);
+  await page.context().close();
+});

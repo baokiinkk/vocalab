@@ -42,8 +42,10 @@ async function playSession(p, wrongEvery) {
     } else throw new Error('unexpected screen ' + h);
     n++;
     await p.waitForTimeout(60);
-    const next = p.locator('#view button').filter({ hasText: /Tiếp theo|Câu tiếp theo|Tiếp:|Xem kết quả/ }).first();
-    await next.click();
+    const idx = await p.evaluate(() => { const s = VL.session.current(); return s ? s.idx : -1; });
+    const next = p.locator('#view button, #view a').filter({ hasText: /tiếp theo|Tiếp ngay|Tiếp:|Xem kết quả/i }).first();
+    if (await next.count()) await next.click().catch(() => {}); // a correct quiz answer may auto-advance first
+    await p.waitForFunction((i) => { const s = VL.session.current(); return !s || s.idx !== i || s.done || location.hash.startsWith('#/result'); }, idx, { timeout: 6000 });
     await p.waitForTimeout(60);
   }
   throw new Error('session did not finish');
@@ -91,19 +93,17 @@ for (const device of ['laptop', 'ipad', 'iphone']) {
 
     // 5. Add a custom word through the form
     await p.goto(p.url().split('#')[0] + '#/add');
-    await p.waitForSelector('#view input');
-    const inputs = p.locator('#view input[type="text"], #view input:not([type])');
-    await inputs.nth(0).fill('serendipity');
-    await p.locator('#view textarea, #view input').nth(1).fill('sự tình cờ may mắn');
-    await p.getByRole('button', { name: /^Lưu từ$/ }).click();
-    await p.waitForFunction(() => location.hash.startsWith('#/word/'));
-    assert.match(await p.textContent('#view'), /serendipity/);
+    await p.waitForSelector('#add-word');
+    await p.fill('#add-word', 'serendipity');
+    await p.fill('#add-vi', 'sự tình cờ may mắn');
+    await p.locator('#view [data-action="save"]').click();
+    await p.waitForFunction(() => location.hash.startsWith('#/word/') && VL.current().name === 'word' && /serendipity/.test(document.getElementById('view').textContent));
     await noHScroll(p); await shot(p, device + '-5-word');
 
     // 6. Edit it
     await p.locator('#view a, #view button').filter({ hasText: /^Sửa$/ }).first().click();
-    await p.waitForFunction(() => location.hash.startsWith('#/add?edit='));
-    assert.equal(await inputs.nth(0).inputValue(), 'serendipity');
+    await p.waitForFunction(() => location.hash.startsWith('#/add?edit=') && VL.current().name === 'add' && document.getElementById('add-word'));
+    assert.equal(await p.inputValue('#add-word'), 'serendipity');
 
     // 7. Settings: dark theme persists across reload
     await p.goto(p.url().split('#')[0] + '#/settings');

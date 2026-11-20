@@ -164,3 +164,13 @@ for (const dev of DEVS) {
     await p2.context().close();
   });
 }
+
+test('iphone: search hit with a long unbroken meaning wraps (no horizontal scroll)', async () => {
+  const p = await open(browser, 'iphone', '#/library', { seed });
+  await p.evaluate(() => VL.words.save({ w: 'donkeyword' + 'k'.repeat(50), vi: 'x'.repeat(300) }));
+  await p.fill('#lib-q', 'donkey');
+  await p.waitForSelector('.lib-word-hit');
+  assert.equal(await p.evaluate(() => document.documentElement.scrollWidth), 390);
+  assert.deepEqual(p.errors, []);
+  await p.context().close();
+});

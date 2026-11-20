@@ -119,18 +119,38 @@
         p.st = Math.max(S0, p.st * 0.4);
         p.x++;
       }
+      const isNew = !p.t;
       p.s = after; p.t = now; p.n++;
+      srs.logAnswer(key, p, now, ok, mode, before, after, isNew);
+      return { before, after, delta: after - before };
+    },
+    /** Log an answer that does not change the score (Flashcard "Chưa nhớ" with the penalty switched off):
+        history entry, day log, new-word quota and streak still count it as practice. */
+    recordNeutral(key, mode) {
+      const now = Date.now();
+      const p = srs.start(key);
+      const sc = srs.score(key, now);
+      const isNew = !p.t;
+      if (isNew) p.t = now;
+      srs.logAnswer(key, p, now, false, mode || 'flash', sc, sc, isNew);
+      return { before: sc, after: sc, delta: 0 };
+    },
+    logAnswer(key, p, now, ok, mode, before, after, isNew) {
+      const s = st();
       p.h.unshift({ t: now, m: mode || 'flash', ok: !!ok, b: before, a: after });
       if (p.h.length > 30) p.h.length = 30;
       // day log + streak
       const dk = VL.dayKey(now);
       const day = (s.days[dk] = s.days[dk] || { n: 0, ok: 0, fresh: {}, ms: 0 });
+      if (!day.fresh) day.fresh = {};
       day.n++; if (ok) day.ok++;
-      if (p.n === 1) { const w = VL.words.get(key); const dId = w ? w.deck : 'mine'; day.fresh[dId] = (day.fresh[dId] || 0) + 1; }
+      // first time this word is practised → counts against today's new-word allowance of its deck
+      if (isNew) { const w = VL.words.get(key); const dId = w ? w.deck : 'mine'; day.fresh[dId] = (day.fresh[dId] || 0) + 1; }
       srs.touchStreak(dk);
       VL.store.saveSoon();
-      return { before, after, delta: after - before };
     },
+    /** Whether a word was answered today (any mode). */
+    answeredToday(key) { const p = st().progress[key]; return !!(p && p.h && p.h[0] && VL.dayKey(p.h[0].t) === VL.dayKey()); },
     /** Update streak for an active day. */
     touchStreak(dk) {
       const k = st().streak;
@@ -171,9 +191,11 @@
       const weak = started.filter((k) => srs.score(k, now) < 30).sort((a, b) => srs.score(a, now) - srs.score(b, now));
       const target = st().settings.count;
       const d = st().days[VL.dayKey()];
-      const done = d ? d.n : 0;
+      // done = distinct words of this scope answered today (same unit as `plan`, the words still waiting);
+      // answers = raw number of answers today (one word can be answered several times).
+      const done = started.filter(srs.answeredToday).length;
       const plan = Math.min(target, due.length + fresh.length);
-      return { due, fresh, weak, target, plan, done, minutes: Math.max(1, Math.round(plan * 0.4)) };
+      return { due, fresh, weak, target, plan, done, answers: d ? d.n : 0, minutes: Math.max(1, Math.round(plan * 0.4)) };
     },
     /** Weighted random sample of n keys without replacement (Efraimidis–Spirakis). */
     pick(keys, n, now) {

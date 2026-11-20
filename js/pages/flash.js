@@ -51,7 +51,7 @@
     if (!w || enrich[key] || !missingDetails(w) || !VL.ai.hasKey()) return;
     enrich[key] = 'loading';
     const sid = enrichSession;
-    VL.ai.suggest(w.w, 'all', { vi: w.vi }).then((sugg) => {
+    VL.ai.suggest(w.w, 'all', { vi: w.vi, silent: true }).then((sugg) => {
       const cur = VL.words.get(key);
       if (!cur) return;
       const SCALARS = ['ipa', 'ipaUs', 'def', 'cefr', 'gram', 'syn', 'ant', 'note'];
@@ -159,7 +159,11 @@
       if (!s) return renderEmpty();
       if (s.done || !it || it.mode !== 'flash') {
         // the current item belongs to another screen (or the session is over) → go there
-        if (!redirecting) { redirecting = true; setTimeout(() => { redirecting = false; VL.session.go(); }, 0); }
+        if (!redirecting) {
+          redirecting = true;
+          // replace (no new history entry → Back is not trapped); skip if the user already navigated elsewhere
+          setTimeout(() => { redirecting = false; const c = VL.current(); if (c && c.name === 'flash') VL.session.go(true); }, 0);
+        }
         return h`<div class="flash"></div>`;
       }
       if (!it.word) return renderEmpty(); // word was deleted meanwhile
@@ -228,7 +232,7 @@
           const s = sess();
           const any = !!(s && s.results.length);
           VL.session.quit();
-          VL.go(any ? '#/result' : '#/practice');
+          VL.go(any ? '#/result' : '#/practice', true);
         });
       };
       const off = VL.ui.delegate(root, {

@@ -128,6 +128,9 @@
       if (opts.keys && opts.keys.length) keys = opts.keys.filter(VL.words.exists).slice(0, count);
       else keys = session.choose(opts.preset || 'today', deckIds, count);
       if (!keys.length) return null;
+      // A session still running is archived (its answers are already recorded) instead of silently dropped.
+      const prev = st().session;
+      if (prev && !prev.done && prev.results && prev.results.length) session.finish();
       const queue = session.assign(keys, modes, order);
       const s = {
         id: VL.uid(), preset: opts.preset || (opts.keys ? 'custom' : 'today'), source: opts.source || 'practice',
@@ -181,10 +184,19 @@
     /** Current item {key, mode, word, index, total, answered:{ok,before,after}|null} or null when finished. */
     item() {
       const s = st().session;
-      if (!s || s.idx >= s.queue.length) return null;
+      if (!s) return null;
+      session.skipMissing(s);
+      if (s.idx >= s.queue.length) return null;
       const it = s.queue[s.idx];
       const res = s.results.find((r) => r.i === s.idx) || null;
       return { ...it, word: VL.words.get(it.key), index: s.idx, total: s.queue.length, answered: res };
+    },
+    /** Skip queue items whose word was deleted meanwhile (otherwise the session would be stuck on them). */
+    skipMissing(s) {
+      if (s.done) return;
+      let moved = false;
+      while (s.idx < s.queue.length && !VL.words.exists(s.queue[s.idx].key) && !s.results.some((r) => r.i === s.idx)) { s.idx++; moved = true; }
+      if (moved) { if (s.idx >= s.queue.length) session.finish(); else VL.store.save(); }
     },
     /** Next item after the current one (or null). */
     peek() { const s = st().session; return s && s.queue[s.idx + 1] ? s.queue[s.idx + 1] : null; },
@@ -199,15 +211,7 @@
       const it = s.queue[s.idx];
       const set = st().settings;
       // Flashcard "Chưa nhớ" only subtracts when the setting is on; otherwise it just doesn't add.
-      let r;
-      if (!ok && it.mode === 'flash' && !set.sw.flash) {
-        const sc = VL.srs.score(it.key);
-        VL.srs.start(it.key);
-        const p = VL.srs.progress(it.key);
-        p.h.unshift({ t: Date.now(), m: 'flash', ok: false, b: sc, a: sc });
-        p.t = p.t || Date.now();
-        r = { before: sc, after: sc, delta: 0 };
-      } else r = VL.srs.record(it.key, ok, it.mode);
+      const r = !ok && it.mode === 'flash' && !set.sw.flash ? VL.srs.recordNeutral(it.key, 'flash') : VL.srs.record(it.key, ok, it.mode);
       const res = { i: s.idx, key: it.key, mode: it.mode, ok: !!ok, before: r.before, after: r.after, delta: r.delta };
       s.results.push(res);
       VL.store.save();
@@ -217,18 +221,23 @@
     next() {
       const s = st().session;
       if (!s) { VL.go('#/practice'); return; }
+      if (s.done) { session.go(true); return; }
       s.idx++;
+      session.skipMissing(s);
       if (s.idx >= s.queue.length) session.finish();
       else VL.store.save();
-      session.go();
+      // replace: the history keeps ONE entry for the running session, so Back leaves it instead of bouncing
+      // between #/flash and #/quiz (each redirecting forward again).
+      session.go(true);
     },
-    /** Navigate to the screen for the current item. */
-    go() {
+    /** Navigate to the screen for the current item. replace=true: replace the current history entry. */
+    go(replace) {
       const s = st().session;
-      if (!s) { VL.go('#/practice'); return; }
-      if (s.idx >= s.queue.length || s.done) { VL.go('#/result'); return; }
+      if (!s) { VL.go('#/practice', replace); return; }
+      session.skipMissing(s);
+      if (s.idx >= s.queue.length || s.done) { VL.go('#/result', replace); return; }
       const mode = s.queue[s.idx].mode;
-      VL.go(mode === 'flash' ? '#/flash' : '#/quiz');
+      VL.go(mode === 'flash' ? '#/flash' : '#/quiz', replace);
     },
     /** Close the session: compute summary and archive it. */
     finish() {
@@ -276,8 +285,10 @@
     },
     /** Start a new session with the words answered wrong in the last session ("Ôn lại từ sai"). */
     retryWrong() {
-      const last = session.last();
-      if (!last || !last.wrongKeys.length) return null;
+      // the session on screen (finished or still running), not an older archived one
+      const cur = st().session;
+      const last = cur && cur.results && cur.results.length ? session.summary(cur) : session.last();
+      if (!last || !last.wrongKeys || !last.wrongKeys.length) return null;
       return session.start({ keys: last.wrongKeys, modes: last.modes, order: last.order, count: last.wrongKeys.length, source: 'retry', title: 'Ôn lại từ sai', preset: 'custom' });
     },
     /** Abandon the running session (keeps answers already recorded). */

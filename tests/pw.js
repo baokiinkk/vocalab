@@ -27,7 +27,7 @@ async function open(browser, device, hash, opts) {
   page.on('pageerror', (e) => page.errors.push(String(e)));
   page.on('console', (m) => { if (m.type() === 'error' && !/net::ERR_FAILED|Failed to load resource/.test(m.text())) page.errors.push(m.text()); });
   if (opts.clear !== false) await ctx.addInitScript(() => { if (!sessionStorage.getItem('__vl_init')) { localStorage.clear(); sessionStorage.setItem('__vl_init', '1'); } });
-  if (!opts.network) await ctx.route(/^https?:\/\/(?!localhost)/, (r) => r.abort());
+  if (!opts.network) { const origin = new URL(BASE).origin; await ctx.route((u) => u.origin !== origin && !/^(localhost|127\.0\.0\.1)$/.test(u.hostname), (r) => r.abort()); }
   await page.goto(BASE + '/index.html' + (hash || '#/today'));
   await page.waitForFunction(() => window.VL && window.VL.current && window.VL.current());
   if (opts.seed) {

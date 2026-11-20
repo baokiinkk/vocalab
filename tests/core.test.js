@@ -143,3 +143,147 @@ test('reset progress keeps words', () => {
   assert.equal(VL.srs.score(key), 0);
   assert.ok(VL.words.get(key));
 });
+
+/* ---------- regression tests (core review) ---------- */
+
+function coreWithSave(saveObj) {
+  const ctx = loadCore();
+  ctx.localStorage.setItem('vocalab.v1', typeof saveObj === 'string' ? saveObj : JSON.stringify(saveObj));
+  ctx.VL.store.load();
+  return ctx;
+}
+
+test('old / corrupted save shapes are repaired instead of crashing', () => {
+  const { VL } = coreWithSave({
+    v: 1, settings: { sw: null, count: '24' }, sessions: null, streak: 5, days: { '2026-11-01': 3 },
+    progress: { 'comm:suggest': { s: 50 }, 'comm:mention': 'bad' }, decks: { comm: true }, extraDeck: { 'comm:suggest': 'ielts' },
+    session: { id: 'x', queue: 'oops' }
+  });
+  const st = VL.store.state;
+  assert.ok(Array.isArray(st.sessions));
+  assert.equal(typeof st.settings.sw, 'object');
+  assert.equal(st.settings.count, 24);
+  assert.equal(st.session, null);
+  assert.equal(st.progress['comm:mention'], undefined);
+  assert.deepEqual(VL.decks.mineIds(), ['mine', 'comm']);
+  // record on the old record without history must not throw
+  VL.srs.record('comm:suggest', true, 'mean');
+  assert.equal(VL.srs.progress('comm:suggest').h.length, 1);
+  assert.ok(VL.srs.todayPlan());
+  assert.equal(VL.session.last(), null);
+});
+
+test('unreadable save is kept aside, not silently overwritten', () => {
+  const ctx = coreWithSave('{not json');
+  ctx.VL.store.save();
+  assert.equal(ctx.localStorage.getItem('vocalab.v1.unreadable'), '{not json');
+});
+
+test('localStorage full: caches are dropped and the save retried; user is warned when it still fails', async () => {
+  const ctx = loadCore();
+  const { VL } = ctx;
+  const ls = ctx.localStorage;
+  const realSet = ls.setItem;
+  ls.setItem('vocalab.imgcache', 'x'.repeat(100));
+  let full = true;
+  ls.setItem = (k, v) => { if (k === 'vocalab.v1' && full && ls.getItem('vocalab.imgcache') != null) { const e = new Error('quota'); e.name = 'QuotaExceededError'; throw e; } realSet(k, v); };
+  VL.words.save({ w: 'zest', vi: 'hứng thú' });
+  assert.equal(ls.getItem('vocalab.imgcache'), null, 'cache dropped');
+  assert.ok(JSON.parse(ls.getItem('vocalab.v1')).custom['mine:zest'], 'save succeeded after freeing space');
+  // still failing → toast
+  const toasts = [];
+  VL.ui.toast = (m, kind) => toasts.push([m, kind]);
+  ls.setItem = (k, v) => { if (k === 'vocalab.v1') { const e = new Error('quota'); e.name = 'QuotaExceededError'; throw e; } realSet(k, v); };
+  VL.words.save({ w: 'zeal', vi: 'nhiệt huyết' });
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(toasts.length, 1);
+  assert.equal(toasts[0][1], 'error');
+  assert.match(toasts[0][0], /đầy/);
+});
+
+test('todayPlan.done counts distinct words answered today (same unit as plan)', () => {
+  const { VL } = loadCore();
+  const before = VL.srs.todayPlan();
+  assert.equal(before.done, 0);
+  for (let i = 0; i < 5; i++) VL.srs.record('comm:suggest', true, 'mean');
+  VL.srs.record('comm:mention', false, 'mean');
+  const p = VL.srs.todayPlan();
+  assert.equal(p.done, 2);
+  assert.equal(p.answers, 6);
+  assert.ok(p.done + p.plan <= before.plan + 0, 'answered words leave the plan: ' + p.done + '+' + p.plan + ' vs ' + before.plan);
+});
+
+test('flash "Chưa nhớ" without penalty still counts as practice (streak, day log, new-word quota)', () => {
+  const { VL } = loadCore();
+  VL.store.setSetting('sw.flash', false);
+  VL.session.start({ keys: ['comm:suggest'], modes: ['flash'], count: 1 });
+  const r = VL.session.answer(false);
+  assert.equal(r.delta, 0);
+  assert.equal(VL.srs.streak(), 1);
+  assert.ok(VL.srs.practicedToday());
+  assert.equal(VL.srs.freshToday('comm'), 1);
+  // the first real answer later must not count the word as new a second time
+  VL.srs.record('comm:suggest', true, 'mean');
+  assert.equal(VL.srs.freshToday('comm'), 1);
+});
+
+test('answers are recorded once per item', () => {
+  const { VL } = loadCore();
+  VL.session.start({ keys: ['comm:suggest', 'comm:mention'], modes: ['mean'], count: 2 });
+  VL.session.answer(true); VL.session.answer(false); VL.session.answer(true);
+  assert.equal(VL.srs.progress(VL.session.item().key).n, 1);
+  assert.equal(VL.store.state.session.results.length, 1);
+});
+
+test('session skips words deleted while it runs (no dead end)', () => {
+  const { VL, location } = loadCore();
+  const a = VL.words.save({ w: 'zest', vi: 'hứng thú' });
+  const b = VL.words.save({ w: 'zeal', vi: 'nhiệt huyết' });
+  VL.session.start({ keys: [a, b, 'comm:suggest'], modes: ['mean'], order: 'seq', count: 3 });
+  VL.store.state.session.queue = [{ key: a, mode: 'mean' }, { key: b, mode: 'mean' }, { key: 'comm:suggest', mode: 'mean' }];
+  VL.words.remove(a);
+  assert.equal(VL.session.item().key, b);
+  VL.session.answer(true);
+  VL.words.remove('comm:suggest'); // built-in: still exists
+  VL.session.next();
+  assert.equal(VL.session.item().key, 'comm:suggest');
+  // deleting the last remaining word finishes the session
+  VL.session.start({ keys: [b], modes: ['mean'], count: 1 });
+  VL.words.remove(b);
+  assert.equal(VL.session.item(), null);
+  VL.session.go();
+  assert.equal(location.hash, '#/result');
+});
+
+test('session navigation replaces the history entry (Back is not trapped between #/flash and #/quiz)', () => {
+  const ctx = loadCore();
+  const { VL } = ctx;
+  const calls = [];
+  VL.go = (h, replace) => { calls.push([h, !!replace]); ctx.location.hash = h; };
+  VL.session.start({ keys: ['comm:suggest', 'comm:mention'], modes: ['flash'], count: 2 });
+  VL.session.answer(true); VL.session.next();
+  VL.session.answer(true); VL.session.next();
+  assert.deepEqual(calls.slice(1), [['#/flash', true], ['#/result', true]]);
+});
+
+test('starting a new session archives the running one; retryWrong uses the session on screen', () => {
+  const { VL } = loadCore();
+  // finished session A: suggest wrong
+  VL.session.start({ keys: ['comm:suggest'], modes: ['mean'], count: 1 });
+  VL.session.answer(false); VL.session.next();
+  // session B running: mention wrong, then retry mid-session
+  VL.session.start({ keys: ['comm:mention', 'comm:awkward'], modes: ['mean'], order: 'seq', count: 2 });
+  VL.store.state.session.queue = [{ key: 'comm:mention', mode: 'mean' }, { key: 'comm:awkward', mode: 'mean' }];
+  VL.session.answer(false);
+  const r = VL.session.retryWrong();
+  assert.deepEqual(r.queue.map((q) => q.key), ['comm:mention']);
+  assert.equal(VL.store.state.sessions.length, 2, 'running session B was archived');
+  assert.deepEqual(VL.store.state.sessions[0].wrongKeys, ['comm:mention']);
+});
+
+test('non-latin words get a stable key and are found as duplicates', () => {
+  const { VL } = loadCore();
+  const k = VL.words.save({ w: '日本', vi: 'Nhật Bản' });
+  assert.ok(k.length > 'mine:'.length);
+  assert.equal(VL.words.findByText('日本'), k);
+});

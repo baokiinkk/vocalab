@@ -7,7 +7,7 @@
 .wd-back { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 15px; font-weight: 700; text-decoration: none; color: var(--primary); }
 
 /* cards */
-.wd-card, .wd-hero { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; box-shadow: var(--shadow); }
+.wd-card, .wd-hero { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; display: flex; flex-direction: column; gap: 12px; min-width: 0; box-shadow: var(--shadow); overflow-wrap: anywhere; }
 .device-iphone .wd-card { padding: 18px; }
 .wd-hero { flex-direction: row; flex-wrap: wrap; align-items: stretch; gap: 24px; padding: 20px; border-radius: 16px; }
 .device-iphone .wd-hero { gap: 16px; padding: 12px 12px 18px; }
@@ -88,7 +88,7 @@
 .wd-rel-syn { color: var(--master); }
 .wd-rel-ant { color: var(--danger); padding-top: 4px; }
 .wd-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.wd-chip { position: relative; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
+.wd-chip { position: relative; max-width: 100%; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; }
 .wd-chip::before { content: ''; position: absolute; inset: -6px -2px; } /* 44px touch target */
 .wd-chip-syn, .wd-chip-syn:hover { background: var(--master-soft); color: var(--master-ink); }
 .wd-chip-ant, .wd-chip-ant:hover { background: var(--danger-soft); color: var(--danger); }

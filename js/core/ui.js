@@ -138,13 +138,13 @@
 
   /* ---------- toast & confirm (no native dialogs) ---------- */
   let toastTimer;
-  ui.toast = (msg, kind) => {
+  ui.toast = (msg, kind, ms) => {
     let el = document.getElementById('toast');
     if (!el) { el = document.createElement('div'); el.id = 'toast'; el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); document.body.appendChild(el); }
     el.textContent = msg;
     el.className = 'toast is-show' + (kind ? ' toast-' + kind : '');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { el.className = 'toast'; }, 2600);
+    toastTimer = setTimeout(() => { el.className = 'toast'; }, ms || 2600);
   };
   /** Promise<boolean>. opts: {title, body, ok:'Đồng ý', cancel:'Huỷ', danger:bool} */
   ui.confirm = (opts) => new Promise((resolve) => {

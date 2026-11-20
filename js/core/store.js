@@ -57,9 +57,47 @@
     return out;
   };
 
+  const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+  const num = (v, d) => (typeof v === 'number' && isFinite(v) ? v : d);
+  /** Repair a loaded/imported save: wrong types from old versions or hand-edited files must never crash a page. */
+  function sanitize(s) {
+    ['settings', 'custom', 'overrides', 'progress', 'decks', 'extraDeck', 'days'].forEach((k) => { if (!isObj(s[k])) s[k] = k === 'settings' ? JSON.parse(JSON.stringify(VL.DEFAULT_SETTINGS)) : {}; });
+    if (!Array.isArray(s.sessions)) s.sessions = [];
+    s.sessions = s.sessions.filter((x) => isObj(x) && Array.isArray(x.results)).map((x) => ({ ...x, wrongKeys: Array.isArray(x.wrongKeys) ? x.wrongKeys : [] }));
+    if (!isObj(s.streak)) s.streak = { count: 0, last: null, best: 0 };
+    const set = s.settings;
+    Object.keys(VL.DEFAULT_SETTINGS).forEach((k) => {
+      const d = VL.DEFAULT_SETTINGS[k];
+      if (isObj(d) ? !isObj(set[k]) : typeof set[k] !== typeof d) set[k] = isObj(d) ? JSON.parse(JSON.stringify(d)) : d;
+    });
+    Object.keys(s.progress).forEach((k) => {
+      const p = s.progress[k];
+      if (!isObj(p)) { delete s.progress[k]; return; }
+      p.s = VL.clamp(num(p.s, 0), 0, 100); p.st = Math.max(0.5, num(p.st, 0.5)); p.t = num(p.t, 0);
+      p.c = num(p.c, 0); p.x = num(p.x, 0); p.n = num(p.n, 0); p.i = num(p.i, p.t || Date.now());
+      if (!Array.isArray(p.h)) p.h = [];
+    });
+    Object.keys(s.custom).forEach((k) => { const w = s.custom[k]; if (!isObj(w) || !w.w) delete s.custom[k]; else if (!w.deck) w.deck = 'mine'; });
+    Object.keys(s.overrides).forEach((k) => { if (!isObj(s.overrides[k])) delete s.overrides[k]; });
+    Object.keys(s.decks).forEach((k) => { if (!isObj(s.decks[k])) s.decks[k] = {}; const d = s.decks[k]; d.addedAt = num(d.addedAt, 0); d.perDay = num(d.perDay, set.fresh); });
+    Object.keys(s.extraDeck).forEach((k) => { if (!Array.isArray(s.extraDeck[k])) delete s.extraDeck[k]; });
+    Object.keys(s.days).forEach((k) => { const d = s.days[k]; if (!isObj(d)) { delete s.days[k]; return; } d.n = num(d.n, 0); d.ok = num(d.ok, 0); d.ms = num(d.ms, 0); if (!isObj(d.fresh)) d.fresh = {}; });
+    const ss = s.session;
+    if (ss && !(isObj(ss) && Array.isArray(ss.queue) && ss.queue.length && Array.isArray(ss.results) && typeof ss.idx === 'number')) s.session = null;
+    else if (ss) { ss.queue = ss.queue.filter((q) => isObj(q) && q.key && q.mode); ss.idx = VL.clamp(Math.floor(ss.idx), 0, ss.queue.length); if (!Array.isArray(ss.modes)) ss.modes = ['flash']; if (!ss.queue.length) s.session = null; }
+    return s;
+  }
+
   function load() {
-    const saved = VL.ls.get(KEY, null);
-    state = saved && saved.v === 1 ? deepMerge(fresh(), saved) : fresh();
+    let saved = VL.ls.get(KEY, null);
+    if (saved && (typeof saved !== 'object' || saved.v !== 1)) {
+      // Unreadable / unknown save: keep a copy instead of silently overwriting it on the next save.
+      try { const rawSave = localStorage.getItem(KEY); if (rawSave) localStorage.setItem(KEY + '.unreadable', rawSave); } catch (e) { /* ignore */ }
+      saved = null;
+    } else if (saved == null) {
+      try { const rawSave = localStorage.getItem(KEY); if (rawSave) { localStorage.setItem(KEY + '.unreadable', rawSave); } } catch (e) { /* ignore */ }
+    }
+    state = saved ? sanitize(deepMerge(fresh(), saved)) : fresh();
     // settings.modes/days are "set" maps: keep exactly what the user saved, not merged with defaults.
     if (saved && saved.settings) {
       if (saved.settings.modes) state.settings.modes = saved.settings.modes;
@@ -83,8 +121,22 @@
     /** Persist now and notify listeners ("change"). */
     save() {
       clearTimeout(saveTimer); saveTimer = null;
-      VL.ls.set(KEY, state);
+      store.persist();
       VL.emit('change');
+    },
+    /** Write the save to localStorage. When the browser storage is full, drop the re-creatable caches (images, AI,
+        backup copy) and retry; if it still fails, tell the user instead of silently losing data. Returns true on success. */
+    persist() {
+      if (VL.ls.set(KEY, state)) { store.quotaWarned = false; return true; }
+      ['vocalab.imgcache', 'vocalab.aicache', BACKUP_KEY].forEach((k) => VL.ls.del(k));
+      if (VL.emit) VL.emit('quota');
+      if (VL.ls.set(KEY, state)) return true;
+      if (!store.quotaWarned && VL.ui && VL.ui.toast) {
+        store.quotaWarned = true;
+        // deferred so a page's own "Đã lưu" toast right after save() cannot hide the warning
+        setTimeout(() => VL.ui.toast('Bộ nhớ trình duyệt đã đầy — thay đổi chưa được lưu. Hãy xoá bớt ảnh tải lên hoặc xuất dữ liệu trong Cài đặt.', 'error', 6000), 0);
+      }
+      return false;
     },
     /** Persist soon (coalesces bursts of writes). */
     saveSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(() => store.save(), 150); },
@@ -109,7 +161,7 @@
       const obj = JSON.parse(text);
       const data = obj && obj.data ? obj.data : obj;
       if (!data || data.v !== 1) throw new Error('File không đúng định dạng VocaLab');
-      state = deepMerge(fresh(), data);
+      state = sanitize(deepMerge(fresh(), data));
       store.save();
       VL.emit('settings', '*');
       return true;
@@ -129,7 +181,7 @@
       if (ok) { store.state.lastBackup = Date.now(); store.save(); }
       return ok;
     },
-    restoreBackup() { const b = VL.ls.get(BACKUP_KEY, null); if (!b) return false; state = deepMerge(fresh(), b.data); store.save(); return true; },
+    restoreBackup() { const b = VL.ls.get(BACKUP_KEY, null); if (!b) return false; if (!b.data || b.data.v !== 1) return false; state = sanitize(deepMerge(fresh(), b.data)); store.save(); return true; },
     /** Auto backup once per day when enabled. */
     autoBackup() {
       const s = store.state;

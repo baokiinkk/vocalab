@@ -214,7 +214,7 @@
     mount(root) {
       const cur = currentItem();
       if (!cur.it) {
-        if (cur.redirect) { const t = setTimeout(() => VL.session.go(), 0); return () => clearTimeout(t); }
+        if (cur.redirect) { const t = setTimeout(() => VL.session.go(true), 0); return () => clearTimeout(t); }
         return;
       }
       const it = cur.it;
@@ -259,7 +259,7 @@
           const s = VL.session.current();
           const any = !!(s && s.results.length);
           VL.session.quit();
-          VL.go(any ? '#/result' : '#/practice');
+          VL.go(any ? '#/result' : '#/practice', true);
         });
       };
 

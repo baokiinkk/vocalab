@@ -91,7 +91,7 @@
     },
     /** Find an existing word by its text inside the user's library (or a given deck). Returns key or null. */
     findByText(text, deckId) {
-      const slug = VL.slug(text);
+      const slug = VL.slug(text) || encodeURIComponent(String(text || '').trim().toLowerCase());
       if (!slug) return null;
       const pool = deckId ? words.inDeck(deckId) : words.library();
       return pool.find((k) => k.split(':').slice(1).join(':') === slug) || null;
@@ -141,8 +141,10 @@
         return key;
       }
       const deck = opts.deck || 'mine';
-      let key = deck + ':' + VL.slug(clean.w);
-      if (words.exists(key)) key = deck + ':' + VL.slug(clean.w) + '-' + VL.uid().slice(-4);
+      // Words without ASCII letters (e.g. 日本) have an empty slug: fall back to the encoded text.
+      const slug = VL.slug(clean.w) || encodeURIComponent(clean.w.toLowerCase());
+      let key = deck + ':' + slug;
+      if (words.exists(key)) key = deck + ':' + slug + '-' + VL.uid().slice(-4);
       s.custom[key] = { ...clean, key, deck, custom: true, createdAt: Date.now() };
       // Words the user types in themselves start learning right away (score 0, due now).
       VL.srs.start(key);

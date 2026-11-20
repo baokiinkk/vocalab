@@ -7,6 +7,8 @@
   const IMG_KEY = 'vocalab.imgcache';
   const imgCache = VL.ls.get(IMG_KEY, {});
   const pending = {};
+  // Storage full (store.persist): the cache is re-creatable, forget it so it is not written back.
+  VL.on('quota', () => { Object.keys(imgCache).forEach((k) => { delete imgCache[k]; }); });
 
   let voices = [];
   const loadVoices = () => { try { voices = window.speechSynthesis ? speechSynthesis.getVoices() : []; } catch (e) { voices = []; } };
@@ -37,6 +39,8 @@
       if (w.img) return Promise.resolve(w.img);
       const term = String(w.w || '').trim().toLowerCase();
       if (!term) return Promise.resolve(null);
+      // Pre-computed images for built-in deck words (data/images.js, tools/build-images.js)
+      if (VL.IMAGES && VL.IMAGES[term]) return Promise.resolve(VL.IMAGES[term]);
       if (Object.prototype.hasOwnProperty.call(imgCache, term)) return Promise.resolve(imgCache[term]);
       if (pending[term]) return pending[term];
       const p = (async () => {
