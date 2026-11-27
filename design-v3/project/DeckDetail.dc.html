@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Chi tiết bộ từ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF7F0}
+a{color:#CF4822}a:hover{color:#A83A1A}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+    <div style="{{ L.nav }}">
+      <dc-import name="Sidebar" active="vocab" device="{{ device }}" hint-size="100%,100%"></dc-import>
+    </div>
+  </sc-if>
+  <main style="{{ L.main }}">
+    <div style="max-width: 1160px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px">
+      <sc-if value="{{ standalone }}" hint-placeholder-val="{{ true }}">
+        <a href="{{ ln.lib }}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 15px; font-weight: 700; text-decoration: none">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+          Thư viện
+        </a>
+      </sc-if>
+      <sc-if value="{{ embedded }}" hint-placeholder-val="{{ false }}">
+        <button type="button" onClick="{{ back }}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0; border: none; background: transparent; color: #CF4822; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>
+          Thư viện
+        </button>
+      </sc-if>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start">
+        <div style="{{ L.left }}">
+          <section style="{{ L.card }}">
+            <div style="display: flex; align-items: center; gap: 16px">
+              <span style="{{ k.iconStyle }}"><dc-import name="DeckIcon" deck="{{ k.id }}" size="{{ 28 }}" hint-size="28px,28px"></dc-import></span>
+              <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+                <span style="align-self: flex-start; padding: 3px 8px; border-radius: 10px; background: #FBF7F0; color: #6B6358; font-size: 12px; font-weight: 700">{{ k.kind }}</span>
+                <h1 style="{{ L.h1 }}">{{ k.name }}</h1>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+              <sc-for list="{{ k.stats }}" as="st" hint-placeholder-count="3">
+                <div style="padding: 12px; border-radius: 12px; background: #FBF7F0; display: flex; flex-direction: column; gap: 2px"><span style="font-family: 'Be Vietnam Pro', Inter, system-ui, sans-serif; font-size: 20px; font-weight: 700">{{ st.v }}</span><span style="font-size: 12px; color: #6B6358">{{ st.l }}</span></div>
+              </sc-for>
+            </div>
+            <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #3F3931">{{ k.desc }}</p>
+            <sc-if value="{{ needAdd }}" hint-placeholder-val="{{ true }}">
+              <button type="button" onClick="{{ toggleAdd }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; border-radius: 12px; border: none; background: #CF4822; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 3px 0 #A83A1A"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Thêm vào Bộ của tôi</button>
+            </sc-if>
+          </section>
+
+          <sc-if value="{{ isMine }}" hint-placeholder-val="{{ false }}">
+            <section style="{{ L.card }}">
+              <a href="{{ ln.flash }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; border-radius: 12px; background: #CF4822; color: #FFFFFF; font-weight: 700; font-size: 16px; text-decoration: none; box-shadow: 0 3px 0 #A83A1A"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>Luyện bộ này</a>
+              <a href="{{ ln.add }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-radius: 12px; border: 1px solid #E8DFCC; color: #2E2A24; font-weight: 700; font-size: 15px; text-decoration: none">+ Thêm từ mới</a>
+              <span style="font-size: 13px; line-height: 1.5; color: #6B6358; text-align: center">Mọi từ bạn tự thêm đều nằm trong bộ này.</span>
+            </section>
+          </sc-if>
+          <sc-if value="{{ isAddedDeck }}" hint-placeholder-val="{{ false }}">
+            <section style="{{ L.card }}">
+              <div role="status" style="padding: 12px 14px; border-radius: 12px; background: #DFF2E5; border: 1px solid #B9DEC6; color: #2F7A4F; font-size: 15px; font-weight: 700">✓ Đã có trong Bộ của tôi</div>
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <div style="display: flex; justify-content: space-between; font-size: 14px"><span style="color: #6B6358">Thông thạo cả bộ</span><strong>{{ k.pctText }}</strong></div>
+                <div style="height: 8px; border-radius: 999px; background: #F1EBDE; overflow: hidden"><div style="{{ k.bar }}"></div></div>
+              </div>
+              <a href="{{ ln.flash }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; border-radius: 12px; background: #CF4822; color: #FFFFFF; font-weight: 700; font-size: 16px; text-decoration: none; box-shadow: 0 3px 0 #A83A1A"><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>Luyện bộ này</a>
+              <button type="button" onClick="{{ toggleAdd }}" style="min-height: 44px; border: none; background: transparent; color: #C0364A; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Gỡ khỏi Bộ của tôi</button>
+            </section>
+          </sc-if>
+        </div>
+
+        <section aria-labelledby="h-words" style="{{ L.right }}">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px">
+            <h2 id="h-words" style="{{ L.h2 }}">Các từ trong bộ</h2>
+            <span style="font-size: 13px; color: #6B6358">{{ k.countText }}</span>
+          </div>
+          <label style="position: relative; display: flex; align-items: center">
+            <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Tìm trong bộ</span>
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B6358" stroke-width="2" stroke-linecap="round" style="position: absolute; left: 14px"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+            <input type="search" value="{{ dq }}" onChange="{{ onDq }}" placeholder="Tìm trong bộ này…" style="width: 100%; min-height: 48px; padding: 0 16px 0 42px; border: 1px solid #E8DFCC; border-radius: 12px; background: #FBF7F0; font: inherit; font-size: 15px; color: #2E2A24; box-sizing: border-box">
+          </label>
+          <sc-if value="{{ showRingFilters }}" hint-placeholder-val="{{ false }}">
+            <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px">
+              <sc-for list="{{ filters }}" as="c" hint-placeholder-count="4">
+                <button type="button" aria-pressed="{{ c.sel }}" onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noWords }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 24px 12px; text-align: center; font-size: 14px; color: #6B6358">Không có từ nào khớp. Thử từ khoá khác.</div>
+          </sc-if>
+          <div style="display: flex; flex-direction: column">
+            <sc-for list="{{ words }}" as="w" hint-placeholder-count="6">
+              <a href="{{ ln.word }}" style="display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 8px 0; border-bottom: 1px solid #F1EBDE; text-decoration: none; color: #2E2A24">
+                <sc-if value="{{ w.hasRing }}" hint-placeholder-val="{{ false }}"><span style="{{ w.ring }}">{{ w.pct }}</span></sc-if>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+                  <span style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap"><strong style="font-size: 16px">{{ w.w }}</strong><span style="font-size: 13px; color: #6B6358">{{ w.ipa }}</span></span>
+                  <span style="font-size: 14px; color: #6B6358">{{ w.vi }}</span>
+                </span>
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B0A693" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+              </a>
+            </sc-for>
+          </div>
+          <button type="button" style="min-height: 48px; border-radius: 12px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #2E2A24; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">{{ k.moreText }}</button>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"deck":{"editor":"enum","options":["toeic","mine","comm","ielts","phr","idiom","daily","travel","food","it","work","mkt","iw"],"default":"toeic"},"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"embedded":{"editor":null},"onBack":{"editor":null},"added":{"editor":null},"onToggleAdd":{"editor":null},"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { added: null, perDay: 10, dq: '', f: 'all' };
+    const W = (s) => s.split('|').map((r) => { const [w, ipa, vi, p] = r.split(';'); return { w, ipa, vi, p: p === undefined ? null : Number(p) }; });
+    this.D = {
+      mine: { abbr: 'TC', name: 'Từ của tôi', kind: 'Bộ cá nhân', n: 64, level: 'Tự thêm', bg: '#FFE3D3', fg: '#CF4822', p: 48, desc: 'Những từ bạn tự nhập. Khi thêm từ mới, từ sẽ luôn được lưu vào đây.', words: W('meticulous;/məˈtɪkjələs/;tỉ mỉ, kỹ lưỡng;10|albeit;/ɔːlˈbiːɪt/;mặc dù, dẫu cho;0|ubiquitous;/juːˈbɪkwɪtəs/;có mặt ở khắp nơi;20|reluctant;/rɪˈlʌktənt/;miễn cưỡng;30|resilient;/rɪˈzɪliənt/;kiên cường, mau phục hồi;50|deadline;/ˈdedlaɪn/;hạn chót;90') },
+      comm: { abbr: 'GT', name: '300 từ giao tiếp thông dụng', kind: 'Giao tiếp · Bộ có sẵn', n: 300, level: 'A2–B1', bg: '#FFE9E1', fg: '#A83A1A', p: 62, desc: 'Những từ dùng nhiều nhất khi nói chuyện hằng ngày.', words: W('appreciate;/əˈpriːʃieɪt/;trân trọng, cảm kích;50|suggest;/səɡˈdʒest/;gợi ý, đề xuất;70|mention;/ˈmenʃn/;nhắc đến;100|actually;/ˈæktʃuəli/;thật ra;100|awkward;/ˈɔːkwərd/;ngượng ngùng, khó xử;30') },
+      phr: { abbr: 'PV', name: '200 phrasal verbs thông dụng', kind: 'Giao tiếp · Bộ có sẵn', n: 200, level: 'B1–B2', bg: '#ECE6FF', fg: '#5B40C9', desc: 'Cụm động từ người bản xứ dùng hằng ngày.', words: W('carry out;;tiến hành, thực hiện|figure out;;tìm ra, hiểu ra|put off;;trì hoãn|run into;;tình cờ gặp|give up;;bỏ cuộc') },
+      idiom: { abbr: 'ID', name: '150 thành ngữ hay dùng', kind: 'Giao tiếp · Bộ có sẵn', n: 150, level: 'B2', bg: '#F6EAEE', fg: '#8C3A58', desc: 'Thành ngữ quen thuộc trong hội thoại và phim ảnh.', words: W('piece of cake;;dễ như ăn bánh|break the ice;;phá tan sự ngại ngùng|under the weather;;hơi mệt, không khoẻ|hit the sack;;đi ngủ|on the fence;;còn lưỡng lự') },
+      daily: { abbr: 'HN', name: '300 từ vựng hằng ngày', kind: 'Hằng ngày · Bộ có sẵn', n: 300, level: 'A1–A2', bg: '#DFF2E5', fg: '#2F7A4F', desc: 'Nhà cửa, đồ ăn, mua sắm, thời tiết, đi lại.', words: W('grocery;/ˈɡroʊsəri/;hàng tạp hoá|laundry;/ˈlɔːndri/;đồ giặt|commute;/kəˈmjuːt/;đi làm hằng ngày|leftovers;/ˈleftoʊvərz/;đồ ăn thừa|chore;/tʃɔːr/;việc nhà') },
+      travel: { abbr: 'DL', name: '300 từ du lịch', kind: 'Hằng ngày · Bộ có sẵn', n: 300, level: 'A2–B1', bg: '#F6EAEE', fg: '#8C3A58', desc: 'Sân bay, khách sạn, hỏi đường, đặt chỗ.', words: W('itinerary;/aɪˈtɪnəreri/;lịch trình|boarding pass;;thẻ lên máy bay|check out;;trả phòng|souvenir;/ˌsuːvəˈnɪr/;quà lưu niệm|layover;/ˈleɪoʊvər/;chặng quá cảnh') },
+      food: { abbr: 'AU', name: '200 từ ăn uống & nấu ăn', kind: 'Hằng ngày · Bộ có sẵn', n: 200, level: 'A2', bg: '#F8EDE4', fg: '#94461F', desc: 'Món ăn, nguyên liệu, cách nấu, gọi món.', words: W('recipe;/ˈresəpi/;công thức nấu ăn|simmer;/ˈsɪmər/;ninh nhỏ lửa|seasoning;/ˈsiːzənɪŋ/;gia vị|appetizer;/ˈæpɪtaɪzər/;món khai vị|bland;/blænd/;nhạt, vô vị') },
+      it: { abbr: 'IT', name: '300 từ IT & công nghệ', kind: 'Chuyên ngành · Bộ có sẵn', n: 300, level: 'B1–B2', bg: '#E3EEFA', fg: '#2F5E99', desc: 'Phần mềm, mạng, dữ liệu, bảo mật.', words: W('deploy;/dɪˈplɔɪ/;triển khai|vulnerability;/ˌvʌlnərəˈbɪləti/;lỗ hổng|bandwidth;/ˈbændwɪdθ/;băng thông|deprecate;/ˈdeprəkeɪt/;ngừng hỗ trợ|latency;/ˈleɪtənsi/;độ trễ') },
+      work: { abbr: 'VP', name: '300 từ văn phòng & kinh doanh', kind: 'Chuyên ngành · Bộ có sẵn', n: 300, level: 'B1–B2', bg: '#F6F0E1', fg: '#7A5A1E', desc: 'Họp, email, báo cáo, đàm phán.', words: W('agenda;/əˈdʒendə/;chương trình họp|negotiate;/nɪˈɡoʊʃieɪt/;đàm phán|revenue;/ˈrevənuː/;doanh thu|stakeholder;/ˈsteɪkhoʊldər/;bên liên quan|follow up;;theo dõi, liên hệ lại') },
+      mkt: { abbr: 'MK', name: '300 từ marketing', kind: 'Chuyên ngành · Bộ có sẵn', n: 300, level: 'B1–B2', bg: '#F6EAEE', fg: '#8C3A58', desc: 'Chiến dịch, khách hàng, số liệu, thương hiệu.', words: W('campaign;/kæmˈpeɪn/;chiến dịch|engagement;/ɪnˈɡeɪdʒmənt/;mức tương tác|conversion;/kənˈvɜːrʒn/;chuyển đổi|audience;/ˈɔːdiəns/;khán giả, tệp khách|brand awareness;;nhận diện thương hiệu') },
+      toeic: { abbr: 'TO', name: '600 từ TOEIC thiết yếu', kind: 'Luyện thi · Bộ có sẵn', n: 600, level: 'B1–B2', bg: '#F8EDE4', fg: '#94461F', desc: 'Từ hay gặp trong TOEIC Listening & Reading, chia theo chủ đề công sở: hợp đồng, tài chính, nhân sự, mua sắm…', words: W('invoice;/ˈɪnvɔɪs/;hoá đơn|reimburse;/ˌriːɪmˈbɜːrs/;hoàn tiền, bồi hoàn|warranty;/ˈwɔːrənti/;bảo hành|postpone;/poʊstˈpoʊn/;hoãn lại|applicant;/ˈæplɪkənt/;người nộp đơn|refund;/ˈriːfʌnd/;tiền hoàn lại') },
+      ielts: { abbr: 'IE', name: 'IELTS Academic Word List', kind: 'Luyện thi · Bộ có sẵn', n: 570, level: 'B2–C1', bg: '#F1ECF6', fg: '#5E3F87', p: 31, desc: 'Từ học thuật cho IELTS Reading & Writing.', words: W('analyse;/ˈænəlaɪz/;phân tích;40|significant;/sɪɡˈnɪfɪkənt/;đáng kể;70|assume;/əˈsuːm/;giả định;20|derive;/dɪˈraɪv/;bắt nguồn, thu được;10|allocate;/ˈæləkeɪt/;phân bổ;0') },
+      iw: { abbr: 'IW', name: 'IELTS Writing theo chủ đề', kind: 'Luyện thi · Bộ có sẵn', n: 400, level: 'B2–C1', bg: '#FFE9E1', fg: '#A83A1A', desc: 'Từ vựng theo chủ đề Writing Task 2: môi trường, giáo dục, công nghệ…', words: W('deteriorate;/dɪˈtɪriəreɪt/;xấu đi|mitigate;/ˈmɪtɪɡeɪt/;giảm nhẹ|substantial;/səbˈstænʃl/;đáng kể|advocate;/ˈædvəkeɪt/;ủng hộ|detrimental;/ˌdetrɪˈmentl/;có hại') }
+    };
+    this.defaultAdded = { mine: true, comm: true, ielts: true };
+  }
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const emb = !!this.props.embedded;
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#FBF7F0', fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", color: '#2E2A24' };
+    const card = { background: '#FFFDF8', border: '1px solid #E8DFCC', borderRadius: '16px', padding: phone ? '18px' : '22px', display: 'flex', flexDirection: 'column', gap: '14px', minWidth: 0, boxSizing: 'border-box', boxShadow: '0 2px 0 #EDE4D2' };
+    return { d, laptop, phone, emb, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', L: {
+      root: emb ? { ...ink, display: 'block' } : laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
+      nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
+      main: emb ? { padding: 0 } : laptop ? { flex: '999 1 560px', minWidth: 0, padding: '20px 40px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '20px 28px 40px' : '8px 16px 24px', boxSizing: 'border-box' },
+      h1: { margin: 0, fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", fontSize: phone ? '22px' : '26px', fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1.2 },
+      h2: { margin: 0, fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", fontSize: '18px', fontWeight: 700 },
+      card,
+      left: { flex: '1 1 340px', maxWidth: laptop ? '420px' : 'none', minWidth: 0, display: 'flex', flexDirection: 'column', gap: '16px', position: laptop ? 'sticky' : 'static', top: '20px' },
+      right: { ...card, flex: '999 1 420px' }
+    } };
+  }
+  renderVals() {
+    const { d, sfx, L, emb } = this.layout();
+    const s = this.state;
+    const id = this.D[this.props.deck] ? this.props.deck : 'toeic';
+    const k = this.D[id];
+    const isMine = id === 'mine';
+    const added = this.props.added !== undefined && this.props.added !== null ? !!this.props.added : (s.added !== null ? s.added : !!this.defaultAdded[id]);
+    const toggleAdd = () => { if (this.props.onToggleAdd) this.props.onToggleAdd(id); else this.setState({ added: !added }); };
+    const col = (p) => p >= 100 ? '#2F7A4F' : p >= 70 ? '#5B40C9' : p >= 30 ? '#8A6414' : '#C2465E';
+    const showRing = isMine || added;
+    const dq = s.dq.trim().toLowerCase();
+    const band = (p) => p >= 100 ? 'done' : p >= 30 ? 'learn' : 'weak';
+    const pill = (on) => ({ flex: '0 0 auto', minHeight: '40px', padding: '0 14px', borderRadius: '12px', border: '1px solid ' + (on ? '#CF4822' : '#E8DFCC'), background: on ? '#FFE9E1' : '#FFFFFF', color: on ? '#A83A1A' : '#2E2A24', font: 'inherit', fontSize: '14px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap' });
+    const filters = [['all', 'Tất cả'], ['weak', 'Yếu'], ['learn', 'Đang học'], ['done', 'Thành thạo']].map(([fid, label]) => ({ label, sel: String(s.f === fid), pick: () => this.setState({ f: fid }), style: pill(s.f === fid) }));
+    const words = k.words.filter((w) => (!dq || w.w.toLowerCase().includes(dq) || w.vi.toLowerCase().includes(dq)) && (s.f === 'all' || !(isMine || added) || band(w.p || 0) === s.f)).map((w) => { const p = w.p === null ? 0 : w.p;
+      return { ...w, ipa: w.ipa || '', hasRing: showRing, pct: p + '%',
+        ring: { flex: '0 0 44px', width: '44px', height: '44px', borderRadius: '999px', border: '3px solid ' + col(p), color: col(p), display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, boxSizing: 'border-box' } }; });
+    const pct = k.p || 0;
+    const kk = { ...k, id,
+      iconStyle: { flex: '0 0 72px', height: '72px', borderRadius: '16px', background: k.bg, color: k.fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", fontWeight: 700, fontSize: '24px' },
+      stats: isMine ? [{ v: String(k.n), l: 'từ' }, { v: pct + '%', l: 'thông thạo TB' }, { v: '9', l: 'từ yếu' }] : [{ v: String(k.n), l: 'từ' }, { v: k.level, l: 'trình độ' }, { v: added ? pct + '%' : '—', l: 'thông thạo' }],
+      pctText: pct + '%', bar: { width: Math.max(pct, 2) + '%', height: '100%', borderRadius: '999px', background: k.fg === '#FFFFFF' ? '#2E2A24' : k.fg },
+      countText: k.n + ' từ', moreText: 'Xem thêm ' + (k.n - k.words.length) + ' từ' };
+    return {
+      dq: s.dq, onDq: (e) => this.setState({ dq: e.target.value }), filters, showRingFilters: isMine || added, noWords: words.length === 0,
+      device: d, L, k: kk, words, perDay: s.perDay, standalone: !emb, embedded: emb, showNav: false,
+      back: () => { if (this.props.onBack) this.props.onBack(); },
+      isMine, needAdd: !isMine && !added, isAddedDeck: !isMine && added, toggleAdd,
+      finish: 'Học xong cả bộ sau khoảng ' + Math.ceil(k.n / s.perDay) + ' ngày',
+      inc: () => this.setState({ perDay: Math.min(50, s.perDay + 5) }),
+      dec: () => this.setState({ perDay: Math.max(5, s.perDay - 5) }),
+      ln: { lib: 'Vocab' + sfx + '.dc.html', flash: 'Flashcard' + sfx + '.dc.html', word: 'WordDetail' + sfx + '.dc.html', add: 'AddWord' + sfx + '.dc.html' }
+    };
+  }
+}
+</script>
+</body>
+</html>

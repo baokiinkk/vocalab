@@ -39,9 +39,19 @@ for (const device of ['laptop', 'ipad', 'iphone']) {
     assert.strictEqual(await page.locator('.set-back').count(), 0);
     assert.ok(await page.locator('.nav-item.is-active[href="#/settings"]').count() >= 1);
     assert.strictEqual(await page.title(), 'Cài đặt · VocaLab');
+    assert.ok(await page.evaluate(() => !document.getElementById('app').classList.contains('is-focus')));
+    // v3 styles: h1 32/700, groups radius 16 with lip shadow, stepper radius 12
+    const st = await page.evaluate(() => {
+      const cs = (sel) => getComputedStyle(document.querySelector(sel));
+      return { h1: cs('h1').fontSize + ' ' + cs('h1').fontWeight, r: cs('.set-group').borderRadius, sh: cs('.set-group').boxShadow, stp: cs('.stepper').borderRadius };
+    });
+    assert.strictEqual(st.h1, '32px 700');
+    assert.strictEqual(st.r, '16px');
+    assert.notStrictEqual(st.sh, 'none');
+    assert.strictEqual(st.stp, '12px');
     for (const sel of ['#groq-key', '[data-action="key-test"]', '[data-action="export"]', '[data-action="import"]', '[data-action="reset"]', '#remind'])
       assert.strictEqual(await page.locator(sel).count(), 1, sel);
-    // controls removed in v2 are not shown
+    // controls removed since v2 are not shown
     for (const sel of ['[data-action="mode"]', '[data-action^="seg-freq"]', '[data-action="sw-prio"]', '[data-action="sw-backup"]', '[data-action^="seg-size"]'])
       assert.strictEqual(await page.locator(sel).count(), 0, sel);
     await noHScroll(page);
@@ -58,8 +68,9 @@ for (const device of ['laptop', 'ipad', 'iphone']) {
     assert.deepStrictEqual((await heads(page)).map((s) => s.toUpperCase()), ['NHẮC ÔN', 'PHIÊN LUYỆN']);
     assert.strictEqual(await page.locator('#groq-key').count(), 0);
     assert.strictEqual(await page.title(), 'Cài đặt luyện · VocaLab');
-    assert.ok(await page.locator('.nav-item.is-active[href="#/practice"]').count() >= 1);
-    assert.strictEqual(await page.locator('.nav-item.is-active[href="#/settings"]').count(), 0);
+    // v3: the scoped screen hides the navigation (focus layout)
+    assert.strictEqual(await page.locator('#nav .nav-item').count(), 0);
+    assert.ok(await page.evaluate(() => document.getElementById('app').classList.contains('is-focus')));
     await noHScroll(page);
     await shoot(page, device + '-practice');
     // a control works here too

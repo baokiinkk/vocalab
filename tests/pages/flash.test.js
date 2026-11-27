@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const { launch, open } = require('../pw');
 const { seed } = require('../fixtures');
+// fixture data + light theme (theme 'sys' would follow the OS / time of day in screenshots)
+const seedLight = new Function('VL', '(' + seed.toString() + ')(VL); VL.store.setSetting("theme", "light");');
 
 const SHOTS = path.join(__dirname, '..', 'shots', 'flash');
 fs.mkdirSync(SHOTS, { recursive: true });
@@ -17,7 +19,7 @@ test.after(async () => { await browser.close(); });
 
 /** Open the app seeded, start a session, wait for #/flash. */
 async function startFlash(device, opts) {
-  const page = await open(browser, device, '#/today', { seed });
+  const page = await open(browser, device, '#/today', { seed: seedLight });
   await page.evaluate((o) => { VL.session.start(o); }, opts || { keys: KEYS, modes: ['flash'], count: 3, order: 'seq' });
   await page.waitForFunction(() => location.hash === '#/flash' && document.querySelector('.flash-card'));
   return page;
@@ -226,7 +228,7 @@ for (const device of DEVICES) {
   });
 
   test(device + ': empty state without a session', async () => {
-    const page = await open(browser, device, '#/flash', { seed });
+    const page = await open(browser, device, '#/flash', { seed: seedLight });
     await page.waitForSelector('.empty');
     assert.match(await txt(page, '.empty'), /Chưa có phiên luyện/);
     assert.ok(await noHScroll(page));
@@ -305,7 +307,7 @@ for (const device of DEVICES) {
     await page.evaluate(() => VL.store.setSetting('theme', 'dark'));
     await page.waitForFunction(() => document.documentElement.getAttribute('data-theme') === 'dark');
     const bg = await page.$eval('.flash-front', (c) => getComputedStyle(c).backgroundColor);
-    assert.equal(bg, 'rgb(28, 28, 34)');
+    assert.equal(bg, 'rgb(61, 36, 25)'); // --primary-soft (dark)
     await page.waitForTimeout(150);
     await page.screenshot({ path: path.join(SHOTS, 'dark-front-' + device + '.png'), fullPage: true });
     await page.click('.flash-reveal');
@@ -347,7 +349,7 @@ test('laptop: background AI enrichment is silent (never opens the GROQ key sheet
 });
 
 test('laptop: stale flash → quiz redirect does not pull the user back after they navigated away', async () => {
-  const page = await open(browser, 'laptop', '#/today', { seed });
+  const page = await open(browser, 'laptop', '#/today', { seed: seedLight });
   await page.evaluate(() => {
     VL.session.start({ keys: ['comm:suggest'], modes: ['mean'], count: 1 });
   });

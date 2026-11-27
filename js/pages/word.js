@@ -1,5 +1,5 @@
 /* VocaLab — page "word" (4 · Chi tiết từ), route #/word/<key>.
-   Design: design-v2/project/WordDetail.dc.html. Live data from VL.words / VL.srs; AI fills empty fields of built-in words. */
+   Design: design-v3/project/WordDetail.dc.html. Live data from VL.words / VL.srs; AI fills empty fields of built-in words. */
 (function () {
   'use strict';
   const VL = window.VL;
@@ -70,7 +70,8 @@
     const decks = Array.from(new Set(w.decks)).filter((id) => VL.CATALOG[id]);
     const addable = VL.decks.mineIds().filter((id) => decks.indexOf(id) < 0);
     const hist = historyRows(w, p);
-    const ring = 'background:conic-gradient(' + lv.color + ' 0 ' + score + '%, var(--line-2) ' + score + '% 100%)';
+    // Level colours come from theme tokens (var(--weak) …) so the ring/label stay readable in dark mode.
+    const ring = 'background:conic-gradient(var(--wd-lv) 0 ' + score + '%, var(--track) ' + score + '% 100%)';
     const gram = String(w.gram || '').split('\n').map((s) => s.trim()).filter(Boolean);
     const ex = (w.examples || []).filter((e) => e && e.en);
     const syn = w.syn || [], ant = w.ant || [];
@@ -96,12 +97,12 @@
               <h1 class="wd-word">${w.w}</h1>
               ${w.ipa || w.ipaUs ? h`<div class="wd-ipas">${ipaBtn(w, 'uk')}${ipaBtn(w, 'us')}</div>` : ''}
             </div>
-            <div class="wd-score">
+            <div class="${'wd-score lv-' + lv.id}">
               <div class="wd-ring" role="img" aria-label="${'Thông thạo ' + score + '%'}" style="${raw(ring)}">
-                <div class="wd-ring-in" style="${raw('color:' + lv.text)}">${score}%</div>
+                <div class="wd-ring-in">${score}%</div>
               </div>
               <div class="wd-score-text">
-                <span class="wd-level" style="${raw('color:' + lv.text)}">${VL.srs.levelNote(score)}</span>
+                <span class="wd-level">${VL.srs.levelNote(score)}</span>
                 <span class="wd-sub">${need > 0 ? 'Cần ' + need + ' lần đúng nữa' : 'Đã đạt 100%'}</span>
                 <span class="wd-sub">${started ? 'Ôn tiếp: ' + VL.fmtIn(VL.srs.dueAt(key)) : 'Chưa học'}</span>
               </div>

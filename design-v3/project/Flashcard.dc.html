@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Luyện tập · Flashcard</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF7F0}
+a{color:#CF4822}a:hover{color:#A83A1A}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <header style="{{ L.top }}">
+    <a href="{{ ln.home }}" aria-label="Thoát phiên luyện" style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px; background: #FFFDF8; border: 1px solid #E8DFCC; color: #2E2A24; display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+    </a>
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; font-weight: 700"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 28px; height: 28px; border-radius: 9px; background: #FFE3D3; color: #CF4822; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="14" height="14" rx="2.5"></rect><path d="M7 3h12a2 2 0 0 1 2 2v12"></path></svg></span>Flashcard</span><span style="padding: 4px 10px; border-radius: 999px; background: #FFFDF8; border: 1px solid #E8DFCC; color: #4D463C">{{ progress }}</span></div>
+      <div role="progressbar" aria-label="Tiến độ phiên" aria-valuemin="0" aria-valuemax="24" aria-valuenow="{{ step }}" style="height: 8px; border-radius: 999px; background: #F1EADB; overflow: hidden"><div style="{{ progBar }}"></div></div>
+    </div>
+  </header>
+
+  <main style="{{ L.main }}">
+    <div style="{{ L.wrap }}">
+      <sc-if value="{{ front }}" hint-placeholder-val="{{ true }}">
+        <section aria-label="Mặt trước thẻ" style="{{ L.frontCard }}">
+          <span aria-hidden="true" style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg); width: 56px; height: 17px; border-radius: 3px; background: repeating-linear-gradient(90deg, #F4C3AB 0 5px, rgba(255,253,248,0.6) 5px 10px)"></span>
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%">
+            <span style="{{ lvTag }}">{{ lvText }}</span>
+            <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 8px; background: rgba(255,253,248,0.85); font-size: 12px; font-weight: 700; color: #4D463C"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 1.5 1.5 0 0 0 1.5 1.5H20"></path></svg>{{ w.deck }}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; margin: auto 0; text-align: center">
+            <span style="padding: 4px 10px; border-radius: 8px; background: #FFFDF8; font-size: 12px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #A83A1A">{{ w.pos }}</span>
+            <h1 style="{{ L.word }}">{{ w.w }}</h1>
+            <button type="button" aria-label="Nghe phát âm" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #2E2A24; font: inherit; font-size: 16px; cursor: pointer"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CF4822" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg>{{ w.ipa }}</button>
+          </div>
+          <button type="button" onClick="{{ flip }}" style="display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: 12px; border: 1.5px solid #F4C3AB; background: #FFFDF8; color: #A83A1A; box-shadow: 0 2px 0 #F4C3AB; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Lật thẻ xem nghĩa
+          </button>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ back }}" hint-placeholder-val="{{ false }}">
+        <section aria-label="Mặt sau thẻ" style="{{ L.backCard }}">
+          <div style="{{ L.backTop }}">
+            <div style="{{ L.illo }}"><dc-import name="Illo" word="{{ w.id }}" hint-size="100%,100%"></dc-import></div>
+            <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+                <span style="{{ lvTag }}">{{ lvText }}</span>
+                <span style="padding: 4px 8px; border-radius: 6px; background: #FFE9E1; color: #A83A1A; font-size: 12px; font-weight: 700">{{ w.pos }}</span>
+              </div>
+              <span style="font-family: 'Be Vietnam Pro', Inter, system-ui, sans-serif; font-size: 30px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1">{{ w.w }}</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                <button type="button" aria-label="Nghe giọng UK" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px; border-radius: 10px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #2E2A24; font: inherit; font-size: 14px; cursor: pointer"><b style="font-size: 11px; color: #6B6358">UK</b>{{ w.ipa }}</button>
+                <button type="button" aria-label="Nghe giọng US" style="display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 10px; border-radius: 10px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #2E2A24; font: inherit; font-size: 14px; cursor: pointer"><b style="font-size: 11px; color: #6B6358">US</b>{{ w.ipaUS }}</button>
+              </div>
+              <span style="font-family: 'Be Vietnam Pro', Inter, system-ui, sans-serif; font-size: 22px; font-weight: 700; line-height: 1.3; color: #A83A1A">{{ w.vi }}</span>
+              <span style="font-size: 15px; line-height: 1.5; color: #4D463C">{{ w.en }}</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #2E2A24"><span style="width: 26px; height: 26px; border-radius: 8px; background: #FFE3D3; color: #CF4822; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>Ví dụ</span>
+            <sc-for list="{{ w.exs }}" as="e" hint-placeholder-count="2">
+              <div style="padding: 12px 14px; border-radius: 12px; background: #FBF7F0; border: 1px solid #EFE7D6; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 15px; line-height: 1.5">{{ e.en }}</span><span style="font-size: 14px; color: #6B6358">{{ e.vi }}</span></div>
+            </sc-for>
+          </div>
+
+          <div style="{{ L.infoGrid }}">
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #2E2A24"><span style="width: 26px; height: 26px; border-radius: 8px; background: #FFF1C7; color: #8A5D00; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"></path></svg></span>Ngữ pháp &amp; collocation</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px"><sc-for list="{{ w.coll }}" as="c" hint-placeholder-count="2"><span style="padding: 6px 10px; border-radius: 10px; background: #FFF1C7; color: #7A5A1E; font-size: 14px; font-weight: 600">{{ c }}</span></sc-for></div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px">
+              <span style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #2E2A24"><span style="width: 26px; height: 26px; border-radius: 8px; background: #ECE6FF; color: #5B40C9; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h11l-3-3M17 17H6l3 3"></path></svg></span>Đồng nghĩa · Trái nghĩa</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                <sc-for list="{{ w.syn }}" as="c" hint-placeholder-count="2"><span style="padding: 6px 10px; border-radius: 10px; background: #ECE6FF; color: #5B40C9; font-size: 14px; font-weight: 600">{{ c }}</span></sc-for>
+                <sc-for list="{{ w.ant }}" as="c" hint-placeholder-count="1"><span style="padding: 6px 10px; border-radius: 10px; background: #FCE4EA; color: #A8324F; font-size: 14px; font-weight: 600">{{ c }}</span></sc-for>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; border-radius: 12px; background: #FFF1C7; border: 1px solid #EFD993; color: #7A5A1E; font-size: 14px; line-height: 1.5"><b style="flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"></path></svg>Ghi chú</b><span>{{ w.note }}</span></div>
+
+          <button type="button" onClick="{{ flip }}" style="align-self: center; min-height: 40px; padding: 0 16px; border-radius: 12px; border: none; background: transparent; color: #CF4822; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Úp thẻ lại</button>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ answered }}" hint-placeholder-val="{{ false }}">
+        <div role="status" style="{{ fbStyle }}">
+          <span style="font-weight: 700">{{ fbTitle }}</span>
+          <span style="display: flex; align-items: center; gap: 10px"><span style="flex: 1; height: 8px; border-radius: 999px; background: #FFFDF8; overflow: hidden; display: block"><span style="{{ mBar }}"></span></span><strong>{{ masteryText }}</strong></span>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+
+  <footer style="{{ L.bottom }}">
+    <sc-if value="{{ notAnswered }}" hint-placeholder-val="{{ true }}">
+      <button type="button" onClick="{{ wrong }}" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 58px; border-radius: 12px; border: 1.5px solid #F1C2CF; background: #FFFDF8; color: #B0304A; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 0 #F1C2CF"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>Chưa nhớ</button>
+      <button type="button" onClick="{{ right }}" style="flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 58px; border-radius: 12px; border: none; background: #CF4822; color: #FFFFFF; box-shadow: 0 3px 0 #A83A1A; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>Đã nhớ</button>
+    </sc-if>
+    <sc-if value="{{ canNext }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ next }}" style="flex: 1; min-height: 58px; border-radius: 12px; border: none; background: #CF4822; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 0 #A83A1A">Thẻ tiếp theo</button>
+    </sc-if>
+    <sc-if value="{{ isLast }}" hint-placeholder-val="{{ false }}">
+      <a href="{{ ln.quiz }}" style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 58px; border-radius: 12px; background: #CF4822; color: #FFFFFF; font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 3px 0 #A83A1A">Tiếp: Chọn nghĩa</a>
+    </sc-if>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"flipped":{"editor":"boolean","default":false},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.words = [
+      { id: 'ubiquitous', w: 'ubiquitous', ipa: '/juːˈbɪkwɪtəs/', ipaUS: '/juːˈbɪkwətəs/', pos: 'Tính từ', deck: 'Từ của tôi', p: 20,
+        vi: 'có mặt ở khắp nơi, rất phổ biến', en: 'seeming to be everywhere at the same time',
+        exs: [{ en: 'Smartphones have become ubiquitous in modern life.', vi: 'Điện thoại thông minh đã phổ biến khắp nơi trong đời sống hiện đại.' }, { en: 'Coffee shops are ubiquitous in this city.', vi: 'Quán cà phê có ở khắp nơi trong thành phố này.' }],
+        coll: ['become ubiquitous', 'ubiquitous + N', 'n. ubiquity'], syn: ['widespread', 'pervasive'], ant: ['rare'], note: 'Nhấn âm 2: u-BIQ-ui-tous. Hay gặp trong IELTS Writing về công nghệ.' },
+      { id: 'meticulous', w: 'meticulous', ipa: '/məˈtɪkjələs/', ipaUS: '/məˈtɪkjələs/', pos: 'Tính từ', deck: 'Từ của tôi', p: 10,
+        vi: 'tỉ mỉ, kỹ lưỡng đến từng chi tiết', en: 'showing very careful attention to every detail',
+        exs: [{ en: 'She keeps meticulous records of every expense.', vi: 'Cô ấy ghi chép tỉ mỉ mọi khoản chi tiêu.' }, { en: 'The plan was the result of meticulous preparation.', vi: 'Kế hoạch là kết quả của sự chuẩn bị kỹ lưỡng.' }],
+        coll: ['be meticulous about / in', 'meticulous attention to detail'], syn: ['thorough', 'painstaking'], ant: ['careless', 'sloppy'], note: 'Nhấn âm 2: me-TIC-u-lous. Thường mang nghĩa khen.' },
+      { id: 'reluctant', w: 'reluctant', ipa: '/rɪˈlʌktənt/', ipaUS: '/rɪˈlʌktənt/', pos: 'Tính từ', deck: '300 từ giao tiếp', p: 30,
+        vi: 'miễn cưỡng, không sẵn lòng', en: 'not willing to do something and therefore slow to do it',
+        exs: [{ en: 'He was reluctant to admit his mistake.', vi: 'Anh ấy miễn cưỡng thừa nhận sai lầm.' }, { en: 'Many people are reluctant to change their habits.', vi: 'Nhiều người ngại thay đổi thói quen.' }],
+        coll: ['be reluctant to + V', 'n. reluctance', 'adv. reluctantly'], syn: ['unwilling', 'hesitant'], ant: ['eager', 'willing'], note: 'Đi với to + V nguyên mẫu, không dùng V-ing.' }
+    ];
+    this.state = { i: 0, flipped: !!props.flipped, answer: null };
+  }
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#FBF7F0', fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", color: '#2E2A24', display: 'flex', flexDirection: 'column' };
+    const px = laptop ? '40px' : tablet ? '32px' : '16px';
+    const card = { width: '100%', boxSizing: 'border-box', borderRadius: '20px', border: '1px solid #E8DFCC', background: '#FFFDF8', boxShadow: '0 2px 0 #EDE4D2', display: 'flex', flexDirection: 'column' };
+    return { d, phone, laptop, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', L: {
+      root: laptop ? { ...ink, minHeight: '100vh' } : { ...ink, width: '100%', minHeight: fh + 'px' },
+      top: { display: 'flex', alignItems: 'center', gap: '14px', padding: (phone ? '14px ' : '24px ') + px, maxWidth: laptop ? '880px' : '760px', width: '100%', margin: '0 auto', boxSizing: 'border-box' },
+      main: { flex: '1 1 auto', padding: '4px ' + px + ' 12px', boxSizing: 'border-box' },
+      wrap: { maxWidth: laptop ? '800px' : '680px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '14px' },
+      frontCard: { ...card, position: 'relative', backgroundColor: '#FFE6D8', backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid #F4C3AB', boxShadow: '0 4px 0 #F4C3AB', alignItems: 'center', gap: '20px', marginTop: '10px', minHeight: phone ? '480px' : '520px', padding: phone ? '18px' : '28px' },
+      backCard: { ...card, gap: '18px', padding: phone ? '14px 14px 10px' : '24px 24px 12px' },
+      backTop: { display: 'flex', flexWrap: 'wrap', gap: phone ? '14px' : '20px', alignItems: 'flex-start', padding: phone ? '12px' : '16px', borderRadius: '16px', backgroundColor: '#FFE6D8', backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid #F4C3AB' },
+      illo: { flex: phone ? '1 1 100%' : '0 0 240px', height: phone ? '200px' : '180px', borderRadius: '14px', overflow: 'hidden', border: '3px solid #FFFDF8', boxShadow: '0 2px 0 #F4C3AB', boxSizing: 'border-box' },
+      infoGrid: { display: 'grid', gridTemplateColumns: phone ? 'minmax(0, 1fr)' : 'repeat(2, minmax(0, 1fr))', gap: '16px' },
+      bottom: { display: 'flex', gap: '12px', padding: (phone ? '12px ' + px + ' 30px' : '16px ' + px + ' 40px'), maxWidth: laptop ? '880px' : '760px', width: '100%', margin: '0 auto', boxSizing: 'border-box' },
+      word: { margin: 0, fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", fontSize: phone ? '44px' : '60px', fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1.05 }
+    } };
+  }
+  renderVals() {
+    const { d, sfx, L } = this.layout();
+    const s = this.state;
+    const w = this.words[s.i];
+    const last = s.i === this.words.length - 1;
+    const color = (p) => p >= 100 ? '#2F7A4F' : p >= 70 ? '#5B40C9' : p >= 30 ? '#8A6414' : '#C2465E';
+    const label = (p) => p >= 100 ? 'Thành thạo' : p >= 70 ? 'Khá' : p >= 30 ? 'Đang học' : 'Yếu';
+    const after = s.answer === 'right' ? Math.min(100, w.p + 10) : s.answer === 'wrong' ? Math.max(0, w.p - 20) : w.p;
+    const step = 7 + s.i;
+    const ok = s.answer === 'right';
+    return {
+      device: d, L, w, ln: { home: 'Main' + sfx + '.dc.html', quiz: 'Quiz' + sfx + '.dc.html' },
+      progress: step + ' / 24', step,
+      progBar: { width: (step / 24 * 100) + '%', height: '100%', background: '#CF4822', borderRadius: '999px' },
+      front: !s.flipped, back: s.flipped, flip: () => this.setState({ flipped: !s.flipped }),
+      lvTag: { padding: '4px 10px', borderRadius: '8px', background: '#FFFDF8', boxShadow: '0 1px 0 rgba(46,42,36,0.08)', color: color(w.p), fontSize: '12px', fontWeight: 700 },
+      lvText: label(w.p) + ' · ' + w.p + '%',
+      answered: !!s.answer, notAnswered: !s.answer,
+      fbStyle: { display: 'flex', flexDirection: 'column', gap: '8px', padding: '14px 16px', borderRadius: '12px', background: ok ? '#FFE6D8' : '#FCE4EA', border: '1.5px solid ' + (ok ? '#F4C3AB' : '#F1C2CF'), color: ok ? '#A83A1A' : '#A8324F', fontSize: '14px' },
+      fbTitle: ok ? 'Đã nhớ · +10%' : 'Chưa nhớ · −20% · thẻ này sẽ quay lại sớm hơn',
+      mBar: { display: 'block', width: Math.max(after, 3) + '%', height: '100%', background: ok ? '#CF4822' : '#C2465E', borderRadius: '999px', transition: 'width 400ms ease' },
+      masteryText: w.p + '% → ' + after + '%',
+      canNext: !!s.answer && !last, isLast: !!s.answer && last,
+      right: () => this.setState({ answer: 'right', flipped: true }), wrong: () => this.setState({ answer: 'wrong', flipped: true }),
+      next: () => this.setState({ i: s.i + 1, flipped: false, answer: null })
+    };
+  }
+}
+</script>
+</body>
+</html>

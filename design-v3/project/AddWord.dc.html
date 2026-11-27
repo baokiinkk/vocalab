@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Thêm từ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF7F0}
+a{color:#CF4822}a:hover{color:#A83A1A}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <div style="{{ L.nav }}">
+    <dc-import name="Sidebar" active="add" device="{{ device }}" hint-size="100%,100%"></dc-import>
+  </div>
+  <div style="{{ L.col }}">
+  <main style="{{ L.main }}">
+    <div style="max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px">
+
+      <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px">
+        <h1 style="{{ L.h1 }}">Thêm từ</h1>
+        <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: #6B6358">Lưu vào <span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 4px; border-radius: 10px; background: #FFFDF8; border: 1px solid #E8DFCC; color: #2E2A24; font-weight: 700"><span style="width: 22px; height: 22px; border-radius: 6px; background: #FFE3D3; color: #CF4822; display: inline-flex; align-items: center; justify-content: center"><dc-import name="DeckIcon" deck="mine" size="{{ 14 }}" hint-size="14px,14px"></dc-import></span>Từ của tôi</span></span>
+      </header>
+
+      <section style="{{ L.wordCard }}">
+        <label for="word" style="font-size: 13px; font-weight: 700; color: #6B6358">Từ hoặc cụm từ tiếng Anh</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px">
+          <input id="word" type="text" value="{{ v.word }}" onChange="{{ on.word }}" placeholder="vd. resilient" style="flex: 1 1 220px; min-width: 0; min-height: 58px; padding: 0 16px; border: 1.5px solid #E8DFCC; border-radius: 12px; background: #FFFDF8; font-family: 'Be Vietnam Pro', Inter, system-ui, sans-serif; font-size: 24px; font-weight: 700; color: #2E2A24">
+          <button type="button" onClick="{{ fill }}" disabled="{{ loading }}" style="{{ aiBtn }}">
+            <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"></path><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"></path></svg>
+            {{ aiLabel }}
+          </button>
+        </div>
+        <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+          <span role="status" style="font-size: 14px; font-weight: 600; color: #A83A1A">AI đang điền phiên âm, nghĩa, ví dụ, ngữ pháp và hình minh hoạ…</span>
+        </sc-if>
+        <sc-if value="{{ filled }}" hint-placeholder-val="{{ false }}">
+          <div role="status" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 12px; background: #FFE9E1; color: #A83A1A; font-size: 14px; font-weight: 600">
+            <span>AI đã điền toàn bộ. Kiểm tra và sửa lại nếu cần.</span>
+            <button type="button" onClick="{{ undo }}" style="min-height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid #FFC9B5; background: #FFFDF8; color: #A83A1A; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Hoàn tác</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ dup }}" hint-placeholder-val="{{ false }}">
+          <div role="alert" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; border-radius: 12px; background: #F6F0E1; color: #7A5A1E; font-size: 14px; font-weight: 600">“{{ v.word }}” đã có trong Từ của tôi<a href="{{ ln.word }}" style="color: #7A5A1E; font-weight: 700">Xem từ</a></div>
+        </sc-if>
+      </section>
+
+      <div style="{{ L.grid }}">
+        <section style="{{ L.cardDim }}">
+          <h2 style="{{ L.h2 }}"><span style="width: 28px; height: 28px; border-radius: 9px; background: #FFE3D3; color: #CF4822; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 1.5 1.5 0 0 0 1.5 1.5H20"></path></svg></span>Nghĩa &amp; phát âm</h2>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: #6B6358">Nghĩa tiếng Việt *
+            <textarea value="{{ v.vi }}" onChange="{{ on.vi }}" placeholder="Nghĩa của từ…" style="field-sizing: content; min-height: 48px; padding: 12px 14px; border: 1.5px solid #E8DFCC; border-radius: 12px; font: inherit; font-size: 16px; font-weight: 400; line-height: 1.5; color: #2E2A24; background: #FFFDF8; resize: none"></textarea>
+          </label>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: #6B6358">IPA · UK
+              <input type="text" value="{{ v.ipaUK }}" onChange="{{ on.ipaUK }}" placeholder="/…/" style="min-height: 46px; padding: 0 12px; border: 1.5px solid #E8DFCC; border-radius: 12px; font: inherit; font-size: 15px; font-weight: 400; color: #2E2A24; background: #FFFDF8; min-width: 0">
+            </label>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: #6B6358">IPA · US
+              <input type="text" value="{{ v.ipaUS }}" onChange="{{ on.ipaUS }}" placeholder="/…/" style="min-height: 46px; padding: 0 12px; border: 1.5px solid #E8DFCC; border-radius: 12px; font: inherit; font-size: 15px; font-weight: 400; color: #2E2A24; background: #FFFDF8; min-width: 0">
+            </label>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px">
+            <span id="pos-l" style="font-size: 13px; font-weight: 700; color: #6B6358">Loại từ</span>
+            <div role="radiogroup" aria-labelledby="pos-l" style="display: flex; flex-wrap: wrap; gap: 6px">
+              <sc-for list="{{ posList }}" as="p" hint-placeholder-count="6">
+                <button type="button" role="radio" aria-checked="{{ p.sel }}" onClick="{{ p.pick }}" style="{{ p.style }}">{{ p.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </section>
+
+        <section style="{{ L.cardDim }}">
+          <h2 style="{{ L.h2 }}"><span style="width: 28px; height: 28px; border-radius: 9px; background: #E3EEFA; color: #2F5E99; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="11" r="2"></circle><path d="M21 17l-5-5-8 7"></path></svg></span>Hình minh hoạ</h2>
+          <sc-if value="{{ hasImg }}" hint-placeholder-val="{{ false }}">
+            <div style="position: relative; aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; background: #FFF1C7">
+              <svg role="img" aria-label="Minh hoạ: mầm cây vươn lên qua khe nứt" viewBox="0 0 240 180" style="width: 100%; height: 100%; display: block">
+                <rect width="240" height="180" fill="#FFF1C7"></rect>
+                <rect x="0" y="118" width="240" height="62" fill="#D9D3C4"></rect>
+                <path d="M96 118l10 18-8 14 12 30" fill="none" stroke="#2E2A24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M104 120c0-22 4-40 14-58" fill="none" stroke="#3E7D57" stroke-width="5" stroke-linecap="round"></path>
+                <path d="M116 66c-16-2-26-14-26-28 16 0 26 12 26 28z" fill="#3E7D57"></path>
+                <path d="M118 62c4-18 20-26 36-22-2 16-18 26-36 22z" fill="#5FA57F"></path>
+                <circle cx="196" cy="38" r="16" fill="#F6F0E1" stroke="#C9962E" stroke-width="3"></circle>
+              </svg>
+              <span style="position: absolute; left: 8px; top: 8px; padding: 3px 8px; border-radius: 6px; background: rgba(46,42,36,0.72); color: #FFFFFF; font-size: 12px; font-weight: 700">AI tạo</span>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button type="button" style="flex: 1; min-height: 40px; border-radius: 12px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #2E2A24; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Đổi ảnh</button>
+              <button type="button" onClick="{{ removeImg }}" style="flex: 0 0 auto; min-height: 40px; padding: 0 14px; border-radius: 12px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #C0364A; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer">Xoá</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noImg }}" hint-placeholder-val="{{ true }}">
+            <button type="button" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; flex: 1 1 auto; min-height: 160px; width: 100%; border-radius: 12px; border: 1.5px dashed #D9CFBB; background: #FBF8F1; color: #6B6358; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer">
+              <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="11" r="2"></circle><path d="M21 17l-5-5-8 7"></path></svg>
+              Tải ảnh lên
+              <span style="font-size: 12px; font-weight: 500">hoặc để AI tạo khi bấm Gợi ý</span>
+            </button>
+          </sc-if>
+        </section>
+      </div>
+
+      <section style="{{ L.cardDim }}">
+        <h2 style="{{ L.h2 }}"><span style="width: 28px; height: 28px; border-radius: 9px; background: #ECE6FF; color: #5B40C9; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>Câu ví dụ</h2>
+        <sc-for list="{{ exs }}" as="e" hint-placeholder-count="1">
+          <div style="display: flex; gap: 8px; align-items: flex-start; padding: 10px; border-radius: 12px; background: #FBF7F0">
+            <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+              <textarea aria-label="Câu ví dụ" value="{{ e.en }}" onChange="{{ e.onEn }}" placeholder="Viết một câu có dùng từ này…" style="field-sizing: content; min-height: 44px; padding: 10px 12px; border: 1.5px solid #E8DFCC; border-radius: 10px; font: inherit; font-size: 15px; line-height: 1.5; color: #2E2A24; background: #FFFDF8; resize: none"></textarea>
+              <textarea aria-label="Bản dịch" value="{{ e.vi }}" onChange="{{ e.onVi }}" placeholder="Bản dịch (tuỳ chọn)" style="field-sizing: content; min-height: 36px; padding: 6px 12px; border: none; border-radius: 10px; font: inherit; font-size: 14px; line-height: 1.5; color: #6B6358; background: transparent; resize: none"></textarea>
+            </div>
+            <button type="button" onClick="{{ e.remove }}" aria-label="Xoá câu" style="flex: 0 0 auto; width: 44px; height: 44px; border-radius: 10px; border: none; background: transparent; color: #6B6358; cursor: pointer; display: flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+          </div>
+        </sc-for>
+        <button type="button" onClick="{{ addEx }}" style="align-self: flex-start; min-height: 40px; padding: 0 14px; border-radius: 12px; border: 1.5px dashed #D9CFBB; background: transparent; color: #2E2A24; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">+ Thêm câu</button>
+      </section>
+
+      <section style="{{ L.cardDim }}">
+        <h2 style="{{ L.h2 }}"><span style="width: 28px; height: 28px; border-radius: 9px; background: #FFF1C7; color: #8A5D00; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"></path></svg></span>Ngữ pháp &amp; ghi chú</h2>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: #6B6358">Ngữ pháp &amp; collocation
+          <textarea value="{{ v.grammar }}" onChange="{{ on.grammar }}" placeholder="Cấu trúc, giới từ đi kèm…" style="field-sizing: content; min-height: 48px; padding: 12px 14px; border: 1.5px solid #E8DFCC; border-radius: 12px; font: inherit; font-size: 15px; font-weight: 400; line-height: 1.6; color: #2E2A24; background: #FFFDF8; resize: none"></textarea>
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: #6B6358">Đồng nghĩa / trái nghĩa
+          <input type="text" value="{{ v.syn }}" onChange="{{ on.syn }}" placeholder="tough, strong / fragile" style="min-height: 46px; padding: 0 12px; border: 1.5px solid #E8DFCC; border-radius: 12px; font: inherit; font-size: 15px; font-weight: 400; color: #2E2A24; background: #FFFDF8">
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: #6B6358">Ghi chú của bạn
+          <textarea value="{{ v.note }}" onChange="{{ on.note }}" placeholder="Mẹo nhớ, ngữ cảnh gặp từ…" style="field-sizing: content; min-height: 48px; padding: 12px 14px; border: 1.5px solid #E8DFCC; border-radius: 12px; font: inherit; font-size: 15px; font-weight: 400; line-height: 1.5; color: #2E2A24; background: #FFFDF8; resize: none"></textarea>
+        </label>
+      </section>
+    </div>
+  </main>
+  <footer style="{{ L.bar }}">
+    <div style="max-width: 760px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px">
+      <sc-if value="{{ missing }}" hint-placeholder-val="{{ false }}">
+        <span style="flex: 1 1 100%; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #C0364A"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>Cần có từ và nghĩa để lưu</span>
+      </sc-if>
+      <button type="button" onClick="{{ clear }}" style="flex: 1 1 0; min-width: 0; white-space: nowrap; min-height: 50px; border-radius: 12px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #2E2A24; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 0 #EDE4D2">Lưu &amp; thêm tiếp</button>
+      <a href="{{ ln.save }}" style="flex: 1 1 0; min-width: 0; white-space: nowrap; display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 12px; background: #CF4822; color: #FFFFFF; font-size: 15px; font-weight: 700; text-decoration: none; box-shadow: 0 3px 0 #A83A1A">Lưu từ</a>
+    </div>
+  </footer>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.AI = { ipaUK: '/rɪˈzɪliənt/', ipaUS: '/rɪˈzɪliənt/', pos: 'adj', vi: 'kiên cường, mau phục hồi (sau khó khăn)',
+      ex: [{ en: 'Children are often more resilient than adults think.', vi: 'Trẻ em thường mau hồi phục hơn người lớn nghĩ.' }, { en: 'The city built a more resilient power grid after the storm.', vi: 'Thành phố xây lưới điện bền vững hơn sau cơn bão.' }],
+      grammar: 'be resilient to + N (chống chịu được)\nDanh từ: resilience · Trạng từ: resiliently', syn: 'tough, adaptable / fragile, vulnerable', img: true };
+    this.empty = { vi: '', ipaUK: '', ipaUS: '', pos: '', grammar: '', syn: '', note: '', ex: [{ en: '', vi: '' }], img: false };
+    this.state = { word: 'resilient', ...this.empty, status: 'idle', snapshot: null };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#FBF7F0', fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", color: '#2E2A24' };
+    const card = { background: '#FFFDF8', border: '1px solid #E8DFCC', borderRadius: '16px', padding: phone ? '16px' : '20px', display: 'flex', flexDirection: 'column', gap: '14px', minWidth: 0, boxSizing: 'border-box', boxShadow: '0 2px 0 #EDE4D2' };
+    return { d, laptop, tablet, phone, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', card, L: {
+      root: laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
+      nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
+      col: laptop ? { flex: '999 1 560px', minWidth: 0, display: 'flex', flexDirection: 'column' } : { flex: '1 1 auto', minWidth: 0, display: 'flex', flexDirection: 'column' },
+      main: laptop ? { flex: '1 1 auto', padding: '28px 40px 24px', boxSizing: 'border-box' } : { flex: '1 1 auto', padding: tablet ? '28px 28px 20px' : '16px 16px 16px', boxSizing: 'border-box' },
+      bar: { position: laptop ? 'sticky' : 'static', bottom: 0, padding: phone ? '10px 16px' : '14px 28px', background: '#FFFDF8', borderTop: '1px solid #E8DFCC', boxSizing: 'border-box' },
+      h1: { margin: 0, fontSize: laptop ? '32px' : tablet ? '28px' : '26px', fontWeight: 800, letterSpacing: '-0.025em' },
+      h2: { margin: 0, display: 'flex', alignItems: 'center', gap: '10px', fontSize: '16px', fontWeight: 800, color: '#2E2A24' },
+      wordCard: { ...card, boxShadow: '0 3px 0 #E8DFCC' },
+      grid: { display: 'grid', gridTemplateColumns: phone ? 'minmax(0, 1fr)' : 'minmax(0, 1.4fr) minmax(0, 1fr)', gap: '16px', alignItems: 'stretch' }
+    } };
+  }
+  renderVals() {
+    const { d, phone, sfx, L, card } = this.layout();
+    const s = this.state;
+    const loading = s.status === 'loading';
+    const set = (k) => (e) => this.setState({ [k]: e.target.value });
+    const on = { word: set('word'), vi: set('vi'), ipaUK: set('ipaUK'), ipaUS: set('ipaUS'), grammar: set('grammar'), syn: set('syn'), note: set('note') };
+    const fill = () => {
+      const snap = { vi: s.vi, ipaUK: s.ipaUK, ipaUS: s.ipaUS, pos: s.pos, grammar: s.grammar, syn: s.syn, note: s.note, ex: s.ex, img: s.img };
+      this.setState({ status: 'loading', snapshot: snap });
+      clearTimeout(this.t);
+      this.t = setTimeout(() => this.setState({ status: 'filled', vi: this.AI.vi, ipaUK: this.AI.ipaUK, ipaUS: this.AI.ipaUS, pos: this.AI.pos, grammar: this.AI.grammar, syn: this.AI.syn, ex: this.AI.ex, img: true }), 1000);
+    };
+    const chip = (on) => ({ minHeight: '38px', padding: '0 12px', borderRadius: '10px', border: '1px solid ' + (on ? '#CF4822' : '#E8DFCC'), background: on ? '#FFE9E1' : '#FFFFFF', color: on ? '#A83A1A' : '#2E2A24', font: 'inherit', fontSize: '14px', fontWeight: 700, cursor: 'pointer' });
+    const posList = [['n', 'Danh từ'], ['v', 'Động từ'], ['adj', 'Tính từ'], ['adv', 'Trạng từ'], ['phr', 'Cụm từ'], ['idiom', 'Thành ngữ']].map(([id, label]) => ({ label, sel: String(s.pos === id), pick: () => this.setState({ pos: id }), style: chip(s.pos === id) }));
+    const exs = s.ex.map((e, i) => ({ ...e,
+      onEn: (ev) => { const ex = s.ex.slice(); ex[i] = { ...ex[i], en: ev.target.value }; this.setState({ ex }); },
+      onVi: (ev) => { const ex = s.ex.slice(); ex[i] = { ...ex[i], vi: ev.target.value }; this.setState({ ex }); },
+      remove: () => this.setState({ ex: s.ex.filter((_, j) => j !== i) }) }));
+    const noWord = !s.word.trim();
+    return {
+      device: d, v: s, on, posList, exs, fill, loading, filled: s.status === 'filled',
+      L: { ...L, cardDim: { ...card, opacity: loading ? 0.45 : 1, transition: 'opacity 200ms ease' } },
+      aiLabel: loading ? 'Đang điền…' : s.status === 'filled' ? 'Gợi ý lại' : 'Gợi ý bằng AI',
+      aiBtn: { flex: phone ? '1 1 100%' : '0 0 auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', minHeight: '58px', padding: '0 20px', borderRadius: '12px', border: 'none', background: loading || noWord ? '#F4AE95' : '#CF4822', color: '#FFFFFF', font: 'inherit', fontSize: '15px', fontWeight: 700, cursor: loading ? 'wait' : 'pointer', boxShadow: loading || noWord ? 'none' : '0 3px 0 #A83A1A' },
+      undo: () => this.setState({ ...(s.snapshot || this.empty), status: 'idle', snapshot: null }),
+      hasImg: !!s.img, noImg: !s.img, removeImg: () => this.setState({ img: false }),
+      dup: ['meticulous', 'albeit', 'ubiquitous', 'reluctant', 'deadline'].includes(s.word.trim().toLowerCase()),
+      missing: noWord || !s.vi.trim(),
+      addEx: () => this.setState({ ex: s.ex.concat([{ en: '', vi: '' }]) }),
+      clear: () => this.setState({ word: '', ...this.empty, status: 'idle', snapshot: null }),
+      ln: { save: 'Vocab' + sfx + '.dc.html', word: 'WordDetail' + sfx + '.dc.html' }
+    };
+  }
+}
+</script>
+</body>
+</html>

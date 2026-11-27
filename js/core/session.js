@@ -20,10 +20,10 @@
 
   /** Presets on the Luyện tập page. count/modes for 'today' come from Settings. */
   VL.PRESETS = [
-    { id: 'today', glyph: '24', title: 'Ôn hôm nay', rec: true, bg: '#ECEEF8', fg: '#2E3A80' },
-    { id: 'quick', glyph: '5′', title: 'Nhanh 5 phút', count: 10, modes: ['flash'], bg: '#E7F2EC', fg: '#2A6B4B' },
-    { id: 'weak', glyph: '!', title: 'Cứu từ yếu', count: 15, modes: ['mean', 'word'], bg: '#F8EDE4', fg: '#94461F' },
-    { id: 'new', glyph: '+', title: 'Học từ mới', count: 10, modes: ['flash', 'mean'], bg: '#F1ECF6', fg: '#5E3F87' }
+    { id: 'today', glyph: '24', title: 'Ôn hôm nay', rec: true, bg: '#FFE6D8', fg: '#A83A1A' },
+    { id: 'quick', glyph: '5′', title: 'Nhanh 5 phút', count: 10, modes: ['flash'], bg: '#DFF2E5', fg: '#2F7A4F' },
+    { id: 'weak', glyph: '!', title: 'Cứu từ yếu', count: 15, modes: ['mean', 'word'], bg: '#FCE4EA', fg: '#A8324F' },
+    { id: 'new', glyph: '+', title: 'Học từ mới', count: 10, modes: ['flash', 'mean'], bg: '#ECE6FF', fg: '#5B40C9' }
   ];
 
   const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

@@ -1,4 +1,4 @@
-/* VocaLab — 7 · Flashcard (#/flash). Focus screen. Design: design-v2/project/Flashcard.dc.html (+ Illo, FlashcardBack).
+/* VocaLab — 7 · Flashcard (#/flash). Focus screen. Design: design-v3/project/Flashcard.dc.html (+ Illo, FlashcardBack = flipped).
    Front (POS, word, IPA speak pill, "Lật thẻ xem nghĩa") and back (illustration, UK/US IPA, meaning, definition,
    examples, grammar & collocation, synonyms/antonyms, note, "Úp thẻ lại"). "Chưa nhớ" / "Đã nhớ" are available on
    both sides; answering records once, shows the back + feedback (mastery before → after) and
@@ -25,6 +25,15 @@
   const EYE = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>');
   const X = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>');
   const CHECK = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"></path></svg>');
+
+  const ico = (d, size, sw) => raw('<svg aria-hidden="true" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>');
+  const CARDS = ico('<rect x="3" y="6" width="14" height="14" rx="2.5"></rect><path d="M7 3h12a2 2 0 0 1 2 2v12"></path>', 15, 2.3);
+  const BOOK = ico('<path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 1.5 1.5 0 0 0 1.5 1.5H20"></path>', 13, 2.4);
+  const I_EX = ico('<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>', 14, 2.3);
+  const I_GRAM = ico('<path d="M4 7V4h16v3M9 20h6M12 4v16"></path>', 14, 2.3);
+  const I_SYN = ico('<path d="M7 7h11l-3-3M17 17H6l3 3"></path>', 14, 2.3);
+  const I_NOTE = ico('<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"></path>', 15, 2.3);
+  const secT = (cls, icon, text) => h`<span class="flash-sec-t"><span class="flash-sec-ico ${cls}">${icon}</span>${text}</span>`;
 
   const sess = () => VL.session.current();
 
@@ -101,7 +110,8 @@
 
   function front(w, lv, sc) {
     return h`<section class="flash-card flash-front" aria-label="Mặt trước thẻ" data-action="flip">
-      <div class="flash-front-head">${lvTag(lv, sc)}${w.deckObj ? h`<span class="flash-deck">${w.deckObj.name}</span>` : ''}</div>
+      <span class="flash-tape" aria-hidden="true"></span>
+      <div class="flash-front-head">${lvTag(lv, sc)}${w.deckObj ? h`<span class="flash-deck">${BOOK}<span class="flash-deck-n">${w.deckObj.name}</span></span>` : ''}</div>
       <div class="flash-front-mid">
         ${w.posLabel ? h`<span class="flash-pos">${w.posLabel}</span>` : ''}
         <h1 class="flash-word" lang="en">${w.w}</h1>
@@ -128,16 +138,16 @@
           ${enrich[key] === 'loading' ? h`<span class="flash-enrich" role="status"><span class="spinner" aria-hidden="true"></span>Đang bổ sung chi tiết…</span>` : ''}
         </div>
       </div>
-      ${exs.length ? h`<div class="flash-sec"><span class="flash-sec-t">Ví dụ</span>
+      ${exs.length ? h`<div class="flash-sec">${secT('is-ex', I_EX, 'Ví dụ')}
         ${exs.map((e) => h`<div class="flash-ex-box"><span class="flash-ex" lang="en">${e.en}</span>${e.vi ? h`<span class="flash-ex-vi">${e.vi}</span>` : ''}</div>`)}
       </div>` : ''}
       ${coll.length || syn.length || ant.length ? h`<div class="flash-info${coll.length && (syn.length || ant.length) ? ' is-2' : ''}">
-        ${coll.length ? h`<div class="flash-sec"><span class="flash-sec-t">Ngữ pháp &amp; collocation</span>
+        ${coll.length ? h`<div class="flash-sec">${secT('is-gram', I_GRAM, 'Ngữ pháp & collocation')}
           <div class="flash-chips">${coll.map((c) => h`<span class="flash-chip" lang="en">${c}</span>`)}</div></div>` : ''}
-        ${syn.length || ant.length ? h`<div class="flash-sec"><span class="flash-sec-t">${syn.length && ant.length ? 'Đồng nghĩa · Trái nghĩa' : syn.length ? 'Đồng nghĩa' : 'Trái nghĩa'}</span>
+        ${syn.length || ant.length ? h`<div class="flash-sec">${secT('is-syn', I_SYN, syn.length && ant.length ? 'Đồng nghĩa · Trái nghĩa' : syn.length ? 'Đồng nghĩa' : 'Trái nghĩa')}
           <div class="flash-chips">${syn.map((c) => h`<span class="flash-chip is-syn" lang="en">${c}</span>`)}${ant.map((c) => h`<span class="flash-chip is-ant" lang="en">${c}</span>`)}</div></div>` : ''}
       </div>` : ''}
-      ${w.note ? h`<div class="flash-note"><b>Ghi chú</b><span>${w.note}</span></div>` : ''}
+      ${w.note ? h`<div class="flash-note"><b>${I_NOTE}Ghi chú</b><span>${w.note}</span></div>` : ''}
       <button type="button" class="flash-unflip" data-action="flip" data-focus="unflip" aria-keyshortcuts="Space">Úp thẻ lại</button>
     </section>`;
   }
@@ -180,7 +190,7 @@
         <header class="flash-top">
           <button type="button" class="flash-close" data-action="quit" data-focus="quit" aria-label="Thoát phiên luyện">${VL.icon('close', 18, 2.2)}</button>
           <div class="flash-top-mid">
-            <div class="flash-top-row"><span>Flashcard</span><span class="flash-count">${VL.session.progressText()}</span></div>
+            <div class="flash-top-row"><span class="flash-title"><span class="flash-title-ico">${CARDS}</span>Flashcard</span><span class="flash-count">${VL.session.progressText()}</span></div>
             <div class="flash-prog" role="progressbar" aria-label="Tiến độ phiên" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${step}"><div class="flash-prog-fill" style="${raw('width:' + (step / total * 100) + '%')}"></div></div>
           </div>
         </header>

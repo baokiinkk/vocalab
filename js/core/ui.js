@@ -7,9 +7,10 @@
 
   /* ---------- icons (inline stroke SVG from the design) ---------- */
   const P = {
-    home: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+    home: '<path d="M3.5 10.5L12 3.5l8.5 7V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"/>',
+    book: '<path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 1.5 1.5 0 0 0 1.5 1.5H20"/>',
     library: '<rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="16" rx="1.5"/><path d="M17.5 5.2l3.3 14.4"/>',
-    practice: '<rect x="3" y="7" width="13" height="14" rx="2.5"/><path d="M8 3h10.5A2.5 2.5 0 0 1 21 5.5V16"/>',
+    practice: '<rect x="3" y="7" width="13" height="14" rx="3"/><path d="M8 3h10a3 3 0 0 1 3 3v10"/>',
     settings: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     back: '<path d="M15 18l-6-6 6-6"/>',
@@ -54,46 +55,72 @@
   /* ---------- navigation ---------- */
   const NAV = [
     { id: 'main', href: '#/today', label: 'Hôm nay', icon: 'home' },
-    { id: 'vocab', href: '#/library', label: 'Thư viện', icon: 'library' },
+    { id: 'vocab', href: '#/library', label: 'Thư viện', icon: 'book' },
+    { id: 'add', href: '#/add', label: 'Thêm từ', icon: 'plus' },
     { id: 'practice', href: '#/practice', label: 'Luyện tập', icon: 'practice' },
     { id: 'settings', href: '#/settings', label: 'Cài đặt', icon: 'settings' }
   ];
-  /** Render the app navigation for the device. active: main|vocab|practice|settings|add */
+  /** Render the app navigation for the device. active: main|vocab|add|practice|settings
+      laptop: sidebar (brand, 5 items with coloured icon tiles, profile/stats card) ·
+      ipad: 88px rail · iphone: bottom tab bar (icon pill + label). */
   ui.nav = function (active, device) {
-    const item = (n) => h`<a href="${n.href}" class="nav-item${n.id === active ? ' is-active' : ''}"${n.id === active ? raw(' aria-current="page"') : ''}>${VL.icon(n.icon, 22)}<span>${n.label}</span></a>`;
-    const streak = VL.srs.streak();
-    const showStreak = VL.store.settings().sw.streak;
+    const cur = (n) => (n.id === active ? raw(' aria-current="page"') : '');
+    const cls = (n) => 'nav-item' + (n.id === active ? ' is-active' : '');
     if (device === 'laptop') {
+      const streak = VL.srs.streak();
+      const showStreak = VL.store.settings().sw.streak;
+      const learned = VL.srs.overview().total;
+      const nDecks = VL.decks.mineIds().length;
       return h`<nav class="sidebar" aria-label="Điều hướng chính">
-        <a href="#/today" class="brand" aria-label="VocaLab – Hôm nay"><span class="brand-mark">V</span><span class="brand-name">VocaLab</span></a>
-        <a href="#/add" class="btn btn-primary btn-block nav-add${active === 'add' ? ' is-active' : ''}">${VL.icon('plus', 20, 2.4)} Thêm từ mới</a>
-        <div class="nav-group">${NAV.map(item)}</div>
-        ${showStreak ? h`<div class="nav-streak">
-          <span class="nav-streak-ico">${VL.icon('flame', 20)}</span>
-          <div class="nav-streak-text"><span class="nav-streak-title">Chuỗi ${streak} ngày</span><span class="nav-streak-sub">${VL.srs.practicedToday() ? 'Hôm nay đã ôn, giỏi lắm!' : 'Ôn hôm nay để giữ chuỗi'}</span></div>
-        </div>` : ''}
+        <a href="#/today" class="brand" aria-label="VocaLab – Hôm nay"><span class="brand-mark">V</span><span class="brand-text"><b class="brand-name">VocaLab</b><span class="brand-sub">ENGLISH</span></span></a>
+        <div class="nav-group">${NAV.map((n) => h`<a href="${n.href}" class="${cls(n)}"${cur(n)}><span class="${'nav-tile nav-tile-' + n.id}">${VL.icon(n.icon, 16, 2.3)}</span><span>${n.label}</span></a>`)}</div>
+        <div class="nav-card">
+          <div class="nav-me"><span class="nav-avatar" aria-hidden="true">B</span><span class="nav-me-text"><b class="nav-me-name">Bạn</b><span class="nav-me-sub">${nDecks + ' bộ từ đang học'}</span></span></div>
+          <div class="nav-stats">
+            ${showStreak ? h`<div class="nav-stat nav-stat-streak"><b>${streak}</b><span>ngày liên tiếp</span></div>` : ''}
+            <div class="nav-stat nav-stat-words"><b>${learned}</b><span>từ đã học</span></div>
+          </div>
+        </div>
       </nav>`;
     }
+    const item = (n) => h`<a href="${n.href}" class="${cls(n)}"${cur(n)}><span class="nav-pill">${VL.icon(n.icon, 22, n.id === active ? 2.3 : 1.9)}</span><span>${n.label}</span></a>`;
     if (device === 'ipad') {
       return h`<nav class="rail" aria-label="Điều hướng chính">
-        <a href="#/today" class="brand" aria-label="VocaLab – Hôm nay"><span class="brand-mark">V</span></a>
-        <a href="#/add" class="rail-add${active === 'add' ? ' is-active' : ''}" aria-label="Thêm từ mới">${VL.icon('plus', 24, 2.4)}</a>
+        <a href="#/today" class="brand-mark" aria-label="VocaLab – Hôm nay">V</a>
         <div class="nav-group">${NAV.map(item)}</div>
       </nav>`;
     }
-    return h`<nav class="tabbar" aria-label="Điều hướng chính"><div class="nav-group">
-      ${item(NAV[0])}${item(NAV[1])}
-      <a href="#/add" class="nav-item tab-add${active === 'add' ? ' is-active' : ''}" aria-label="Thêm từ mới"><span class="tab-add-btn">${VL.icon('plus', 22, 2.6)}</span><span>Thêm từ</span></a>
-      ${item(NAV[2])}${item(NAV[3])}
-    </div></nav>`;
+    return h`<nav class="tabbar" aria-label="Điều hướng chính"><div class="nav-group">${NAV.map(item)}</div></nav>`;
   };
 
   /* ---------- components ---------- */
+  /* ---------- deck glyphs (design-v3 DeckIcon.dc.html) ---------- */
+  const GLYPH = {
+    mine: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
+    comm: '<path d="M4 5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M19 9h1a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v2.5L16 18"/>',
+    phr: '<path d="M4 8h12M12 4l4 4-4 4"/><path d="M20 16H8M12 12l-4 4 4 4"/>',
+    idiom: '<path d="M5 11h4v7H3v-5c0-4 2-6 5-7"/><path d="M15 11h4v7h-6v-5c0-4 2-6 5-7"/>',
+    daily: '<path d="M3.5 10.5L12 3.5l8.5 7V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"/>',
+    travel: '<path d="M10.5 13.5L3 11l1.5-1.5 8 1L17 6a2 2 0 0 1 3 3l-4.5 4.5 1 8L15 23l-2.5-7.5L9 19v3l-1.5 1-1-3.5L3 18.5l1-1.5h3z"/>',
+    food: '<path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2v3M12 2v3"/>',
+    it: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20M9 9l-2 2 2 2M15 9l2 2-2 2"/>',
+    work: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>',
+    mkt: '<path d="M3 11v3a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/>',
+    toeic: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8.5 15l2.5 2.5 4.5-5"/>',
+    ielts: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/>',
+    iw: '<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/><path d="M14 6l3 3M4 22h16"/>'
+  };
+  /** SVG glyph for a deck id (falls back to null for unknown ids). */
+  ui.deckGlyph = ((id, size) => (GLYPH[id]
+    ? raw('<svg aria-hidden="true" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + GLYPH[id] + '</svg>')
+    : null));
+
   /** Deck icon tile (abbr on deck colours). size px. */
   ui.deckIcon = (deck, size) => {
     size = size || 40;
     if (!deck) return '';
-    return h`<span class="deck-icon" style="${raw('width:' + size + 'px;height:' + size + 'px;flex:0 0 ' + size + 'px;border-radius:' + Math.round(size / 5) + 'px;background:' + deck.bg + ';color:' + deck.fg + ';font-size:' + Math.round(size * 0.35) + 'px')}" aria-hidden="true">${deck.abbr}</span>`;
+    const glyph = ui.deckGlyph(deck.id, Math.round(size * 0.55));
+    return h`<span class="deck-icon" style="${raw('width:' + size + 'px;height:' + size + 'px;flex:0 0 ' + size + 'px;border-radius:' + Math.round(size * 0.3) + 'px;background:' + deck.bg + ';color:' + deck.fg + ';font-size:' + Math.round(size * 0.35) + 'px')}" aria-hidden="true">${glyph || deck.abbr}</span>`;
   };
   /** Circular score ring "10%" coloured by level. size px (default 44). */
   ui.ring = (score, size) => {
@@ -109,7 +136,7 @@
   ui.masteryBar = (b) => {
     const total = b.weak + b.learning + b.good + b.master;
     const seg = (n, c) => (n ? h`<span style="${raw('flex:' + n + ' 1 0;background:' + c)}"></span>` : '');
-    return h`<div class="mastery-bar" role="img" aria-label="${'Yếu ' + b.weak + ', đang học ' + b.learning + ', khá ' + b.good + ', thành thạo ' + b.master}">${total ? [seg(b.weak, '#B9532A'), seg(b.learning, '#C9962E'), seg(b.good, '#3F4C9A'), seg(b.master, '#2F7A55')] : h`<span style="flex:1;background:var(--line)"></span>`}</div>`;
+    return h`<div class="mastery-bar" role="img" aria-label="${'Yếu ' + b.weak + ', đang học ' + b.learning + ', khá ' + b.good + ', thành thạo ' + b.master}">${total ? [seg(b.weak, 'var(--weak)'), seg(b.learning, 'var(--learning)'), seg(b.good, 'var(--good)'), seg(b.master, 'var(--master)')] : h`<span style="flex:1;background:var(--line)"></span>`}</div>`;
   };
   /** Image placeholder that fills itself (VL.media.hydrate). cls: extra class for sizing. */
   ui.wordImage = (key, cls) => h`<div class="word-img ${cls || ''}" data-word-img="${key}"><span class="word-img-ph" aria-hidden="true">${VL.icon('image', 28, 1.6)}</span></div>`;

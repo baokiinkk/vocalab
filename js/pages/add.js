@@ -1,5 +1,5 @@
 /* VocaLab — page "add": Thêm / sửa từ + AI  (#/add?edit=<key>&q=<text>&deck=<id>)
-   Design: design-v2/project/AddWord.dc.html.
+   Design: design-v3/project/AddWord.dc.html.
    Form state lives in this closure (reset in enter()). Keystrokes only update state + small DOM bits in place
    (duplicate alert, validation); structural changes (AI fill, chips, example rows, image) re-render with
    VL.refresh(), which keeps focus/caret because every field has an id. */
@@ -60,6 +60,35 @@
   const imgIcon = raw('<svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="11" r="2"></circle><path d="M21 17l-5-5-8 7"></path></svg>');
   const closeIcon = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>');
 
+  // v3 DeckIcon glyphs (design-v3/project/DeckIcon.dc.html). Core VL.ui.deckIcon still renders the 2-letter abbr.
+  const DECK_GLYPH = {
+    mine: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
+    comm: '<path d="M4 5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M19 9h1a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v2.5L16 18"/>',
+    phr: '<path d="M4 8h12M12 4l4 4-4 4"/><path d="M20 16H8M12 12l-4 4 4 4"/>',
+    idiom: '<path d="M5 11h4v7H3v-5c0-4 2-6 5-7"/><path d="M15 11h4v7h-6v-5c0-4 2-6 5-7"/>',
+    daily: '<path d="M3.5 10.5L12 3.5l8.5 7V20a1 1 0 0 1-1 1H15v-6H9v6H4.5a1 1 0 0 1-1-1z"/>',
+    travel: '<path d="M10.5 13.5L3 11l1.5-1.5 8 1L17 6a2 2 0 0 1 3 3l-4.5 4.5 1 8L15 23l-2.5-7.5L9 19v3l-1.5 1-1-3.5L3 18.5l1-1.5h3z"/>',
+    food: '<path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6z"/><path d="M17 11h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 2v3M12 2v3"/>',
+    it: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20M9 9l-2 2 2 2M15 9l2 2-2 2"/>',
+    work: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/>',
+    mkt: '<path d="M3 11v3a1 1 0 0 0 1 1h3l6 4V6L7 10H4a1 1 0 0 0-1 1z"/><path d="M17 9a4 4 0 0 1 0 6M19.5 6.5a8 8 0 0 1 0 11"/>',
+    toeic: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8.5 15l2.5 2.5 4.5-5"/>',
+    ielts: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5M22 9v6"/>',
+    iw: '<path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/><path d="M14 6l3 3M4 22h16"/>'
+  };
+  const deckTile = (deck) => h`<span class="add-deck-ico" style="${raw('background:' + deck.bg + ';color:' + deck.fg)}" aria-hidden="true">${DECK_GLYPH[deck.id]
+    ? raw('<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + DECK_GLYPH[deck.id] + '</svg>')
+    : deck.abbr}</span>`;
+  // Section heading icon tiles (v3): colour class + stroke path.
+  const H2_ICON = {
+    mean: '<path d="M4 19.5V5a2 2 0 0 1 2-2h14v15H6a2 2 0 0 0-2 2 1.5 1.5 0 0 0 1.5 1.5H20"/>',
+    img: '<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 17l-5-5-8 7"/>',
+    ex: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    gram: '<path d="M4 7V4h16v3M9 20h6M12 4v16"/>'
+  };
+  const h2 = (kind, text) => h`<h2 class="add-h2"><span class="${'add-h2-ico is-' + kind}">${raw('<svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">' + H2_ICON[kind] + '</svg>')}</span>${text}</h2>`;
+  const warnIcon = raw('<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16h.01"></path></svg>');
+
   const loading = () => ui.status === 'loading';
   const aiLabel = () => (loading() ? 'Đang điền…' : ui.status === 'filled' ? 'Gợi ý lại' : 'Gợi ý bằng AI');
   const isMissing = () => !f.w.trim() || !f.vi.trim();
@@ -70,7 +99,7 @@
     const deckName = (w && w.deckObj && w.deckObj.name) || 'Từ của tôi';
     return h`<div class="add-dup" role="alert"><span>“${f.w.trim()}” đã có trong ${deckName}</span><a href="${VL.href.word(ui.dupKey)}">Xem từ</a></div>`;
   }
-  const missingHtml = () => (isMissing() ? h`<span class="add-missing">Cần có từ và nghĩa để lưu</span>` : '');
+  const missingHtml = () => (isMissing() ? h`<span class="add-missing">${warnIcon}Cần có từ và nghĩa để lưu</span>` : '');
 
   function posChips() {
     const ids = POS_IDS.slice();
@@ -119,7 +148,7 @@
     return h`<div class="page add-page${busy ? ' is-loading' : ''}"><div class="add-inner">
       <header class="add-head">
         <h1 class="add-h1">${ui.editKey ? 'Sửa từ' : 'Thêm từ'}</h1>
-        <span class="add-target">Lưu vào <span class="add-deck">${VL.ui.deckIcon(deck, 20)}${deck.name}</span></span>
+        <span class="add-target">Lưu vào <span class="add-deck">${deckTile(deck)}${deck.name}</span></span>
       </header>
 
       <section class="add-card add-word-card">
@@ -135,7 +164,7 @@
 
       <div class="add-grid">
         <section class="add-card add-dim">
-          <h2 class="add-h2">Nghĩa &amp; phát âm</h2>
+          ${h2('mean', 'Nghĩa & phát âm')}
           <label class="add-field">Nghĩa tiếng Việt *
             <textarea id="add-vi" class="add-ta${missV ? ' is-error' : ''}" rows="1" data-field="vi" placeholder="Nghĩa của từ…"${missV ? raw(' aria-invalid="true"') : ''}>${f.vi}</textarea>
           </label>
@@ -150,20 +179,20 @@
         </section>
 
         <section class="add-card add-dim">
-          <h2 class="add-h2">Hình minh hoạ</h2>
+          ${h2('img', 'Hình minh hoạ')}
           ${imageSection()}
           <input type="file" id="add-file" class="sr-only" accept="image/*" tabindex="-1" aria-hidden="true">
         </section>
       </div>
 
       <section class="add-card add-dim">
-        <h2 class="add-h2">Câu ví dụ</h2>
+        ${h2('ex', 'Câu ví dụ')}
         ${exRows()}
         <button type="button" class="add-ex-add" data-action="exAdd">+ Thêm câu</button>
       </section>
 
       <section class="add-card add-dim">
-        <h2 class="add-h2">Ngữ pháp, từ liên quan &amp; ghi chú</h2>
+        ${h2('gram', 'Ngữ pháp & ghi chú')}
         <label class="add-field">Ngữ pháp &amp; collocation
           <textarea id="add-gram" class="add-ta add-ta-15 add-ta-gram" rows="1" data-field="gram" placeholder="Cấu trúc, giới từ đi kèm…">${f.gram}</textarea>
         </label>

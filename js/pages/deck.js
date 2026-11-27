@@ -1,4 +1,5 @@
-/* VocaLab — "Chi tiết bộ từ" (#/deck/<id>). Design: design/project/DeckDetail.dc.html
+/* VocaLab — "Chi tiết bộ từ" (#/deck/<id>). Design: design-v3/project/DeckDetail.dc.html
+   v3: drill-in screen without app navigation (showNav: false in the design), SVG deck glyph, "Thêm vào Bộ của tôi" inside the header card.
    Three states: deck 'mine' (Từ của tôi), built-in deck not added, built-in deck added to "Bộ của tôi".
    Word list: live search (updated in place so IME typing is not interrupted), level filters, 50 rows per page. */
 (function () {
@@ -10,28 +11,13 @@
   // Bands from the design: ≥100 Thành thạo, ≥30 Đang học (incl. Khá), else Yếu (unstarted words = 0 %).
   const band = (p) => (p >= 100 ? 'done' : p >= 30 ? 'learn' : 'weak');
 
-  let ui = { id: null, q: '', f: 'all', limit: PAGE, perDay: 10 };
+  let ui = { id: null, q: '', f: 'all', limit: PAGE };
 
   const backIcon = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>');
   const playIcon = raw('<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>');
   const searchIcon = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>');
+  const plusIcon = raw('<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>');
   const chevIcon = raw('<svg aria-hidden="true" class="deck-row-chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>');
-
-  const finishText = (left, perDay) => {
-    if (!left) return 'Bạn đã bắt đầu học mọi từ trong bộ';
-    if (!perDay) return 'Tạm dừng thêm từ mới';
-    return 'Học xong cả bộ sau khoảng ' + Math.ceil(left / perDay) + ' ngày';
-  };
-
-  const stepper = (value) => h`<div class="deck-stepper" role="group" aria-label="Số từ mới mỗi ngày">
-      <button type="button" class="deck-stepper-btn" data-action="per" data-step="-1" aria-label="Giảm"${value <= 0 ? raw(' disabled') : ''}>−</button>
-      <span class="deck-stepper-val" aria-live="polite">${value}</span>
-      <button type="button" class="deck-stepper-btn" data-action="per" data-step="1" aria-label="Tăng"${value >= 50 ? raw(' disabled') : ''}>+</button>
-    </div>`;
-  const perDayRow = (value, left) => h`<div class="deck-perday">
-      <span class="deck-perday-text"><span class="deck-perday-title">Từ mới mỗi ngày</span><span class="deck-perday-sub">${finishText(left, value)}</span></span>
-      ${stepper(value)}
-    </div>`;
 
   /** All word rows of the deck (with live score), computed once per render/update. */
   function allRows(id, showRing) {
@@ -91,7 +77,7 @@
         <div class="deck-left">
           <section class="deck-card deck-head">
             <div class="deck-head-top">
-              <span class="deck-icon-lg" style="${raw(iconStyle)}" aria-hidden="true">${deck.abbr}</span>
+              <span class="deck-icon-lg" style="${raw(iconStyle)}" aria-hidden="true">${(VL.ui.deckGlyph && VL.ui.deckGlyph(id, 28)) || deck.abbr}</span>
               <div class="deck-head-text">
                 <span class="deck-kind">${deck.kind}</span>
                 <h1 class="deck-h1">${deck.name}</h1>
@@ -99,6 +85,7 @@
             </div>
             <div class="deck-stats">${stats.map((s) => h`<div class="deck-stat"><span class="deck-stat-v">${s.v}</span><span class="deck-stat-l">${s.l}</span></div>`)}</div>
             <p class="deck-desc">${deck.desc}</p>
+            ${!isMine && !added ? h`<button type="button" class="deck-btn-primary deck-btn-add" data-action="add">${plusIcon}Thêm vào Bộ của tôi</button>` : ''}
           </section>
 
           ${isMine ? h`<section class="deck-card">
@@ -107,20 +94,12 @@
             <span class="deck-note">Mọi từ bạn tự thêm đều nằm trong bộ này.</span>
           </section>` : ''}
 
-          ${!isMine && !added ? h`<section class="deck-card">
-            <h2 class="deck-h2">Thêm vào Bộ của tôi</h2>
-            <span class="deck-sub">Bộ này được thêm nguyên vẹn thành một bộ riêng, không trộn vào “Từ của tôi”.</span>
-            ${perDayRow(ui.perDay, st.fresh)}
-            <button type="button" class="deck-btn-primary" data-action="add">Thêm vào Bộ của tôi</button>
-          </section>` : ''}
-
           ${!isMine && added ? h`<section class="deck-card">
             <div class="deck-added" role="status">✓ Đã có trong Bộ của tôi</div>
             <div class="deck-mastery">
               <div class="deck-mastery-row"><span class="muted">Thông thạo cả bộ</span><strong>${st.pct + '%'}</strong></div>
               <div class="deck-mastery-track" role="progressbar" aria-label="Thông thạo cả bộ" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${st.pct}"><div class="deck-mastery-fill" style="${raw('width:' + Math.max(st.pct, 2) + '%;background:' + barColor)}"></div></div>
             </div>
-            ${perDayRow(VL.decks.perDay(id), st.fresh)}
             ${practiceBtn}
             <button type="button" class="deck-btn-remove" data-action="remove">Gỡ khỏi Bộ của tôi</button>
           </section>` : ''}
@@ -144,9 +123,10 @@
 
   VL.page('deck', {
     nav: 'vocab',
+    focus: true,
     title: (ctx) => { const d = VL.decks.get(ctx.params.id); return d ? d.name : 'Chi tiết bộ từ'; },
     enter(ctx) {
-      ui = { id: ctx.params.id, q: '', f: 'all', limit: PAGE, perDay: VL.clamp(VL.store.settings().fresh || 10, 0, 50) };
+      ui = { id: ctx.params.id, q: '', f: 'all', limit: PAGE };
     },
     render,
     mount(root, ctx) {
@@ -174,14 +154,8 @@
           const next = rows[ui.limit - PAGE];
           if (next) next.focus({ preventScroll: true });
         },
-        per(el) {
-          const step = Number(el.getAttribute('data-step')) * 5;
-          if (VL.decks.isAdded(id) && id !== 'mine') VL.decks.setPerDay(id, VL.clamp(VL.decks.perDay(id) + step, 0, 50));
-          else ui.perDay = VL.clamp(ui.perDay + step, 0, 50);
-          VL.refresh();
-        },
         add() {
-          VL.decks.add(id, ui.perDay);
+          VL.decks.add(id);
           VL.ui.toast('Đã thêm “' + deck.name + '” vào Bộ của tôi');
           VL.refresh();
         },

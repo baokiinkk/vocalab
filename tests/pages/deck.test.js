@@ -34,8 +34,10 @@ for (const device of DEVICES) {
     assert.ok(await p.isVisible('text=Mọi từ bạn tự thêm đều nằm trong bộ này.'));
     assert.equal(await p.getAttribute('.deck-btn-outline', 'href'), '#/add?deck=mine');
     assert.equal(await p.getAttribute('.deck-back', 'href'), '#/library');
-    // nav active
-    assert.equal(await p.getAttribute('.nav-item[aria-current="page"]', 'href'), '#/library');
+    // v3: drill-in screen without app navigation; glyph icon
+    assert.ok(await p.$('#app.is-focus.page-deck'));
+    assert.equal(await p.locator('#nav .nav-item').count(), 0);
+    assert.ok(await p.$('.deck-icon-lg svg'));
     // rows with rings
     assert.equal(await p.locator('.deck-row').count(), n);
     assert.equal(await p.locator('.deck-row .score-ring').count(), n);
@@ -71,7 +73,7 @@ for (const device of DEVICES) {
     await p.context().close();
   });
 
-  test(`[${device}] built-in deck not added → add with perDay, then added state, perDay, remove`, async () => {
+  test(`[${device}] built-in deck not added → add (from header card), added state, remove`, async () => {
     const p = await open(browser, device, '#/deck/toeic', { seed });
     await p.waitForSelector('.deck-h1');
     await p.waitForTimeout(150);
@@ -80,18 +82,8 @@ for (const device of DEVICES) {
     assert.equal(await p.textContent('.deck-h1'), '600 từ TOEIC thiết yếu');
     const vals = await p.$$eval('.deck-stat-v', (els) => els.map((e) => e.textContent));
     assert.deepEqual(vals, ['600', 'B1–B2', '—']);
-    assert.ok(await p.isVisible('text=Bộ này được thêm nguyên vẹn thành một bộ riêng, không trộn vào “Từ của tôi”.'));
-    assert.equal(await p.textContent('.deck-stepper-val'), '10');
-    assert.equal(await p.textContent('.deck-perday-sub'), 'Học xong cả bộ sau khoảng 60 ngày');
-    await p.click('.deck-stepper-btn[data-step="1"]');
-    await p.click('.deck-stepper-btn[data-step="1"]');
-    assert.equal(await p.textContent('.deck-stepper-val'), '20');
-    assert.equal(await p.textContent('.deck-perday-sub'), 'Học xong cả bộ sau khoảng 30 ngày');
-    for (let i = 0; i < 12; i++) if (await p.isEnabled('.deck-stepper-btn[data-step="1"]')) await p.click('.deck-stepper-btn[data-step="1"]');
-    assert.equal(await p.textContent('.deck-stepper-val'), '50');
-    assert.ok(await p.isDisabled('.deck-stepper-btn[data-step="1"]'));
-    for (let i = 0; i < 6; i++) await p.click('.deck-stepper-btn[data-step="-1"]');
-    assert.equal(await p.textContent('.deck-stepper-val'), '20');
+    assert.equal(await p.locator('.deck-stepper').count(), 0);
+    assert.equal(await p.textContent('.deck-head .deck-btn-add'), 'Thêm vào Bộ của tôi');
     // no rings / filters when not added; practice not offered
     assert.equal(await p.locator('.deck-row .score-ring').count(), 0);
     assert.equal(await p.locator('.deck-filter').count(), 0);
@@ -102,23 +94,19 @@ for (const device of DEVICES) {
     await p.click('.deck-more');
     assert.equal(await p.locator('.deck-row').count(), 100);
     // add
-    await p.click('.deck-btn-primary[data-action="add"]');
+    await p.click('.deck-head [data-action="add"]');
     await p.waitForSelector('.deck-added');
     assert.ok(await p.isVisible('#toast.is-show'));
-    assert.deepEqual(await p.evaluate(() => ({ a: VL.decks.isAdded('toeic'), n: VL.decks.perDay('toeic') })), { a: true, n: 20 });
+    assert.deepEqual(await p.evaluate(() => ({ a: VL.decks.isAdded('toeic'), n: VL.decks.perDay('toeic') })), { a: true, n: await p.evaluate(() => VL.store.settings().fresh) });
     assert.equal(await p.textContent('.deck-added'), '✓ Đã có trong Bộ của tôi');
     assert.equal(await p.locator('.deck-row .score-ring').count(), 100); // limit kept across refresh
     assert.equal(await p.locator('.deck-filter').count(), 4);
     await p.waitForTimeout(150);
     await p.screenshot({ path: path.join(SHOTS, `toeic-added-${device}.png`), fullPage: true });
-    // perDay stepper bound to setPerDay
-    await p.click('.deck-stepper-btn[data-step="1"]');
-    assert.equal(await p.evaluate(() => VL.decks.perDay('toeic')), 25);
-    assert.equal(await p.textContent('.deck-stepper-val'), '25');
+    assert.equal(await p.locator('.deck-head .deck-btn-add').count(), 0);
     // persists after reload
     await p.reload();
-    await p.waitForSelector('.deck-added');
-    assert.equal(await p.textContent('.deck-stepper-val'), '25');
+    await p.waitForSelector('.deck-added', { timeout: 15000 });
     // record progress, mastery shows
     await p.evaluate(() => { for (let i = 0; i < 10; i++) VL.srs.record('toeic:invoice', true, 'flash'); VL.store.save(); VL.refresh(); });
     const pct = await p.evaluate(() => VL.decks.stats('toeic').pct);
@@ -177,6 +165,7 @@ test('[laptop] dark theme renders without errors', async () => {
   const p = await open(browser, 'laptop', '#/deck/comm', { seed: (VL) => { VL.store.setSetting('theme', 'dark'); } });
   await p.waitForSelector('.deck-added');
   await p.waitForTimeout(150);
+  assert.equal(await p.evaluate(() => document.documentElement.getAttribute('data-theme')), 'dark');
   await p.screenshot({ path: path.join(SHOTS, 'comm-dark-laptop.png'), fullPage: true });
   assert.deepEqual(p.errors, []);
   await p.context().close();

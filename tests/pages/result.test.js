@@ -70,13 +70,15 @@ for (const device of DEVICES) {
     assert.equal((await page.textContent('.result-pct')).trim(), '67%');
     assert.equal((await page.textContent('.result-frac')).trim(), '4/6 đúng');
     assert.equal((await page.textContent('h1')).trim(), 'Xong phiên hôm nay!');
-    assert.equal((await page.textContent('.result-streak')).trim(), `Chuỗi ${r.streak} ngày`);
+    assert.equal((await page.textContent('.result-streak')).trim(), `Chuỗi ${r.streak} ngày · giữ lửa nhé`);
     assert.equal(r.streak, 13, 'streak continues from yesterday');
     const stats = await page.$$eval('.result-stat-v', (els) => els.map((e) => e.textContent.trim()));
-    assert.equal(stats[0], r.minutes + '′');
+    assert.equal(stats[0], r.minutes + ' phút');
+    assert.deepEqual(await page.$$eval('.result-stat-l', (els) => els.map((e) => e.textContent.trim())), ['thời gian học', 'thông thạo TB', 'đạt 100%']);
     assert.equal(stats[1], `${r.avgBefore}→${r.avgAfter}%`);
     const mg = r.masteredGain;
-    assert.equal(stats[2], (mg > 0 ? '+' : mg < 0 ? '−' : '') + Math.abs(mg));
+    assert.equal(stats[2], (mg > 0 ? '+' : mg < 0 ? '−' : '') + Math.abs(mg) + ' từ');
+    assert.equal(await page.$$eval('.result-hero .result-stat', (e) => e.length), 0, 'stats are tiles below the hero');
     assert.ok(mg >= 1, 'deadline reached 100%');
 
     // rows: every answer, in order, with correct mark/mode/change/range/link
@@ -208,5 +210,26 @@ for (const device of DEVICES) {
     assert.equal(await page.evaluate(() => window.VL.store.state.session.idx), 3);
     assert.deepEqual(page.errors, []);
     await page.context().close();
+  });
+}
+
+for (const theme of ['light', 'dark']) {
+  test(`result · ${theme} theme screenshots (v3 tiles)`, async () => {
+    for (const device of DEVICES) {
+      const page = await openP(device, '#/today', { seed });
+      await page.evaluate((t) => window.VL.store.setSetting('theme', t), theme);
+      await page.reload();
+      await page.waitForFunction(() => window.VL && window.VL.current && window.VL.current());
+      await runSession(page);
+      await page.waitForSelector('.result-ring');
+      assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-theme')), theme);
+      const bgs = await page.$$eval('.result-stat', (els) => els.map((e) => getComputedStyle(e).backgroundColor));
+      assert.equal(new Set(bgs).size, 3, 'three distinct pastel stat tiles');
+      assert.ok(await page.$('.result-hero .result-tape'));
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), 'no horizontal scroll');
+      await page.screenshot({ path: path.join(SHOTS, `${theme}-${device}.png`), fullPage: true });
+      assert.deepEqual(page.errors, []);
+      await page.context().close();
+    }
   });
 }

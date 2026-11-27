@@ -4,13 +4,13 @@ VocaLab is a static web app (no server, no build step, no framework) for Vietnam
 Project root: `/Users/baoho/development/english`. UI language: **Vietnamese** (copy exactly as in the design).
 
 ## The design (source of truth — match it 100%)
-`design-v2/project/*.dc.html` (v2 — the older `design/` folder is obsolete) are the designer's artboards. Each base file (e.g. `Main.dc.html`) renders **all three devices**
+`design-v3/project/*.dc.html` (v3 — `design-v2/` and `design/` are obsolete; the app currently implements v2, so `diff design-v2/project/X.dc.html design-v3/project/X.dc.html` shows exactly what changed) are the designer's artboards. v3 is a full restyle: warm paper background, terracotta primary, Be Vietnam Pro font, pastel dotted tiles with a 'tape' strip, flat 'lip' shadows (0 2px/3px 0), plus layout/content changes per page. Each base file (e.g. `Main.dc.html`) renders **all three devices**
 from one source: read the markup inside `<x-dc>` AND the `layout()` / `renderVals()` code in the `<script type="text/x-dc">`
 block — the `L.*` style objects there give exact paddings, font sizes, grid columns, colors per device
 (`laptop` = 1440 wide with left sidebar, `ipad` = 820 wide with 88px icon rail, `iphone` = 390 wide with bottom tab bar).
 `{{ x }}` holes are filled from `renderVals()`; `<sc-for list>` is a loop, `<sc-if value>` a condition, `onClick="{{ fn }}"` a handler.
 The demo data hard-coded there (e.g. "24", "58%", "albeit") must become **live data** from the core APIs below.
-`Flow.dc.html` shows how screens connect. `Sidebar.dc.html` is the nav (already implemented in core — don't rebuild it).
+`Flow.dc.html` shows how screens connect. `Sidebar.dc.html` is the nav (already re-implemented for v3 in core `VL.ui.nav` — 5 items incl. Thêm từ — don't rebuild it).
 The `*Phone.dc.html` / `*Tablet.dc.html` files are just wrappers passing `device=`.
 
 ## Architecture (already built — read these files first)
@@ -33,8 +33,8 @@ The `*Phone.dc.html` / `*Tablet.dc.html` files are just wrappers passing `device
   `.card-head`, `.h1`, `.h2`, `.btn btn-primary|btn-outline|btn-soft|btn-ghost|btn-danger btn-lg|btn-sm|btn-block`, `.icon-btn`,
   `.input`, `.textarea`, `.field`, `.search`, `.seg`, `.chip(s)`, `.switch`, `.stepper`, `.score-ring`, `.bar`, `.mastery-bar`,
   `.level-badge`, `.word-img`, `.focus-top`, `.empty`, `.back-link`, `.muted`, `.small`, `.sr-only`.
-  **Use CSS variables (`var(--primary)`, `var(--muted)`, `var(--surface)`, `var(--line)`…) — never hard-code the design hexes**
-  (dark theme must work). Deck tile colours (`deck.bg/fg`) and level colours from `VL.srs.level()` may be inline.
+  **Use CSS variables from `css/base.css` (already updated to v3: `--bg --surface --surface-2 --line --line-2 --ink --ink-2 --muted --muted-2 --primary --primary-ink --primary-soft --primary-soft-2 --primary-soft-line --track --weak* --learning* --good* --master* --purple-* --sky-* --butter-* --shadow --shadow-btn --dots --radius*`) — avoid hard-coding the design hexes**
+  (dark theme must work). Pastel tile colours (peach/lilac/butter/mint/pink/sky) may be page CSS classes with a `:root[data-theme="dark"]` override. Deck tile colours (`deck.bg/fg`) and level colours from `VL.srs.level()` may be inline.
 
 ## Your deliverables (only these files — do NOT edit other files)
 - `js/pages/<page>.js` — replace the stub. One IIFE calling `VL.page('<page>', {...})`.
@@ -59,14 +59,14 @@ work around it inside your page if reasonable, and list the issue precisely (fil
   Text inputs: give them an `id` so focus/caret survive `VL.refresh()` (router restores it), or update DOM in place for live search.
 
 ## Testing (mandatory)
-- A static server is already running at `http://localhost:8765` (serving the project root). Do not start/stop it.
+- No HTTP server: run every test/screenshot with env `VL_BASE=file:///Users/baoho/development/english` (the app works from file://). Do NOT start a server.
 - Helpers: `tests/pw.js` (`launch()`, `open(browser, device, hash, {seed})` — blocks external network, collects console errors in
   `page.errors`), `tests/fixtures.js` (`seed` function: fallback deck rows, custom words, progress, streak), `tests/shot.js`.
   playwright-core + system Chrome are installed in `tests/node_modules`.
 - Write `tests/pages/<page>.test.js` runnable with `node --test tests/pages/<page>.test.js` (from the project root) covering, on
   **laptop, ipad and iphone**: page renders without console errors, every interactive element works (clicks, inputs, navigation
   targets are correct), data is live (changes persist after `VL.refresh()`/reload), empty states.
-- Take full-page screenshots for the 3 devices into `tests/shots/<page>/` and **look at them** (Read tool on the PNG) comparing to
+- Take full-page screenshots for the 3 devices (`VL_BASE=... node tests/shot.js '#/<page>' all tests/shots/<page>`) into `tests/shots/<page>/` and **look at them** (Read tool on the PNG) comparing to
   the design markup/styles. Fix every visual mismatch, overflow, clipped text, horizontal scroll at 390 px.
 - Also run `node --test tests/core.test.js` to be sure core still passes (don't change it).
 - Then self-review your code for logic bugs, navigation dead-ends and blockers; fix; re-run tests until green.

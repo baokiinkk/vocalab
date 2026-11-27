@@ -31,13 +31,15 @@ for (const device of DEVICES) {
     await page.waitForSelector('#add-word');
     await page.evaluate(() => VL.store.setSetting('sw.auto', false));
     assert.equal(await page.textContent('h1'), 'Thêm từ');
-    assert.match(await page.textContent('.add-target'), /Lưu vào\s*TCTừ của tôi/);
+    assert.match(await page.textContent('.add-target'), /Lưu vào\s*Từ của tôi/);
+    assert.equal(await page.locator('.add-deck .add-deck-ico svg').count(), 1, 'v3 deck glyph tile');
     assert.equal(await page.locator('.add-chip').count(), 6);
     assert.deepEqual(await page.locator('.add-chip').allTextContents(), ['Danh từ', 'Động từ', 'Tính từ', 'Trạng từ', 'Cụm từ', 'Thành ngữ']);
     assert.equal(await page.locator('.add-ai').count(), 1);
     assert.equal(await page.locator('.add-word-card .add-word-row #add-ai').count(), 1, 'AI button next to the word field');
     assert.equal(await page.textContent('.add-word-card .add-label'), 'Từ hoặc cụm từ tiếng Anh');
-    assert.deepEqual(await page.locator('.add-h2').allTextContents(), ['Nghĩa & phát âm', 'Hình minh hoạ', 'Câu ví dụ', 'Ngữ pháp, từ liên quan & ghi chú']);
+    assert.deepEqual(await page.locator('.add-h2').allTextContents(), ['Nghĩa & phát âm', 'Hình minh hoạ', 'Câu ví dụ', 'Ngữ pháp & ghi chú']);
+    assert.equal(await page.locator('.add-h2 .add-h2-ico svg').count(), 4, 'icon tile on every section heading');
     assert.ok(await page.isVisible('.add-img-empty:has-text("Tải ảnh lên")'));
     assert.ok(await page.isVisible('text=hoặc để AI tạo khi bấm Gợi ý'));
     assert.ok(await page.isVisible('text=Cần có từ và nghĩa để lưu'));

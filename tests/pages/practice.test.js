@@ -1,4 +1,4 @@
-/* Browser tests for #/practice (Luyện tập, design-v2). Run: node --test tests/pages/practice.test.js */
+/* Browser tests for #/practice (Luyện tập, design-v3). Run: node --test tests/pages/practice.test.js */
 const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
@@ -209,3 +209,29 @@ test('empty state: no words → 0 TỪ, library hint, toast on start', async () 
   assert.deepEqual(page.errors, []);
   await page.context().close();
 });
+
+for (const theme of ['light', 'dark']) {
+  test('v3 mode palette + hero tile, ' + theme + ' theme; screenshots', async () => {
+    for (const device of ['laptop', 'ipad', 'iphone']) {
+      const page = await open(browser, device, '#/practice', { seed });
+      await page.evaluate((t) => window.VL.store.setSetting('theme', t), theme);
+      await page.reload();
+      await page.waitForFunction(() => document.querySelector('.pr-tab'));
+      assert.equal(await page.evaluate(() => document.documentElement.getAttribute('data-theme')), theme);
+      // every mode on → each card takes its own pastel colour from the design PAL
+      for (const id of ['word', 'listen', 'type']) await page.click('[data-action="mode"][data-value="' + id + '"]');
+      const bgs = await page.locator('.pr-mode.is-on').evaluateAll((els) => els.map((e) => getComputedStyle(e).backgroundColor));
+      assert.equal(bgs.length, 6);
+      assert.equal(new Set(bgs).size, 6, 'six distinct mode colours');
+      await page.click('[data-action="mode"][data-value="flash"]');
+      const ico = await page.evaluate(() => getComputedStyle(document.querySelector('[data-action="mode"][data-value="flash"] .pr-mode-ico')).backgroundColor);
+      const surf = await page.evaluate(() => getComputedStyle(document.querySelector('.pr-list')).backgroundColor);
+      assert.notEqual(ico, surf, 'unselected mode keeps its pastel icon tile');
+      const hero = await page.evaluate(() => getComputedStyle(document.querySelector('.pr-hero')).backgroundImage);
+      assert.match(hero, /radial-gradient/, 'dotted hero tile');
+      await page.screenshot({ path: path.join(SHOTS, device + '-' + theme + '.png'), fullPage: true });
+      assert.deepEqual(page.errors, []);
+      await page.context().close();
+    }
+  });
+}

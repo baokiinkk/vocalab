@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const { launch, open } = require('../pw');
 const { seed } = require('../fixtures');
+// fixture data + light theme (theme 'sys' would follow the OS / time of day in screenshots)
+const seedLight = new Function('VL', '(' + seed.toString() + ')(VL); VL.store.setSetting("theme", "light");');
 
 const SHOTS = path.join(__dirname, '..', 'shots', 'quiz');
 fs.mkdirSync(SHOTS, { recursive: true });
@@ -50,7 +52,7 @@ for (const device of DEVICES) {
   });
 
   test(`${device}: Chọn nghĩa — render, answer, single recording, refresh, next, result`, async () => {
-    const page = await open(browser, device, '#/practice', { seed });
+    const page = await open(browser, device, '#/practice', { seed: seedLight });
     await startSession(page, { modes: ['mean'], count: 3, keys: ['comm:appreciate', 'comm:suggest', 'mine:reluctant'] });
     await page.waitForSelector('.quiz-opt');
     assert.equal(await page.textContent('.quiz-prompt'), 'Từ này nghĩa là gì?');
@@ -142,7 +144,7 @@ for (const device of DEVICES) {
   });
 
   test(`${device}: keyboard 1–4 selects; correct screenshot`, async () => {
-    const page = await open(browser, device, '#/practice', { seed });
+    const page = await open(browser, device, '#/practice', { seed: seedLight });
     await startSession(page, { modes: ['mean'], count: 3 });
     await page.waitForSelector('.quiz-opt');
     const s = await st(page);
@@ -157,8 +159,31 @@ for (const device of DEVICES) {
     await page.context().close();
   });
 
+  test(`${device}: dark theme — question, wrong feedback, correct detail`, async () => {
+    const page = await open(browser, device, '#/practice', { seed: seedLight });
+    await page.evaluate(() => VL.store.setSetting('theme', 'dark'));
+    await page.waitForFunction(() => document.documentElement.getAttribute('data-theme') === 'dark');
+    await startSession(page, { modes: ['mean'], count: 3 });
+    await page.waitForSelector('.quiz-opt');
+    assert.equal(await page.$eval('.quiz-card', (c) => getComputedStyle(c).backgroundColor), 'rgb(34, 30, 26)'); // --surface (dark)
+    await page.screenshot({ path: path.join(SHOTS, `dark-question-${device}.png`), fullPage: true });
+    await clickWrong(page);
+    await page.waitForSelector('.quiz-fb.is-wrong');
+    await page.waitForTimeout(450);
+    await page.screenshot({ path: path.join(SHOTS, `dark-wrong-${device}.png`), fullPage: true });
+    await page.click('.quiz-next');
+    await page.waitForSelector('.quiz-opt:not([disabled])');
+    await clickRight(page);
+    await page.waitForSelector('.quiz-detail');
+    await page.waitForTimeout(150);
+    await page.screenshot({ path: path.join(SHOTS, `dark-detail-${device}.png`), fullPage: true });
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+    assert.deepEqual(page.errors, []);
+    await page.context().close();
+  });
+
   test(`${device}: Chọn từ, Điền chỗ trống, Nghe & chọn, Gõ chính tả`, async () => {
-    const page = await open(browser, device, '#/practice', { seed });
+    const page = await open(browser, device, '#/practice', { seed: seedLight });
     // Chọn từ
     await startSession(page, { modes: ['word'], count: 2, keys: ['comm:suggest', 'ielts:assume'] });
     await page.waitForSelector('.quiz-opt');
@@ -247,7 +272,7 @@ for (const device of DEVICES) {
   });
 
   test(`${device}: "Xem chi tiết" cancels auto-advance; Enter advances once; last item auto → result`, async () => {
-    const page = await open(browser, device, '#/practice', { seed });
+    const page = await open(browser, device, '#/practice', { seed: seedLight });
     await startSession(page, { modes: ['mean'], count: 3, keys: ['mine:meticulous', 'comm:suggest', 'comm:mention'] });
     await page.waitForSelector('.quiz-opt');
     await clickRight(page);
@@ -291,7 +316,7 @@ for (const device of DEVICES) {
   });
 
   test(`${device}: close × confirms, quits → result if answered else practice; mixed with flash`, async () => {
-    const page = await open(browser, device, '#/practice', { seed });
+    const page = await open(browser, device, '#/practice', { seed: seedLight });
     await startSession(page, { modes: ['mean'], count: 3 });
     await page.click('.quiz-close');
     await page.waitForSelector('.sheet');
@@ -332,7 +357,7 @@ for (const device of DEVICES) {
 }
 
 test('laptop: Back button leaves a running session (no #/flash ⇄ #/quiz trap); auto-advance does not fire after leaving', async () => {
-  const page = await open(browser, 'laptop', '#/today', { seed });
+  const page = await open(browser, 'laptop', '#/today', { seed: seedLight });
   await page.evaluate(() => { location.hash = '#/practice'; });
   await page.waitForFunction(() => location.hash === '#/practice');
   await page.evaluate(() => {
@@ -365,7 +390,7 @@ test('laptop: Back button leaves a running session (no #/flash ⇄ #/quiz trap);
 });
 
 test('laptop: a word deleted mid-session is skipped instead of a dead end', async () => {
-  const page = await open(browser, 'laptop', '#/today', { seed });
+  const page = await open(browser, 'laptop', '#/today', { seed: seedLight });
   await page.evaluate(() => {
     const VL = window.VL;
     VL.session.start({ keys: ['mine:albeit', 'comm:suggest'], modes: ['mean'], order: 'seq', count: 2 });

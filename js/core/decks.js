@@ -10,19 +10,19 @@
   const D = (id, abbr, name, kind, level, bg, fg, desc, cat) => ({ id, abbr, name, kind, level, bg, fg, desc, cat, builtIn: id !== 'mine' });
   /** Deck catalog (colors & copy from the design). `n` (word count) is computed from the data files. */
   VL.CATALOG = {
-    mine: D('mine', 'TC', 'Từ của tôi', 'Bộ cá nhân', 'Tự thêm', '#1C1C22', '#FFFFFF', 'Những từ bạn tự nhập. Khi thêm từ mới, từ sẽ luôn được lưu vào đây.', null),
-    comm: D('comm', 'GT', '300 từ giao tiếp thông dụng', 'Giao tiếp · Bộ có sẵn', 'A2–B1', '#ECEEF8', '#2E3A80', 'Những từ dùng nhiều nhất khi nói chuyện hằng ngày.', 'talk'),
-    phr: D('phr', 'PV', '200 phrasal verbs thông dụng', 'Giao tiếp · Bộ có sẵn', 'B1–B2', '#E5F0EF', '#2C625E', 'Cụm động từ người bản xứ dùng hằng ngày.', 'talk'),
+    mine: D('mine', 'TC', 'Từ của tôi', 'Bộ cá nhân', 'Tự thêm', '#FFE3D3', '#CF4822', 'Những từ bạn tự nhập. Khi thêm từ mới, từ sẽ luôn được lưu vào đây.', null),
+    comm: D('comm', 'GT', '300 từ giao tiếp thông dụng', 'Giao tiếp · Bộ có sẵn', 'A2–B1', '#FFE9E1', '#A83A1A', 'Những từ dùng nhiều nhất khi nói chuyện hằng ngày.', 'talk'),
+    phr: D('phr', 'PV', '200 phrasal verbs thông dụng', 'Giao tiếp · Bộ có sẵn', 'B1–B2', '#ECE6FF', '#5B40C9', 'Cụm động từ người bản xứ dùng hằng ngày.', 'talk'),
     idiom: D('idiom', 'ID', '150 thành ngữ hay dùng', 'Giao tiếp · Bộ có sẵn', 'B2', '#F6EAEE', '#8C3A58', 'Thành ngữ quen thuộc trong hội thoại và phim ảnh.', 'talk'),
-    daily: D('daily', 'HN', '300 từ vựng hằng ngày', 'Hằng ngày · Bộ có sẵn', 'A1–A2', '#E7F2EC', '#2A6B4B', 'Nhà cửa, đồ ăn, mua sắm, thời tiết, đi lại.', 'life'),
+    daily: D('daily', 'HN', '300 từ vựng hằng ngày', 'Hằng ngày · Bộ có sẵn', 'A1–A2', '#DFF2E5', '#2F7A4F', 'Nhà cửa, đồ ăn, mua sắm, thời tiết, đi lại.', 'life'),
     travel: D('travel', 'DL', '300 từ du lịch', 'Hằng ngày · Bộ có sẵn', 'A2–B1', '#F6EAEE', '#8C3A58', 'Sân bay, khách sạn, hỏi đường, đặt chỗ.', 'life'),
     food: D('food', 'AU', '200 từ ăn uống & nấu ăn', 'Hằng ngày · Bộ có sẵn', 'A2', '#F8EDE4', '#94461F', 'Món ăn, nguyên liệu, cách nấu, gọi món.', 'life'),
-    it: D('it', 'IT', '300 từ IT & công nghệ', 'Chuyên ngành · Bộ có sẵn', 'B1–B2', '#E5F0EF', '#2C625E', 'Phần mềm, mạng, dữ liệu, bảo mật.', 'pro'),
+    it: D('it', 'IT', '300 từ IT & công nghệ', 'Chuyên ngành · Bộ có sẵn', 'B1–B2', '#E3EEFA', '#2F5E99', 'Phần mềm, mạng, dữ liệu, bảo mật.', 'pro'),
     work: D('work', 'VP', '300 từ văn phòng & kinh doanh', 'Chuyên ngành · Bộ có sẵn', 'B1–B2', '#F6F0E1', '#7A5A1E', 'Họp, email, báo cáo, đàm phán.', 'pro'),
     mkt: D('mkt', 'MK', '300 từ marketing', 'Chuyên ngành · Bộ có sẵn', 'B1–B2', '#F6EAEE', '#8C3A58', 'Chiến dịch, khách hàng, số liệu, thương hiệu.', 'pro'),
     toeic: D('toeic', 'TO', '600 từ TOEIC thiết yếu', 'Luyện thi · Bộ có sẵn', 'B1–B2', '#F8EDE4', '#94461F', 'Từ hay gặp trong TOEIC Listening & Reading, chia theo chủ đề công sở: hợp đồng, tài chính, nhân sự, mua sắm…', 'exam'),
     ielts: D('ielts', 'IE', 'IELTS Academic Word List', 'Luyện thi · Bộ có sẵn', 'B2–C1', '#F1ECF6', '#5E3F87', 'Từ học thuật cho IELTS Reading & Writing.', 'exam'),
-    iw: D('iw', 'IW', 'IELTS Writing theo chủ đề', 'Luyện thi · Bộ có sẵn', 'B2–C1', '#ECEEF8', '#2E3A80', 'Từ vựng theo chủ đề Writing Task 2: môi trường, giáo dục, công nghệ…', 'exam')
+    iw: D('iw', 'IW', 'IELTS Writing theo chủ đề', 'Luyện thi · Bộ có sẵn', 'B2–C1', '#FFE9E1', '#A83A1A', 'Từ vựng theo chủ đề Writing Task 2: môi trường, giáo dục, công nghệ…', 'exam')
   };
   /** Library categories (Thư viện page). */
   VL.CATS = [

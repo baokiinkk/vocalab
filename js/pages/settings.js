@@ -1,8 +1,8 @@
-/* VocaLab — Cài đặt (design-v2/project/Settings.dc.html).
+/* VocaLab — Cài đặt (design-v3/project/Settings.dc.html).
    #/settings                 full settings (nav 'settings')
-   #/settings?scope=practice  "Cài đặt luyện" — practice sections only (nav 'practice', back link to #/practice)
+   #/settings?scope=practice  "Cài đặt luyện" — practice sections only, no navigation (v3), back link to #/practice
    Every control writes straight to VL.store.settings() via VL.store.setSetting(path, value) and re-renders.
-   Settings the v2 design no longer shows (modes, order, prio/review/flash, exn, lang, streak, weekly days, size, sw.backup)
+   Settings the v3 design no longer shows (modes, order, prio/review/flash, exn, lang, streak, weekly days, size, sw.backup)
    keep their stored values / defaults. */
 (function () {
   'use strict';
@@ -228,6 +228,8 @@
   VL.page('settings', {
     // Router reads def.nav before render; derive it from the current hash (scope=practice → 'practice').
     get nav() { return scoped(VL.parseHash()) ? 'practice' : 'settings'; },
+    // v3: the scoped "Cài đặt luyện" screen has no sidebar / rail / tab bar.
+    get focus() { return scoped(VL.parseHash()); },
     title: (ctx) => (scoped(ctx) ? 'Cài đặt luyện' : 'Cài đặt'),
     enter() { checking = false; },
     render,

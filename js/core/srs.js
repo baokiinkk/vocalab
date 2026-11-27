@@ -32,10 +32,10 @@
   const GRACE_DAYS = 0.5;
 
   const LEVELS = [
-    { id: 'weak', label: 'Yếu', min: 0, color: '#B9532A', text: '#B9532A', soft: '#F8EDE4' },
-    { id: 'learning', label: 'Đang học', min: 30, color: '#C9962E', text: '#9A6A12', soft: '#F6F0E1' },
-    { id: 'good', label: 'Khá', min: 70, color: '#3F4C9A', text: '#3F4C9A', soft: '#ECEEF8' },
-    { id: 'master', label: 'Thành thạo', min: 100, color: '#2F7A55', text: '#2F7A55', soft: '#E7F2EC' }
+    { id: 'weak', label: 'Yếu', min: 0, color: '#C2465E', text: '#A8324F', soft: '#FCE4EA' },
+    { id: 'learning', label: 'Đang học', min: 30, color: '#E9A23B', text: '#8A6414', soft: '#FFF1C7' },
+    { id: 'good', label: 'Khá', min: 70, color: '#5B40C9', text: '#5B40C9', soft: '#ECE6FF' },
+    { id: 'master', label: 'Thành thạo', min: 100, color: '#2F7A4F', text: '#2F7A4F', soft: '#DFF2E5' }
   ];
 
   const srs = (VL.srs = {

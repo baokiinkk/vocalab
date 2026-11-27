@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Thư viện · iPad</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#FBF7F0}</style>
+</helmet>
+<div style="width: 820px; min-height: 1780px; background: #FBF7F0; font-family: 'Be Vietnam Pro', Inter, system-ui, sans-serif; color: #2E2A24">
+  <dc-import name="Vocab" device="ipad" frame-h="{{ h }}" hint-size="820px,1180px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":820,"height":1180}}'>
+class Component extends DCLogic {
+  renderVals() { return { h: 1780 }; }
+}
+</script>
+</body>
+</html>

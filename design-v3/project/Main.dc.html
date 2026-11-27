@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Hôm nay</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF7F0}
+a{color:#CF4822}a:hover{color:#A83A1A}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <div style="{{ L.nav }}">
+    <dc-import name="Sidebar" active="main" device="{{ device }}" hint-size="100%,100%"></dc-import>
+  </div>
+  <main style="{{ L.main }}">
+    <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px">
+
+      <section aria-label="Hôm nay của bạn" style="{{ L.head }}">
+        <div style="{{ L.topRow }}">
+          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+            <h1 style="{{ L.h1 }}">Chào bạn, học tiếp nhé.</h1>
+            <span style="font-size: 13px; color: #6B6358">Còn 3 việc nhỏ cho hôm nay.</span>
+          </div>
+          <span style="{{ L.streakTxt }}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="#E0612E"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 .2 1.8 1 3 2.5 3.5C11 8.5 11 5 12 2z"></path></svg>12 ngày</span>
+        </div>
+        <div style="{{ L.duo }}">
+          <div style="{{ L.planCell }}">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #2E2A24"><span style="width: 26px; height: 26px; border-radius: 8px; background: #FFEDB8; color: #8A5D00; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"></path><rect x="4" y="4" width="16" height="16" rx="3"></rect></svg></span>Kế hoạch</span>
+              <span style="font-size: 12px; font-weight: 700; color: #6B6358">1/3</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 2px">
+              <sc-for list="{{ plan }}" as="p" hint-placeholder-count="3">
+                <a href="{{ p.href }}" style="{{ p.row }}">
+                  <span style="{{ p.box }}">{{ p.mark }}</span>
+                  <span style="{{ p.text }}">{{ p.title }}</span>
+                  <span style="{{ p.meta }}">{{ p.metaText }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+          <a href="{{ ln.vocab }}" aria-label="Tiến độ thông thạo 58%, xem thư viện" style="{{ L.streak }}">
+            <div style="{{ L.progTop }}">
+              <span role="img" aria-hidden="true" style="{{ L.ring }}"><span style="{{ L.ringIn }}">58%</span></span>
+              <b style="font-size: 15px; font-weight: 800; color: #2E2A24; white-space: nowrap">61/248 từ</b>
+            </div>
+            <span style="align-self: center; padding: 4px 10px; border-radius: 999px; background: #FFFDF8; font-size: 12px; font-weight: 700; color: #A83A1A; white-space: nowrap">24 từ cần ôn</span>
+          </a>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-what" style="display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px">
+          <h2 id="h-what" style="{{ L.h2 }}">Hôm nay học gì?</h2>
+          <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: #6B6358"><span style="width: 24px; height: 1.5px; background: #B0A693; display: block"></span>Mỗi ngày một chút, đều đặn là nhớ lâu.</span>
+        </div>
+        <div style="{{ L.featGrid }}">
+          <a href="{{ ln.flash }}" style="{{ f.peach.card }}">
+            <span style="{{ f.peach.tape }}"></span>
+            <span style="{{ L.badge }}">24 TỪ ĐẾN HẠN</span>
+            <span style="{{ L.fTitle }}">Ôn tập</span>
+            <span style="{{ L.fDesc }}">Ôn đúng lúc sắp quên</span>
+            <svg aria-hidden="true" viewBox="0 0 160 96" style="{{ L.art }}"><circle cx="104" cy="60" r="38" fill="#FFC9B0"></circle><path d="M30 28l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFFDF8"></path><rect x="44" y="34" width="62" height="46" rx="7" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5" transform="rotate(-9 75 57)"></rect><rect x="62" y="28" width="62" height="46" rx="7" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5"></rect><path d="M74 44h36M74 56h24" stroke="#CF4822" stroke-width="4.5" stroke-linecap="round"></path></svg>
+          </a>
+          <a href="{{ ln.vocab }}" style="{{ f.lilac.card }}">
+            <span style="{{ f.lilac.tape }}"></span>
+            <span style="{{ L.badge }}">248 TỪ</span>
+            <span style="{{ L.fTitle }}">Từ vựng</span>
+            <span style="{{ L.fDesc }}">Từ của bạn và bộ đã thêm</span>
+            <svg aria-hidden="true" viewBox="0 0 160 96" style="{{ L.art }}"><circle cx="104" cy="60" r="38" fill="#D3C7FA"></circle><path d="M30 30l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFFDF8"></path><rect x="56" y="28" width="56" height="58" rx="6" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5" transform="rotate(-10 84 57)"></rect><rect x="70" y="26" width="56" height="58" rx="6" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5"></rect><path d="M80 42h34M80 52h26M80 62h30" stroke="#6A4FD8" stroke-width="4" stroke-linecap="round"></path><circle cx="116" cy="76" r="7" fill="#FFD66B" stroke="#2E2A24" stroke-width="2"></circle></svg>
+          </a>
+          <a href="{{ ln.add }}" style="{{ f.butter.card }}">
+            <span style="{{ f.butter.tape }}"></span>
+            <span style="{{ L.badge }}">TỰ NHẬP</span>
+            <span style="{{ L.fTitle }}">Thêm từ</span>
+            <span style="{{ L.fDesc }}">Gõ từ mới, AI gợi ý khi cần</span>
+            <svg aria-hidden="true" viewBox="0 0 160 96" style="{{ L.art }}"><circle cx="104" cy="60" r="38" fill="#FFE08A"></circle><path d="M30 30l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFFDF8"></path><rect x="48" y="30" width="70" height="52" rx="7" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5"></rect><path d="M60 46h34M60 58h24" stroke="#D9CFBB" stroke-width="4" stroke-linecap="round"></path><path d="M100 72l26-26 8 8-26 26-11 3z" fill="#FF8C69" stroke="#2E2A24" stroke-width="2.5" stroke-linejoin="round"></path></svg>
+          </a>
+          <a href="{{ ln.flash }}" style="{{ f.mint.card }}">
+            <span style="{{ f.mint.tape }}"></span>
+            <span style="{{ L.badge }}">10 THẺ</span>
+            <span style="{{ L.fTitle }}">Flashcard</span>
+            <span style="{{ L.fDesc }}">Lật thẻ, tự chấm nhớ / chưa nhớ</span>
+            <svg aria-hidden="true" viewBox="0 0 160 96" style="{{ L.art }}"><circle cx="104" cy="60" r="38" fill="#B7E2C6"></circle><path d="M30 30l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFFDF8"></path><rect x="58" y="22" width="52" height="66" rx="8" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5"></rect><text x="84" y="62" text-anchor="middle" font-size="22" font-weight="800" fill="#2F7A4F" font-family="Be Vietnam Pro, sans-serif">Aa</text><path d="M116 40c8 6 8 18 0 24" fill="none" stroke="#2E2A24" stroke-width="2.5" stroke-linecap="round"></path><path d="M112 62l4 3 4-4" fill="none" stroke="#2E2A24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+          <a href="{{ ln.quiz }}" style="{{ f.pink.card }}">
+            <span style="{{ f.pink.tape }}"></span>
+            <span style="{{ L.badge }}">8 CÂU</span>
+            <span style="{{ L.fTitle }}">Chọn nghĩa</span>
+            <span style="{{ L.fDesc }}">4 đáp án, biết ngay đúng sai</span>
+            <svg aria-hidden="true" viewBox="0 0 160 96" style="{{ L.art }}"><circle cx="104" cy="60" r="38" fill="#F7BFCD"></circle><path d="M30 30l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFFDF8"></path><rect x="52" y="26" width="72" height="16" rx="5" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.2"></rect><rect x="52" y="48" width="72" height="16" rx="5" fill="#9ED7B0" stroke="#2E2A24" stroke-width="2.2"></rect><rect x="52" y="70" width="72" height="16" rx="5" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.2"></rect><path d="M110 56l3 3 6-6" fill="none" stroke="#2E2A24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </a>
+          <a href="{{ ln.vocab }}" style="{{ f.sky.card }}">
+            <span style="{{ f.sky.tape }}"></span>
+            <span style="{{ L.badge }}">12 BỘ</span>
+            <span style="{{ L.fTitle }}">Bộ có sẵn</span>
+            <span style="{{ L.fDesc }}">Giao tiếp, TOEIC, IELTS…</span>
+            <svg aria-hidden="true" viewBox="0 0 160 96" style="{{ L.art }}"><circle cx="104" cy="60" r="38" fill="#BCD6F2"></circle><path d="M30 30l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFFDF8"></path><path d="M48 32l24-8 24 8 24-8v54l-24 8-24-8-24 8z" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5" stroke-linejoin="round"></path><path d="M72 24v54M96 32v54" stroke="#2E2A24" stroke-width="2"></path><path d="M58 64c8-12 18 4 26-6s14 2 22-10" fill="none" stroke="#CF4822" stroke-width="3" stroke-dasharray="4 5" stroke-linecap="round"></path><circle cx="108" cy="44" r="6" fill="#CF4822" stroke="#2E2A24" stroke-width="2"></circle></svg>
+          </a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#FBF7F0', fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", color: '#2E2A24' };
+    const card = { background: '#FFFDF8', border: '1px solid #E8DFCC', borderRadius: '20px', padding: phone ? '16px' : '22px', display: 'flex', flexDirection: 'column', gap: '16px', minWidth: 0, boxSizing: 'border-box', boxShadow: '0 2px 0 #EDE4D2' };
+    return { d, laptop, tablet, phone, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', L: {
+      root: laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
+      nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
+      main: laptop ? { flex: '999 1 560px', minWidth: 0, padding: '24px 28px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '22px 22px 40px' : '14px 14px 24px', boxSizing: 'border-box' },
+      head: { ...card, position: 'relative', gap: phone ? '12px' : '14px', padding: phone ? '14px' : '18px 20px' },
+      h2: { margin: 0, fontSize: laptop ? '20px' : tablet ? '19px' : '17px', fontWeight: 800, letterSpacing: '-0.015em' },
+      topRow: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' },
+      h1: { margin: 0, fontSize: laptop ? '26px' : tablet ? '24px' : '20px', fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.2 },
+      streakChip: { flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: phone ? '6px 10px' : '8px 14px', borderRadius: '999px', background: '#FFE6D8', border: '1.5px solid #F4C3AB', color: '#2E2A24', whiteSpace: 'nowrap' },
+      ring: { flex: '0 0 auto', width: phone ? '50px' : '56px', height: phone ? '50px' : '56px', borderRadius: '999px', background: 'conic-gradient(#CF4822 0 58%, #FFFDF8 58% 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      ringIn: { width: phone ? '40px' : '44px', height: phone ? '40px' : '44px', borderRadius: '999px', background: '#FFFDF8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800, color: '#2E2A24' },
+      progTop: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', textAlign: 'center' },
+      streakTxt: { flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: phone ? '15px' : '17px', fontWeight: 800, color: '#2E2A24', whiteSpace: 'nowrap' },
+      _unused: { display: 'inline-flex', alignItems: 'center', gap: '6px', alignSelf: 'flex-start', padding: '5px 10px', borderRadius: '999px', background: '#FFFDF8', fontSize: '12px', fontWeight: 600, boxShadow: '0 1px 0 #F4C3AB', whiteSpace: 'nowrap' },
+      stack: { display: 'flex', height: '8px', borderRadius: '999px', overflow: 'hidden', background: '#FFFDF8', gap: '2px' },
+      duo: { display: 'grid', gridTemplateColumns: phone ? 'minmax(0, 1fr) 118px' : 'minmax(0, 1fr) ' + (laptop ? '230px' : '200px'), gap: phone ? '8px' : '12px', alignItems: 'stretch' },
+      planCell: { display: 'flex', flexDirection: 'column', gap: '4px', padding: phone ? '8px 10px' : '10px 14px', borderRadius: '14px', background: '#FBF7F0', border: '1px solid #EFE7D6', minWidth: 0 },
+      streak: { display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '6px', textDecoration: 'none', color: '#2E2A24', padding: phone ? '8px' : '10px 12px', borderRadius: '14px', backgroundColor: '#FFE6D8', backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid #F4C3AB', boxShadow: '0 2px 0 #F4C3AB', minWidth: 0, boxSizing: 'border-box' },
+      weekBox: { flex: '1 1 440px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px 14px', padding: '8px 14px', borderRadius: '12px', border: '1px solid #E8DFCC', background: '#FBF7F0', boxSizing: 'border-box' },
+      cta: { flex: phone ? '1 1 100%' : '0 0 auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px', minHeight: '52px', padding: '0 24px', borderRadius: '14px', background: '#CF4822', color: '#FFFDF8', fontSize: '15px', fontWeight: 800, textDecoration: 'none', boxSizing: 'border-box', boxShadow: '0 3px 0 #A83A1A' },
+      featGrid: { display: 'grid', gridTemplateColumns: 'repeat(' + (laptop ? 6 : tablet ? 3 : 2) + ', minmax(0, 1fr))', gap: phone ? '14px 10px' : '20px 14px', paddingTop: '8px' },
+      badge: { alignSelf: 'flex-start', padding: '4px 9px', borderRadius: '7px', background: '#FFFDF8', color: '#2E2A24', fontSize: '10px', fontWeight: 800, letterSpacing: '0.05em', boxShadow: '0 1px 0 rgba(46,42,36,0.08)' },
+      fTitle: { fontSize: phone ? '16px' : '18px', fontWeight: 800, letterSpacing: '-0.01em', color: '#2E2A24', marginTop: '6px' },
+      fDesc: { fontSize: '13px', lineHeight: 1.4, color: '#4D463C', minHeight: '36px' },
+      art: { width: '100%', height: phone ? '84px' : '96px', marginTop: 'auto' },
+      lower: { display: 'grid', gridTemplateColumns: laptop ? 'minmax(0, 1.75fr) minmax(0, 1fr)' : 'minmax(0, 1fr)', gap: '18px', alignItems: 'start', paddingTop: '8px' },
+      plan: { ...card, position: 'relative', background: '#F5EAD6', border: '1px solid #E3CFA8', boxShadow: '0 2px 0 #E3CFA8' },
+      planTape: { position: 'absolute', top: '-9px', left: '40px', width: '72px', height: '18px', borderRadius: '3px', background: 'repeating-linear-gradient(90deg, rgba(214,190,140,0.75) 0 6px, rgba(226,205,160,0.75) 6px 12px)' },
+      card
+    } };
+  }
+  renderVals() {
+    const { d, sfx, L, phone } = this.layout();
+    const ln = { flash: 'Flashcard' + sfx + '.dc.html', vocab: 'Vocab' + sfx + '.dc.html', add: 'AddWord' + sfx + '.dc.html', quiz: 'Quiz' + sfx + '.dc.html', fresh: 'PracticeNew' + sfx + '.dc.html', weak: 'PracticeWeak' + sfx + '.dc.html' };
+    const mk = (bg, bd, tape) => ({
+      card: { position: 'relative', display: 'flex', flexDirection: 'column', gap: '4px', minHeight: phone ? '210px' : '236px', padding: '16px 14px 8px', borderRadius: '18px', backgroundColor: bg, backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid ' + bd, boxShadow: '0 3px 0 ' + bd, textDecoration: 'none', color: '#2E2A24', boxSizing: 'border-box', minWidth: 0 },
+      tape: { position: 'absolute', top: '-9px', left: '50%', transform: 'translateX(-50%) rotate(-2deg)', width: '52px', height: '16px', borderRadius: '3px', background: 'repeating-linear-gradient(90deg, ' + tape + ' 0 5px, rgba(255,253,248,0.5) 5px 10px)', opacity: 0.9 } });
+    const f = { peach: mk('#FFE6D8', '#F4C3AB', '#F4A98A'), lilac: mk('#ECE6FF', '#D3C8F7', '#B8A8F0'), butter: mk('#FFF1C7', '#EFD993', '#EBC966'), mint: mk('#DFF2E5', '#B9DEC6', '#96CFA9'), pink: mk('#FCE4EA', '#F1C2CF', '#EBA3B6'), sky: mk('#E3EEFA', '#BFD5EF', '#9BBFE6') };
+    const plan = [
+      ['Ôn 10 từ yếu', 'done', 'Xong', ln.weak],
+      ['8 từ đến hạn', 'next', 'Tiếp', ln.quiz],
+      ['10 từ mới', 'todo', '~5′', ln.fresh]
+    ].map(([title, st, metaText, href]) => ({ title, metaText, href, mark: st === 'done' ? '✓' : '',
+      row: { display: 'flex', alignItems: 'center', gap: phone ? '8px' : '10px', minHeight: phone ? '32px' : '34px', padding: '4px 8px', margin: '0 -8px', borderRadius: '10px', background: st === 'next' ? '#FFF1EA' : 'transparent', textDecoration: 'none', color: '#2E2A24' },
+      box: { flex: '0 0 20px', width: '20px', height: '20px', borderRadius: '6px', boxSizing: 'border-box', border: st === 'done' ? 'none' : st === 'next' ? '2px solid #CF4822' : '1.5px solid #D9CFBB', background: st === 'done' ? '#2F7A4F' : '#FFFDF8', color: '#FFFDF8', fontSize: '12px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      text: { flex: 1, minWidth: 0, fontSize: phone ? '13px' : '14px', fontWeight: st === 'next' ? 700 : 500, color: st === 'done' ? '#8A8378' : '#2E2A24', textDecoration: st === 'done' ? 'line-through' : 'none', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
+      meta: { display: 'inline', fontSize: '12px', fontWeight: 700, color: st === 'next' ? '#CF4822' : '#8A8378', whiteSpace: 'nowrap' } }));
+    const bands = [['Thành thạo', 61, '#CF4822'], ['Đang học', 132, '#E9A23B'], ['Yếu', 55, '#C2465E']].map(([label, n, c]) => ({ label, n,
+      dot: { flex: '0 0 8px', width: '8px', height: '8px', borderRadius: '999px', background: c },
+      seg: { flex: n + ' 1 0', background: c, display: 'block' } }));
+    return { device: d, L, f, ln, plan, bands };
+  }
+}
+</script>
+</body>
+</html>

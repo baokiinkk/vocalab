@@ -1,0 +1,781 @@
+{
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-19T14:51:00Z"
+ },
+ "title": "Webapp luyện từ vựng tiếng Anh",
+ "launch": {
+  "view": "canvas",
+  "page": "flow"
+ },
+ "pages": [
+  {
+   "id": "flow",
+   "name": "0 · Flow tổng"
+  },
+  {
+   "id": "home",
+   "name": "1 · Hôm nay"
+  },
+  {
+   "id": "library",
+   "name": "2 · Thư viện"
+  },
+  {
+   "id": "deck",
+   "name": "3 · Chi tiết bộ từ"
+  },
+  {
+   "id": "word",
+   "name": "4 · Chi tiết từ"
+  },
+  {
+   "id": "add",
+   "name": "5 · Thêm / sửa từ + AI"
+  },
+  {
+   "id": "practice",
+   "name": "6 · Luyện tập"
+  },
+  {
+   "id": "flash",
+   "name": "7 · Flashcard"
+  },
+  {
+   "id": "quiz",
+   "name": "8 · Chọn nghĩa"
+  },
+  {
+   "id": "result",
+   "name": "9 · Kết quả phiên"
+  },
+  {
+   "id": "settings",
+   "name": "10 · Cài đặt"
+  },
+  {
+   "id": "parts",
+   "name": "Thành phần"
+  }
+ ],
+ "boards": {
+  "Flow.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1488,
+   "h": 1774,
+   "title": "Flow tổng quan · iPhone",
+   "page": "flow"
+  },
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 820,
+   "title": "Hôm nay · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "home"
+  },
+  "MainTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1180,
+   "title": "Hôm nay · iPad",
+   "is_interactive": true,
+   "page": "home"
+  },
+  "MainPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 1320,
+   "title": "Hôm nay · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "home"
+  },
+  "Vocab.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1760,
+   "title": "Thư viện · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "library"
+  },
+  "VocabTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1780,
+   "title": "Thư viện · iPad",
+   "is_interactive": true,
+   "page": "library"
+  },
+  "VocabPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 2900,
+   "title": "Thư viện · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "library"
+  },
+  "DeckDetail.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1300,
+   "title": "Chi tiết bộ từ · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "deck"
+  },
+  "DeckDetailTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1600,
+   "title": "Chi tiết bộ từ · iPad",
+   "is_interactive": true,
+   "page": "deck"
+  },
+  "DeckDetailPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 2400,
+   "title": "Chi tiết bộ từ · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "deck"
+  },
+  "WordDetail.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1700,
+   "title": "Chi tiết từ · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "word"
+  },
+  "WordDetailTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 2340,
+   "title": "Chi tiết từ · iPad",
+   "is_interactive": true,
+   "page": "word"
+  },
+  "WordDetailPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 2900,
+   "title": "Chi tiết từ · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "word"
+  },
+  "AddWord.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1400,
+   "title": "Thêm từ + AI · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "add"
+  },
+  "AddWordTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1500,
+   "title": "Thêm từ + AI · iPad",
+   "is_interactive": true,
+   "page": "add"
+  },
+  "AddWordPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 1900,
+   "title": "Thêm từ + AI · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "add"
+  },
+  "PracticeSetup.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1000,
+   "title": "Luyện tập · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeSetupTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1260,
+   "title": "Luyện tập · iPad",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeSetupPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 1180,
+   "title": "Luyện tập · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "practice"
+  },
+  "Flashcard.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 900,
+   "title": "Flashcard · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "flash"
+  },
+  "FlashcardTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1180,
+   "title": "Flashcard · iPad",
+   "is_interactive": true,
+   "page": "flash"
+  },
+  "FlashcardPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 920,
+   "title": "Flashcard · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "flash"
+  },
+  "Quiz.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 900,
+   "title": "Chọn nghĩa · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "quiz"
+  },
+  "QuizTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1180,
+   "title": "Chọn nghĩa · iPad",
+   "is_interactive": true,
+   "page": "quiz"
+  },
+  "QuizPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 960,
+   "title": "Chọn nghĩa · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "quiz"
+  },
+  "Result.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1300,
+   "title": "Kết quả phiên · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "result"
+  },
+  "ResultTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1300,
+   "title": "Kết quả phiên · iPad",
+   "is_interactive": true,
+   "page": "result"
+  },
+  "ResultPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 1500,
+   "title": "Kết quả phiên · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "result"
+  },
+  "Settings.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 1440,
+   "h": 1200,
+   "title": "Cài đặt · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "settings"
+  },
+  "SettingsTablet.dc.html": {
+   "x": 1520,
+   "y": 0,
+   "w": 820,
+   "h": 1180,
+   "title": "Cài đặt · iPad",
+   "is_interactive": true,
+   "page": "settings"
+  },
+  "SettingsPhone.dc.html": {
+   "x": 2420,
+   "y": 0,
+   "w": 390,
+   "h": 1400,
+   "title": "Cài đặt · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "settings"
+  },
+  "Sidebar.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 240,
+   "h": 900,
+   "title": "Điều hướng (laptop / iPad / iPhone)",
+   "is_interactive": true,
+   "page": "parts"
+  },
+  "FlashcardBack.dc.html": {
+   "x": 0,
+   "y": 1580,
+   "w": 1440,
+   "h": 1000,
+   "title": "Flashcard mặt sau · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "flash"
+  },
+  "FlashcardBackTablet.dc.html": {
+   "x": 1520,
+   "y": 1580,
+   "w": 820,
+   "h": 1180,
+   "title": "Flashcard mặt sau · iPad",
+   "is_interactive": true,
+   "page": "flash"
+  },
+  "FlashcardBackPhone.dc.html": {
+   "x": 2420,
+   "y": 1580,
+   "w": 390,
+   "h": 1440,
+   "title": "Flashcard mặt sau · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "flash"
+  },
+  "PracticeQuick.dc.html": {
+   "x": 0,
+   "y": 1580,
+   "w": 1440,
+   "h": 1000,
+   "title": "Luyện tập · tab Nhanh · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeQuickTablet.dc.html": {
+   "x": 1520,
+   "y": 1580,
+   "w": 820,
+   "h": 1260,
+   "title": "Luyện tập · tab Nhanh · iPad",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeQuickPhone.dc.html": {
+   "x": 2420,
+   "y": 1580,
+   "w": 390,
+   "h": 1100,
+   "title": "Luyện tập · tab Nhanh · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "practice"
+  },
+  "PracticeWeak.dc.html": {
+   "x": 0,
+   "y": 3160,
+   "w": 1440,
+   "h": 1100,
+   "title": "Luyện tập · tab Từ yếu · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeWeakTablet.dc.html": {
+   "x": 1520,
+   "y": 3160,
+   "w": 820,
+   "h": 1300,
+   "title": "Luyện tập · tab Từ yếu · iPad",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeWeakPhone.dc.html": {
+   "x": 2420,
+   "y": 3160,
+   "w": 390,
+   "h": 1500,
+   "title": "Luyện tập · tab Từ yếu · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "practice"
+  },
+  "PracticeNew.dc.html": {
+   "x": 0,
+   "y": 5060,
+   "w": 1440,
+   "h": 1000,
+   "title": "Luyện tập · tab Từ mới · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeNewTablet.dc.html": {
+   "x": 1520,
+   "y": 5060,
+   "w": 820,
+   "h": 1260,
+   "title": "Luyện tập · tab Từ mới · iPad",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeNewPhone.dc.html": {
+   "x": 2420,
+   "y": 5060,
+   "w": 390,
+   "h": 1100,
+   "title": "Luyện tập · tab Từ mới · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "practice"
+  },
+  "PracticeSettings.dc.html": {
+   "x": 0,
+   "y": 6640,
+   "w": 1440,
+   "h": 1000,
+   "title": "Cài đặt luyện · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeSettingsTablet.dc.html": {
+   "x": 1520,
+   "y": 6640,
+   "w": 820,
+   "h": 1260,
+   "title": "Cài đặt luyện · iPad",
+   "is_interactive": true,
+   "page": "practice"
+  },
+  "PracticeSettingsPhone.dc.html": {
+   "x": 2420,
+   "y": 6640,
+   "w": 390,
+   "h": 1200,
+   "title": "Cài đặt luyện · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "practice"
+  },
+  "QuizDetail.dc.html": {
+   "x": 0,
+   "y": 1580,
+   "w": 1440,
+   "h": 900,
+   "title": "Chọn nghĩa · đúng → chi tiết 3s · Laptop",
+   "expand": "fill",
+   "is_interactive": true,
+   "page": "quiz"
+  },
+  "QuizDetailTablet.dc.html": {
+   "x": 1520,
+   "y": 1580,
+   "w": 820,
+   "h": 1180,
+   "title": "Chọn nghĩa · đúng → chi tiết 3s · iPad",
+   "is_interactive": true,
+   "page": "quiz"
+  },
+  "QuizDetailPhone.dc.html": {
+   "x": 2420,
+   "y": 1580,
+   "w": 390,
+   "h": 1000,
+   "title": "Chọn nghĩa · đúng → chi tiết 3s · iPhone",
+   "is_interactive": true,
+   "radius": 40,
+   "page": "quiz"
+  },
+  "Illo.dc.html": {
+   "x": 320,
+   "y": 0,
+   "w": 240,
+   "h": 180,
+   "title": "Hình minh hoạ từ (dùng chung)",
+   "page": "parts"
+  },
+  "DeckIcon.dc.html": {
+   "x": 620,
+   "y": 0,
+   "w": 48,
+   "h": 48,
+   "title": "Icon bộ từ (dùng chung)",
+   "page": "parts"
+  }
+ },
+ "order": [
+  "Flow.dc.html",
+  "Vocab.dc.html",
+  "VocabTablet.dc.html",
+  "VocabPhone.dc.html",
+  "WordDetail.dc.html",
+  "WordDetailTablet.dc.html",
+  "WordDetailPhone.dc.html",
+  "AddWord.dc.html",
+  "AddWordTablet.dc.html",
+  "AddWordPhone.dc.html",
+  "PracticeSetup.dc.html",
+  "PracticeSetupTablet.dc.html",
+  "PracticeSetupPhone.dc.html",
+  "PracticeQuick.dc.html",
+  "PracticeQuickTablet.dc.html",
+  "PracticeQuickPhone.dc.html",
+  "PracticeWeak.dc.html",
+  "PracticeWeakTablet.dc.html",
+  "PracticeWeakPhone.dc.html",
+  "PracticeNew.dc.html",
+  "PracticeNewTablet.dc.html",
+  "PracticeNewPhone.dc.html",
+  "PracticeSettings.dc.html",
+  "PracticeSettingsTablet.dc.html",
+  "PracticeSettingsPhone.dc.html",
+  "Flashcard.dc.html",
+  "FlashcardTablet.dc.html",
+  "FlashcardPhone.dc.html",
+  "FlashcardBack.dc.html",
+  "FlashcardBackTablet.dc.html",
+  "FlashcardBackPhone.dc.html",
+  "Quiz.dc.html",
+  "QuizTablet.dc.html",
+  "QuizPhone.dc.html",
+  "QuizDetail.dc.html",
+  "QuizDetailTablet.dc.html",
+  "QuizDetailPhone.dc.html",
+  "Result.dc.html",
+  "ResultTablet.dc.html",
+  "ResultPhone.dc.html",
+  "Settings.dc.html",
+  "SettingsTablet.dc.html",
+  "SettingsPhone.dc.html",
+  "Sidebar.dc.html",
+  "Illo.dc.html",
+  "Main.dc.html",
+  "MainTablet.dc.html",
+  "MainPhone.dc.html",
+  "DeckDetail.dc.html",
+  "DeckDetailTablet.dc.html",
+  "DeckDetailPhone.dc.html",
+  "DeckIcon.dc.html"
+ ],
+ "notes": {
+  "t1": {
+   "x": 0,
+   "y": -300,
+   "text": "Hôm nay · Laptop / iPad / iPhone",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "home",
+   "w": 240
+  },
+  "t2": {
+   "x": 0,
+   "y": -300,
+   "text": "Thư viện · Laptop / iPad / iPhone",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "library",
+   "w": 240
+  },
+  "t3": {
+   "x": 0,
+   "y": -300,
+   "text": "Chi tiết bộ từ · Laptop / iPad / iPhone",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "deck",
+   "w": 240
+  },
+  "t4": {
+   "x": 0,
+   "y": -300,
+   "text": "Chi tiết từ · Laptop / iPad / iPhone",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "word",
+   "w": 240
+  },
+  "t5": {
+   "x": 0,
+   "y": -300,
+   "text": "Thêm / sửa từ + AI · Laptop / iPad / iPhone",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "add",
+   "w": 240
+  },
+  "t6": {
+   "x": 0,
+   "y": -300,
+   "text": "Luyện tập · tab Ôn hôm nay",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "practice",
+   "w": 240
+  },
+  "t7": {
+   "x": 0,
+   "y": -300,
+   "text": "Flashcard · mặt trước (từ)",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "flash",
+   "w": 240
+  },
+  "t8": {
+   "x": 0,
+   "y": -300,
+   "text": "Chọn nghĩa · Laptop / iPad / iPhone",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "quiz",
+   "w": 240
+  },
+  "t9": {
+   "x": 0,
+   "y": -300,
+   "text": "Kết quả phiên · Laptop / iPad / iPhone",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "result",
+   "w": 240
+  },
+  "t10": {
+   "x": 0,
+   "y": -300,
+   "text": "Cài đặt · Laptop / iPad / iPhone",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "settings",
+   "w": 240
+  },
+  "t7b": {
+   "x": 0,
+   "y": 1280,
+   "text": "Flashcard · mặt sau (xem nghĩa)",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "flash",
+   "w": 240
+  },
+  "p0": {
+   "x": 0,
+   "y": 1280,
+   "text": "Luyện tập · tab Nhanh",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "practice",
+   "w": 240
+  },
+  "p1": {
+   "x": 0,
+   "y": 2860,
+   "text": "Luyện tập · tab Từ yếu",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "practice",
+   "w": 240
+  },
+  "p2": {
+   "x": 0,
+   "y": 4760,
+   "text": "Luyện tập · tab Từ mới",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "practice",
+   "w": 240
+  },
+  "p3": {
+   "x": 0,
+   "y": 6340,
+   "text": "Cài đặt luyện",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "practice",
+   "w": 240
+  },
+  "q2": {
+   "x": 0,
+   "y": 1280,
+   "text": "Chọn đúng → màn chi tiết hiện 3 giây",
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "quiz",
+   "w": 240
+  }
+ },
+ "designSystems": [],
+ "attachments": {},
+ "noteOrder": [
+  "t1",
+  "t2",
+  "t3",
+  "t4",
+  "t5",
+  "t6",
+  "t7",
+  "t8",
+  "t9",
+  "t10",
+  "t7b",
+  "p0",
+  "p1",
+  "p2",
+  "p3",
+  "q2"
+ ]
+}

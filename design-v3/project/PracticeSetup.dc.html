@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Luyện tập</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF7F0}
+a{color:#CF4822}a:hover{color:#A83A1A}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <div style="{{ L.nav }}">
+    <dc-import name="Sidebar" active="practice" device="{{ device }}" hint-size="100%,100%"></dc-import>
+  </div>
+  <main style="{{ L.main }}">
+    <div style="max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px">
+
+      <header style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+        <h1 style="{{ L.h1 }}">Luyện tập</h1>
+        <a href="{{ ln.settings }}" style="font-size: 14px; font-weight: 600; text-decoration: none">Cài đặt luyện</a>
+      </header>
+
+      <section aria-label="Phiên sắp luyện" style="{{ L.hero }}">
+        <div role="tablist" aria-label="Chọn kiểu phiên" style="{{ L.tabs }}">
+          <sc-for list="{{ presets }}" as="p" hint-placeholder-count="4">
+            <button type="button" role="tab" aria-selected="{{ p.sel }}" onClick="{{ p.pick }}" style="{{ p.style }}">{{ p.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px; padding: 4px 4px 2px">
+          <div style="display: flex; align-items: center; gap: 16px; flex: 1 1 240px; min-width: 0">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 0 0 72px; height: 72px; border-radius: 12px; background: #FFE9E1; color: #A83A1A">
+              <span style="font-family: 'Be Vietnam Pro', Inter, system-ui, sans-serif; font-size: 28px; font-weight: 700; line-height: 1">{{ count }}</span>
+              <span style="font-size: 11px; font-weight: 700; margin-top: 4px">TỪ</span>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+              <span style="font-family: 'Be Vietnam Pro', Inter, system-ui, sans-serif; font-size: 18px; font-weight: 700; color: #2E2A24">{{ presetName }}</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px">
+                <sc-for list="{{ meta }}" as="m" hint-placeholder-count="3">
+                  <span style="display: inline-flex; align-items: center; min-height: 26px; padding: 0 8px; border-radius: 6px; background: #FBF7F0; color: #4D463C; font-size: 13px; font-weight: 600">{{ m }}</span>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <sc-if value="{{ ready }}" hint-placeholder-val="{{ true }}">
+            <a href="{{ startHref }}" style="{{ L.start }}">
+              Bắt đầu
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+            </a>
+          </sc-if>
+          <sc-if value="{{ notReady }}" hint-placeholder-val="{{ false }}">
+            <span role="status" style="{{ L.startOff }}">Chọn ít nhất 1 bộ và 1 kiểu</span>
+          </sc-if>
+        </div>
+      </section>
+
+      <sc-if value="{{ isWeak }}" hint-placeholder-val="{{ false }}">
+        <section aria-labelledby="h-weak" style="display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 2px">
+            <h2 id="h-weak" style="{{ L.h2 }}">Từ sẽ luyện</h2>
+            <span style="font-size: 13px; color: #6B6358">15 từ dưới 30%</span>
+          </div>
+          <div style="background: #FFFDF8; border: 1px solid #E8DFCC; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 0 #EDE4D2">
+            <sc-for list="{{ weakList }}" as="w" hint-placeholder-count="5">
+              <a href="{{ ln.word }}" style="{{ w.row }}">
+                <span style="{{ w.ring }}">{{ w.pct }}</span>
+                <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">{{ w.w }}</strong><span style="font-size: 13px; color: #6B6358">{{ w.vi }}</span></span>
+                <span style="font-size: 12px; font-weight: 700; color: #6B6358; white-space: nowrap">{{ w.deck }}</span>
+              </a>
+            </sc-for>
+            <div style="padding: 12px 16px; border-top: 1px solid #F1EBDE; font-size: 13px; color: #6B6358">+ 10 từ khác</div>
+          </div>
+        </section>
+      </sc-if>
+
+      <sc-if value="{{ isQuick }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: #FFFDF8; border: 1px solid #E8DFCC; box-shadow: 0 2px 0 #EDE4D2">
+          <span style="flex: 0 0 40px; height: 40px; border-radius: 12px; background: #FFE9E1; color: #A83A1A; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px">Aa</span>
+          <span style="display: flex; flex-direction: column; gap: 2px"><strong style="font-size: 15px">Chỉ Flashcard</strong><span style="font-size: 13px; color: #6B6358">10 từ đến hạn sớm nhất · lật thẻ, tự chấm Đã nhớ / Chưa nhớ</span></span>
+        </div>
+      </sc-if>
+
+      <section aria-labelledby="h-deck" style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 0 2px">
+          <h2 id="h-deck" style="{{ L.h2 }}">{{ deckTitle }}</h2>
+          <span style="font-size: 13px; color: #6B6358">{{ deckSum }}</span>
+        </div>
+        <div style="background: #FFFDF8; border: 1px solid #E8DFCC; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 0 #EDE4D2">
+          <sc-for list="{{ decks }}" as="k" hint-placeholder-count="3">
+            <button type="button" role="checkbox" aria-checked="{{ k.sel }}" onClick="{{ k.pick }}" style="{{ k.row }}">
+              <span style="{{ k.icon }}">{{ k.abbr }}</span>
+              <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; text-align: left">
+                <span style="font-size: 15px; font-weight: 700; color: #2E2A24; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ k.name }}</span>
+                <span style="font-size: 13px; color: #6B6358">{{ k.due }}</span>
+              </span>
+              <span style="{{ k.box }}">{{ k.mark }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+
+      <sc-if value="{{ showModes }}" hint-placeholder-val="{{ true }}">
+      <section aria-labelledby="h-mode" style="display: flex; flex-direction: column; gap: 10px">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 0 2px">
+          <h2 id="h-mode" style="{{ L.h2 }}">Kiểu luyện</h2>
+          <div role="radiogroup" aria-label="Thứ tự kiểu luyện" style="display: flex; gap: 2px; padding: 3px; border-radius: 9px; background: #EEE7D8">
+            <button type="button" role="radio" aria-checked="{{ mixSel }}" onClick="{{ setMix }}" style="{{ segMix }}">Xáo trộn</button>
+            <button type="button" role="radio" aria-checked="{{ seqSel }}" onClick="{{ setSeq }}" style="{{ segSeq }}">Lần lượt</button>
+          </div>
+        </div>
+        <div style="{{ L.modeGrid }}">
+          <sc-for list="{{ modes }}" as="m" hint-placeholder-count="6">
+            <button type="button" aria-pressed="{{ m.sel }}" onClick="{{ m.pick }}" style="{{ m.style }}">
+              <span style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%">
+                <span style="{{ m.icon }}">{{ m.glyph }}</span>
+                <span style="{{ m.box }}">{{ m.mark }}</span>
+              </span>
+              <span style="font-size: 14px; font-weight: 700; color: #2E2A24; text-align: left">{{ m.title }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </section>
+      </sc-if>
+
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"preset":{"editor":"enum","options":["today","quick","weak","new"],"default":"today"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.presetDefs = [
+      { id: 'today', label: 'Ôn hôm nay', name: 'Ôn từ đến hạn', count: 24, modes: ['flash', 'mean', 'fill'] },
+      { id: 'quick', label: 'Nhanh', name: 'Ôn nhanh 5 phút', count: 10, modes: ['flash'] },
+      { id: 'weak', label: 'Từ yếu', name: 'Tập trung từ dưới 30%', count: 15, modes: ['mean', 'word'] },
+      { id: 'new', label: 'Từ mới', name: 'Học từ mới hôm nay', count: 10, modes: ['flash', 'mean'] }
+    ];
+    this.modeDefs = [
+      ['flash', 'Aa', 'Flashcard'], ['mean', '1/4', 'Chọn nghĩa'], ['word', '4/1', 'Chọn từ'],
+      ['fill', '_ _', 'Điền chỗ trống'], ['listen', '♪', 'Nghe & chọn'], ['type', 'Ab|', 'Gõ chính tả']
+    ];
+    this.deckDefs = [
+      ['mine', 'TC', 'Từ của tôi', 9, 64, '#2E2A24', '#FFFFFF'],
+      ['comm', 'GT', '300 từ giao tiếp thông dụng', 8, 300, '#FFE9E1', '#A83A1A'],
+      ['ielts', 'IE', 'IELTS Academic Word List', 7, 570, '#F1ECF6', '#5E3F87']
+    ];
+    const pr = props.preset && ['today','quick','weak','new'].includes(props.preset) ? props.preset : 'today';
+    const pm = { today: ['flash', 'mean', 'fill'], quick: ['flash'], weak: ['mean', 'word'], new: ['flash', 'mean'] }[pr];
+    const mm = {}; pm.forEach((k) => { mm[k] = true; });
+    this.state = { preset: pr, modes: mm, order: 'mix', decks: { mine: true, comm: true, ielts: true } };
+  }
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#FBF7F0', fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", color: '#2E2A24' };
+    return { d, laptop, tablet, phone, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', L: {
+      root: laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
+      nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
+      main: laptop ? { flex: '999 1 560px', minWidth: 0, padding: '28px 40px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '28px 28px 40px' : '16px 16px 24px', boxSizing: 'border-box' },
+      h1: { margin: 0, fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", fontSize: laptop ? '32px' : '32px', fontWeight: 700, letterSpacing: '-0.025em' },
+      h2: { margin: 0, fontSize: '13px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#6B6358' },
+      hero: { position: 'sticky', top: phone ? '8px' : '16px', zIndex: 2, display: 'flex', flexDirection: 'column', gap: '14px', padding: phone ? '12px' : '14px', borderRadius: '20px', backgroundColor: '#FFE6D8', backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid #F4C3AB', boxShadow: '0 3px 0 #F4C3AB' },
+      tabs: { display: 'flex', gap: '2px', padding: '3px', borderRadius: '12px', background: 'rgba(255,253,248,0.7)', overflowX: 'auto' },
+      start: { flex: phone ? '1 1 100%' : '0 0 auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px', minHeight: '54px', padding: '0 28px', borderRadius: '12px', background: '#CF4822', color: '#FFFFFF', fontSize: '16px', fontWeight: 700, textDecoration: 'none', boxSizing: 'border-box', boxShadow: '0 3px 0 #A83A1A' },
+      startOff: { flex: phone ? '1 1 100%' : '0 0 auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minHeight: '54px', padding: '0 20px', borderRadius: '12px', background: '#F1EBDE', color: '#6B6358', fontSize: '14px', fontWeight: 700, boxSizing: 'border-box' },
+      modeGrid: { display: 'grid', gridTemplateColumns: 'repeat(' + (phone ? 2 : 3) + ', minmax(0, 1fr))', gap: '10px' }
+    } };
+  }
+  renderVals() {
+    const { d, sfx, L } = this.layout();
+    const s = this.state;
+    const tab = (on) => ({ flex: '1 0 auto', minHeight: '40px', padding: '0 12px', borderRadius: '10px', border: 'none', background: on ? '#FFFFFF' : 'transparent', color: on ? '#A83A1A' : '#6B6358', font: 'inherit', fontSize: '14px', fontWeight: on ? 800 : 600, cursor: 'pointer', boxShadow: on ? '0 1px 3px rgba(46,42,36,0.12)' : 'none', whiteSpace: 'nowrap' });
+    const box = (on) => ({ flex: '0 0 22px', width: '22px', height: '22px', borderRadius: '6px', border: on ? 'none' : '1.5px solid #D9CFBB', background: on ? '#CF4822' : '#FFFFFF', color: '#FFFFFF', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' });
+    const presets = this.presetDefs.map((p) => ({ label: p.label, sel: String(s.preset === p.id), style: tab(s.preset === p.id),
+      pick: () => { const m = {}; p.modes.forEach((k) => { m[k] = true; }); this.setState({ preset: p.id, modes: m }); } }));
+    const isNew = s.preset === 'new';
+    const deckSrc = isNew ? this.deckDefs.filter((x) => x[0] !== 'mine') : this.deckDefs;
+    const decks = deckSrc.map(([id, abbr, name, due, n, bg, fg], i) => { const on = !!s.decks[id];
+      return { abbr, name, due: isNew ? (id === 'comm' ? '114 từ chưa mở' : '486 từ chưa mở') : due + ' từ đến hạn · ' + n + ' từ', sel: String(on), mark: on ? '✓' : '',
+        pick: () => this.setState({ decks: { ...s.decks, [id]: !on } }),
+        icon: { flex: '0 0 40px', height: '40px', borderRadius: '12px', background: bg, color: fg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 700 },
+        box: box(on),
+        row: { display: 'flex', alignItems: 'center', gap: '14px', width: '100%', minHeight: '64px', padding: '10px 16px', border: 'none', borderTop: i ? '1px solid #F1EBDE' : 'none', background: on ? '#FFFFFF' : '#FBF8F1', font: 'inherit', cursor: 'pointer', boxSizing: 'border-box', opacity: on ? 1 : 0.7 } }; });
+    const PAL = { flash: ['#DFF2E5', '#9ED3B0', '#2F7A4F'], mean: ['#FCE4EA', '#EBA3B6', '#A8324F'], word: ['#ECE6FF', '#B8A8F0', '#5B40C9'], fill: ['#FFF1C7', '#EBC966', '#8A5D00'], listen: ['#E3EEFA', '#9BBFE6', '#2F5E99'], type: ['#FFE6D8', '#F4A98A', '#A83A1A'] };
+    const modes = this.modeDefs.map(([id, glyph, title]) => { const on = !!s.modes[id]; const pc = PAL[id];
+      return { glyph, title, sel: String(on), mark: on ? '✓' : '',
+        pick: () => this.setState({ modes: { ...s.modes, [id]: !on } }),
+        icon: { width: '40px', height: '40px', borderRadius: '12px', background: on ? '#FFFDF8' : pc[0], color: pc[2], display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '13px' },
+        box: box(on),
+        style: { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '12px', minHeight: '104px', padding: '14px', borderRadius: '16px', border: on ? '1.5px solid ' + pc[1] : '1px solid #E8DFCC', background: on ? pc[0] : '#FFFDF8', font: 'inherit', cursor: 'pointer', boxSizing: 'border-box', minWidth: 0, boxShadow: on ? '0 3px 0 ' + pc[1] : '0 2px 0 #EDE4D2', _x: on ? '0 4px 12px rgba(207,72,34,0.10)' : 'none' } }; });
+    const picked = this.modeDefs.filter(([id]) => s.modes[id]);
+    const pickedDecks = deckSrc.filter(([id]) => s.decks[id]);
+    const seg = (on) => ({ minHeight: '32px', padding: '0 12px', borderRadius: '7px', border: 'none', background: on ? '#FFFFFF' : 'transparent', color: on ? '#2E2A24' : '#6B6358', font: 'inherit', fontSize: '13px', fontWeight: 700, cursor: 'pointer', boxShadow: on ? '0 1px 3px rgba(46,42,36,0.12)' : 'none' });
+    const p = this.presetDefs.find((x) => x.id === s.preset) || this.presetDefs[0];
+    const onlyFlash = picked.length === 1 && picked[0][0] === 'flash';
+    const ready = picked.length > 0 && pickedDecks.length > 0;
+    return {
+      device: d, L, presets, decks, modes, count: p.count, presetName: p.name, ready, notReady: !ready,
+      meta: ['~' + Math.max(3, Math.round(p.count * (onlyFlash ? 0.3 : 0.45))) + ' phút', picked.length + ' kiểu' + (picked.length > 1 ? (s.order === 'mix' ? ' · xáo trộn' : ' · lần lượt') : ''), pickedDecks.length + ' bộ'],
+      deckSum: isNew ? '10 từ mới / ngày · theo Cài đặt' : pickedDecks.reduce((a, x) => a + x[3], 0) + ' từ đến hạn',
+      deckTitle: isNew ? 'Mở từ mới từ bộ' : 'Bộ từ', isWeak: s.preset === 'weak', isQuick: s.preset === 'quick', showModes: s.preset !== 'quick',
+      weakList: [['albeit', 'mặc dù, dẫu cho', 0, 'Từ của tôi'], ['meticulous', 'tỉ mỉ, kỹ lưỡng', 10, 'Từ của tôi'], ['allocate', 'phân bổ', 0, 'IELTS AWL'], ['ubiquitous', 'có mặt ở khắp nơi', 20, 'Từ của tôi'], ['awkward', 'ngượng ngùng', 20, 'Giao tiếp']].map(([w, vi, p, deck], i) => ({ w, vi, deck, pct: p + '%',
+        row: { display: 'flex', alignItems: 'center', gap: '12px', minHeight: '60px', padding: '8px 16px', borderTop: i ? '1px solid #F1EBDE' : 'none', textDecoration: 'none', color: '#2E2A24' },
+        ring: { flex: '0 0 40px', width: '40px', height: '40px', borderRadius: '999px', border: '3px solid #C2465E', color: '#C2465E', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, boxSizing: 'border-box' } })),
+      mixSel: String(s.order === 'mix'), seqSel: String(s.order === 'seq'),
+      setMix: () => this.setState({ order: 'mix' }), setSeq: () => this.setState({ order: 'seq' }),
+      segMix: seg(s.order === 'mix'), segSeq: seg(s.order === 'seq'),
+      startHref: ((picked.length && !s.modes.flash) ? 'Quiz' : 'Flashcard') + sfx + '.dc.html',
+      ln: { settings: 'PracticeSettings' + sfx + '.dc.html', word: 'WordDetail' + sfx + '.dc.html' }
+    };
+  }
+}
+</script>
+</body>
+</html>

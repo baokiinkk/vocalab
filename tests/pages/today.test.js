@@ -1,4 +1,4 @@
-/* Browser tests for the "Hôm nay" page. Run: node --test tests/pages/today.test.js (from the project root). */
+/* Browser tests for the "Hôm nay" page (design v3). Run: node --test tests/pages/today.test.js (from the project root). */
 const test = require('node:test');
 const assert = require('node:assert');
 const path = require('path');
@@ -16,154 +16,148 @@ test.after(async () => { await browser.close(); });
 
 const hash = (p) => p.evaluate(() => location.hash);
 const noHScroll = (p) => p.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
+const txt = async (p, sel) => (await p.textContent(sel)).replace(/\s+/g, ' ').trim();
+const shoot = async (p, name) => {
+  for (const theme of ['light', 'dark']) {
+    await p.evaluate((t) => { VL.store.setSetting('theme', t); VL.applyTheme(); }, theme);
+    await p.waitForTimeout(100);
+    await p.screenshot({ path: path.join(SHOTS, `${name}${theme === 'dark' ? '-dark' : ''}.png`), fullPage: true });
+  }
+};
+const seedLight = new Function('VL', `(${seed.toString()})(VL); VL.store.setSetting('theme', 'light'); VL.applyTheme();`);
 
 for (const device of DEVICES) {
   test(`${device}: seeded dashboard renders live data`, async () => {
-    const p = await open(browser, device, '#/today', { seed });
+    const p = await open(browser, device, '#/today', { seed: seedLight });
     await p.waitForTimeout(200);
-    assert.ok(await p.isVisible('.page-today h1'), 'h1 visible');
-    const h1 = await p.textContent('h1');
-    assert.match(h1, /^Chào buổi/);
-    const eyebrow = await p.textContent('.page-head .eyebrow');
-    assert.equal(eyebrow, await p.evaluate(() => VL.fmtToday()));
-    assert.match(await p.textContent('.today-streak'), /Chuỗi 12 ngày/);
+    assert.equal(await txt(p, '.page-today h1'), 'Chào bạn, học tiếp nhé.');
+    assert.equal(await txt(p, '.today-streak'), 'Chuỗi 12 ngày');
 
-    // Phiên hôm nay matches todayPlan
-    const plan = await p.evaluate(() => { const x = VL.srs.todayPlan(); return { plan: x.plan, weak: x.weak.length, done: x.done, target: x.target }; });
-    const stats = await p.$$eval('.today-stat-n', (els) => els.map((e) => e.textContent.trim()));
-    assert.equal(stats[0], String(plan.plan));
-    assert.equal(stats[1], String(plan.weak));
-    assert.match(stats[2], /^~\d+′$/);
-    const total = Math.min(plan.target, plan.plan + plan.done);
-    assert.equal((await p.textContent('.today-count')).trim(), `${total - plan.plan} / ${total} từ`);
+    const d = await p.evaluate(() => {
+      const x = VL.srs.todayPlan(), ov = VL.srs.overview();
+      return { weak: x.weak.length, due: x.due.length, fresh: x.fresh.length, avg: ov.avg, master: ov.buckets.master, words: ov.words,
+        lib: VL.words.library().length, builtIn: VL.decks.builtInIds().length };
+    });
+    // Kế hoạch
+    const steps = await p.$$eval('.today-step', (els) => els.map((e) => ({ id: e.dataset.step, cls: e.className, text: e.querySelector('.today-step-text').textContent.trim(), meta: e.querySelector('.today-step-meta').textContent.trim(), href: e.getAttribute('href') })));
+    assert.equal(steps.length, 3);
+    assert.deepEqual(steps.map((s) => s.id), ['weak', 'due', 'new']);
+    assert.equal(steps[0].text, 'Ôn ' + Math.min(15, d.weak) + ' từ yếu');
+    assert.equal(steps[1].text, d.due + ' từ đến hạn');
+    assert.equal(steps[2].text, d.fresh + ' từ mới');
+    assert.match(steps[0].cls, /is-next/); assert.equal(steps[0].meta, 'Tiếp');
+    assert.match(steps[2].cls, /is-todo/); assert.match(steps[2].meta, /^~\d+′$/);
+    assert.equal(await txt(p, '.today-plan-count'), '0/3');
+    assert.equal(await txt(p, '.today-sub'), 'Còn 3 việc nhỏ cho hôm nay.');
+    // mastery tile
+    assert.equal(await txt(p, '.today-ring-in'), d.avg + '%');
+    assert.equal(await txt(p, '.today-prog-n'), `${d.master}/${d.words} từ`);
+    assert.equal(await txt(p, '.today-prog-due'), d.due + ' từ cần ôn');
+    assert.equal(await p.getAttribute('.today-prog', 'aria-label'), `Tiến độ thông thạo ${d.avg}%, xem thư viện`);
+    // tiles
+    const badges = await p.$$eval('.today-badge', (els) => els.map((e) => e.textContent.trim()));
+    assert.deepEqual(badges, [d.due + ' TỪ ĐẾN HẠN', d.lib + ' TỪ', 'TỰ NHẬP', Math.min(10, d.lib) + ' THẺ', Math.min(8, d.lib) + ' CÂU', d.builtIn + ' BỘ']);
+    const titles = await p.$$eval('.today-tile-title', (els) => els.map((e) => e.textContent.trim()));
+    assert.deepEqual(titles, ['Ôn tập', 'Từ vựng', 'Thêm từ', 'Flashcard', 'Chọn nghĩa', 'Bộ có sẵn']);
 
-    // Thông thạo
-    const ov = await p.evaluate(() => VL.srs.overview());
-    assert.equal((await p.textContent('.today-avg-n')).trim(), ov.avg + '%');
-    const legend = await p.$$eval('.today-legend-row strong', (els) => els.map((e) => +e.textContent));
-    assert.deepEqual(legend, [ov.buckets.weak, ov.buckets.learning, ov.buckets.good, ov.buckets.master]);
-    assert.ok(await p.$('.mastery-bar'));
-
-    // Từ cần chú ý: 3 lowest started words
-    const rows = await p.$$eval('.today-weak-w', (els) => els.map((e) => e.textContent));
-    assert.equal(rows.length, 3);
-    assert.ok(rows.includes('meticulous'), 'meticulous (0%) listed: ' + rows);
-
-    // Bộ đang học
-    const ids = await p.evaluate(() => VL.decks.mineIds());
-    const hrefs = await p.$$eval('.today-deck', (els) => els.map((e) => e.getAttribute('href')));
-    assert.deepEqual(hrefs, ids.map((id) => '#/deck/' + id));
-    const pcts = await p.$$eval('.today-deck-pct', (els) => els.map((e) => e.textContent));
-    assert.deepEqual(pcts, await p.evaluate(() => VL.decks.mineIds().map((id) => VL.decks.stats(id).pct + '%')));
-
-    // grid layout per device
-    const cols = await p.$eval('.today-grid', (g) => getComputedStyle(g).gridTemplateColumns.split(' ').length);
-    assert.equal(cols, { laptop: 3, ipad: 2, iphone: 1 }[device]);
-    const deckCols = await p.$eval('.today-deck-row', (g) => getComputedStyle(g).gridTemplateColumns.split(' ').length);
-    assert.equal(deckCols, device === 'ipad' ? 3 : 1);
+    // layout per device
+    const cols = await p.$eval('.today-tiles', (g) => getComputedStyle(g).gridTemplateColumns.split(' ').length);
+    assert.equal(cols, { laptop: 6, ipad: 3, iphone: 2 }[device]);
+    const duo = await p.$eval('.today-duo', (g) => getComputedStyle(g).gridTemplateColumns.split(' ')[1]);
+    assert.equal(duo, { laptop: '230px', ipad: '200px', iphone: '118px' }[device]);
+    const h1 = await p.$eval('.today-h1', (e) => getComputedStyle(e).fontSize);
+    assert.equal(h1, { laptop: '26px', ipad: '24px', iphone: '20px' }[device]);
+    // v3 palette (light): paper background, terracotta ring
+    assert.equal(await p.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(251, 247, 240)');
 
     assert.ok(await noHScroll(p), 'no horizontal scroll');
-    await p.screenshot({ path: path.join(SHOTS, `today-${device}.png`), fullPage: true });
+    await shoot(p, `today-${device}`);
+    assert.ok(await noHScroll(p), 'no horizontal scroll (dark)');
     assert.deepEqual(p.errors, []);
     await p.context().close();
   });
 
-  test(`${device}: buttons and links navigate`, async () => {
+  test(`${device}: links and tiles navigate / start sessions`, async () => {
     const p = await open(browser, device, '#/today', { seed });
-    // quick add with text (Enter)
-    await p.fill('#today-add-q', 'serendipity');
-    await p.press('#today-add-q', 'Enter');
-    await p.waitForFunction(() => location.hash.startsWith('#/add'));
-    assert.equal(await hash(p), '#/add?q=serendipity');
-    // empty quick add via button
-    await p.evaluate(() => VL.go('#/today'));
-    await p.waitForSelector('.today-add-btn');
-    await p.click('.today-add-btn');
-    await p.waitForFunction(() => location.hash === '#/add');
+    const back = async () => { await p.evaluate(() => { VL.session.quit(); VL.go('#/today'); }); await p.waitForSelector('.today-tile'); };
+    const clickTo = async (sel, re) => { await p.click(sel); await p.waitForFunction((r) => new RegExp(r).test(location.hash), re.source); };
 
-    // weak word row → word detail
-    await p.evaluate(() => VL.go('#/today'));
-    await p.waitForSelector('.today-weak-row');
-    const href = await p.getAttribute('.today-weak-row', 'href');
-    assert.match(href, /^#\/word\//);
-    await p.click('.today-weak-row');
-    await p.waitForFunction((h) => location.hash === h, href);
+    await clickTo('.today-step[data-step="weak"]', /^#\/practice\?preset=weak$/); await back();
+    await clickTo('.today-step[data-step="new"]', /^#\/practice\?preset=new$/); await back();
+    await clickTo('.today-prog', /^#\/library$/); await back();
+    await clickTo('[data-tile="lilac"]', /^#\/library$/); await back();
+    await clickTo('[data-tile="butter"]', /^#\/add$/); await back();
+    await clickTo('[data-tile="sky"]', /^#\/library$/); await back();
 
-    // deck → deck detail, library link
-    await p.evaluate(() => VL.go('#/today'));
-    await p.waitForSelector('.today-deck');
-    await p.click('.today-deck >> nth=1');
-    await p.waitForFunction(() => location.hash.startsWith('#/deck/'));
-    await p.evaluate(() => VL.go('#/today'));
-    await p.click('text=Xem thư viện');
-    await p.waitForFunction(() => location.hash === '#/library');
-
-    // Ôn ngay → weak session
-    await p.evaluate(() => VL.go('#/today'));
-    await p.click('[data-action="weak"]');
-    await p.waitForFunction(() => /^#\/(flash|quiz)$/.test(location.hash));
-    assert.equal(await p.evaluate(() => VL.session.current().preset), 'weak');
-
-    // a running session shows "Tiếp tục phiên"
-    await p.evaluate(() => VL.go('#/today'));
-    await p.waitForSelector('[data-action="continue"]');
-    assert.match(await p.textContent('[data-action="continue"]'), /Tiếp tục phiên/);
-    await p.click('[data-action="continue"]');
-    await p.waitForFunction(() => /^#\/(flash|quiz)$/.test(location.hash));
-
-    // finish session → "Bắt đầu ôn" starts a 'today' session
-    await p.evaluate(() => { VL.session.quit(); VL.go('#/today'); });
-    await p.waitForSelector('[data-action="start"]');
-    await p.click('[data-action="start"]');
-    await p.waitForFunction(() => /^#\/(flash|quiz)$/.test(location.hash));
+    // due step / Ôn tập → 'today' session
+    await clickTo('.today-step[data-step="due"]', /^#\/(flash|quiz)$/);
     assert.equal(await p.evaluate(() => VL.session.current().preset), 'today');
+    await back();
+    await clickTo('[data-tile="peach"]', /^#\/(flash|quiz)$/);
+    assert.equal(await p.evaluate(() => VL.session.current().preset), 'today');
+    await back();
+    // Flashcard → 10 flash cards
+    await clickTo('[data-tile="mint"]', /^#\/flash$/);
+    assert.deepEqual(await p.evaluate(() => { const s = VL.session.current(); return [s.queue.length, s.modes]; }), [10, ['flash']]);
+    await back();
+    // Chọn nghĩa → 8 'mean' questions
+    await clickTo('[data-tile="pink"]', /^#\/quiz$/);
+    assert.deepEqual(await p.evaluate(() => { const s = VL.session.current(); return [s.queue.length, s.modes, s.title]; }), [8, ['mean'], 'Chọn nghĩa']);
     assert.deepEqual(p.errors, []);
     await p.context().close();
   });
 
   test(`${device}: data is live and persists`, async () => {
     const p = await open(browser, device, '#/today', { seed });
-    const need = () => p.textContent('.today-stat-n');
-    const before = (await need()) + (await p.textContent('.today-count'));
-    const key = await p.evaluate(() => VL.srs.todayPlan().fresh[0] || VL.srs.todayPlan().due[0]);
-    await p.evaluate((k) => { VL.srs.record(k, true, 'flash'); VL.store.save(); VL.refresh(); }, key);
-    const after = (await need()) + (await p.textContent('.today-count'));
-    assert.notEqual(before, after, `count changes: ${before} → ${after}`);
-    // streak toggle hides the chip
+    const due0 = await txt(p, '.today-prog-due');
+    // answer every due word → due step done
+    await p.evaluate(() => { VL.srs.todayPlan().due.forEach((k) => VL.srs.record(k, true, 'flash')); VL.store.save(); VL.refresh(); });
+    assert.notEqual(await txt(p, '.today-prog-due'), due0);
+    assert.equal(await txt(p, '.today-prog-due'), '0 từ cần ôn');
+    assert.match(await p.getAttribute('.today-step[data-step="due"]', 'class'), /is-done/);
+    assert.equal(await txt(p, '.today-step[data-step="due"] .today-step-meta'), 'Xong');
+    assert.equal(await txt(p, '.today-plan-count'), '1/3');
+    assert.equal(await txt(p, '.today-sub'), 'Còn 2 việc nhỏ cho hôm nay.');
+    // a weak session finished today → weak step done, new step becomes "next"
+    await p.evaluate(() => { VL.store.state.sessions.unshift({ summary: true, preset: 'weak', results: [], wrongKeys: [], endedAt: Date.now() }); VL.store.save(); VL.refresh(); });
+    assert.match(await p.getAttribute('.today-step[data-step="weak"]', 'class'), /is-done/);
+    assert.match(await p.getAttribute('.today-step[data-step="new"]', 'class'), /is-next/);
+    assert.equal(await txt(p, '.today-plan-count'), '2/3');
+    // streak switch hides the streak
     await p.evaluate(() => { VL.store.setSetting('sw.streak', false); VL.refresh(); });
     assert.equal(await p.$('.today-streak'), null);
     await p.reload();
     await p.waitForFunction(() => window.VL && VL.current());
     assert.equal(await p.$('.today-streak'), null, 'setting persisted');
-    assert.equal((await need()) + (await p.textContent('.today-count')), after, 'progress persisted');
+    assert.equal(await txt(p, '.today-plan-count'), '2/3', 'progress persisted');
+    assert.equal(await txt(p, '.today-prog-due'), '0 từ cần ôn');
     assert.deepEqual(p.errors, []);
     await p.context().close();
   });
 
   test(`${device}: empty storage`, async () => {
-    const p = await open(browser, device, '#/today');
+    const p = await open(browser, device, '#/today', { seed: (VL) => { VL.store.setSetting('theme', 'light'); VL.applyTheme(); } });
     await p.waitForTimeout(200);
-    assert.match(await p.textContent('.today-streak'), /Chuỗi 0 ngày/);
-    assert.ok(await p.$('.today-empty'), 'no weak words empty state');
-    assert.equal((await p.textContent('.today-avg-n')).trim(), '0%');
-    assert.equal(await p.$$eval('.today-deck', (e) => e.length), 3);
+    assert.equal(await txt(p, '.today-streak'), 'Chuỗi 0 ngày');
+    assert.equal(await txt(p, '.today-ring-in'), '0%');
+    assert.equal(await txt(p, '.today-step[data-step="weak"] .today-step-text'), 'Không còn từ yếu (đã xong)');
+    assert.match(await p.getAttribute('.today-step[data-step="weak"]', 'class'), /is-done/);
     assert.ok(await noHScroll(p));
-    await p.screenshot({ path: path.join(SHOTS, `today-empty-${device}.png`), fullPage: true });
-    // Ôn ngay with no weak words → toast + inline notice, stays on page
-    await p.click('[data-action="weak"]');
-    await p.waitForSelector('.toast.is-show');
-    assert.equal(await hash(p), '#/today');
-    assert.ok(await p.$('.today-notice'));
+    await shoot(p, `today-empty-${device}`);
 
-    // Nothing at all to practise: remove every deck → done state, start falls back to toast + library link
+    // Nothing at all to practise: remove every deck
     await p.evaluate(() => { VL.decks.mineIds().forEach((id) => VL.decks.remove(id)); VL.refresh(); });
-    assert.match(await p.textContent('.today-card'), /Chưa có từ nào để ôn/);
-    assert.equal((await p.textContent('.today-count')).trim(), '0 / 0 từ');
-    assert.equal(await p.$$eval('.today-deck', (e) => e.length), 1, 'Từ của tôi always shown');
-    await p.click('[data-action="start"]');
-    await p.waitForSelector('.today-notice a[href="#/library"]');
-    assert.equal(await hash(p), '#/today');
-    await p.screenshot({ path: path.join(SHOTS, `today-nothing-${device}.png`), fullPage: true });
+    assert.equal(await txt(p, '.today-sub'), 'Thêm từ hoặc chọn bộ từ để bắt đầu.');
+    assert.equal(await txt(p, '.today-step[data-step="new"] .today-step-text'), 'Chọn bộ để học');
+    assert.equal(await p.getAttribute('.today-step[data-step="new"]', 'href'), '#/library');
+    assert.equal(await txt(p, '.today-prog-n'), '0/0 từ');
+    // starting a session with nothing to practise → toast, stays here
+    for (const t of ['peach', 'mint', 'pink']) {
+      await p.click(`[data-tile="${t}"]`);
+      await p.waitForSelector('.toast.is-show');
+      assert.equal(await hash(p), '#/today');
+    }
+    await shoot(p, `today-nothing-${device}`);
     assert.deepEqual(p.errors, []);
     await p.context().close();
   });

@@ -1,5 +1,5 @@
 /* VocaLab — page "Luyện tập" (#/practice, optional ?deck=<id> and ?preset=today|quick|weak|new).
-   Design: design-v2/project/PracticeSetup.dc.html (+ PracticeQuick/Weak/New wrappers = the tabs).
+   Design: design-v3/project/PracticeSetup.dc.html (+ PracticeQuick/Weak/New wrappers = the tabs).
    The words shown ("Từ sẽ luyện", big count) are exactly the keys passed to VL.session.start({keys}). */
 (function () {
   'use strict';

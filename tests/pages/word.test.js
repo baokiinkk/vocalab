@@ -39,6 +39,11 @@ for (const device of DEVICES) {
     const live = await page.evaluate((k) => ({ score: VL.srs.score(k), note: VL.srs.levelNote(VL.srs.score(k)), need: VL.srs.toMaster(k), p: VL.srs.progress(k) }), MET);
     assert.equal((await page.textContent('.wd-ring-in')).trim(), live.score + '%');
     assert.equal((await page.textContent('.wd-level')).trim(), live.note);
+    const lvId = await page.evaluate((k) => VL.srs.level(VL.srs.score(k)).id, MET);
+    assert.ok(await page.locator('.wd-score.lv-' + lvId).count(), 'level class drives ring/label colour tokens');
+    // v3 hero: peach dotted tile
+    const hero = await page.evaluate(() => getComputedStyle(document.querySelector('.wd-hero')).backgroundImage);
+    assert.match(hero, /radial-gradient/);
     assert.ok((await page.textContent('.wd-score-text')).includes('Cần ' + live.need + ' lần đúng nữa'));
     assert.ok((await page.textContent('.wd-score-text')).includes('Ôn tiếp: '));
     // sections

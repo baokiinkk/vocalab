@@ -1,5 +1,5 @@
 /* End-to-end QC: a brand-new user walks through every main feature by clicking the UI, on laptop, iPad and iPhone.
-   Run: node --test tests/e2e.test.js   (static server must be running on :8765) */
+   Run: node --test tests/e2e.test.js   (VL_BASE=file:///Users/baoho/development/english or a static server on :8765) */
 const { test, before, after } = require('node:test');
 const assert = require('node:assert');
 const fs = require('fs');
@@ -56,7 +56,7 @@ for (const device of ['laptop', 'ipad', 'iphone']) {
     const p = await open(browser, device, '#/today');
     // 1. Today, fresh user
     await p.waitForSelector('h1');
-    assert.match(await p.textContent('#view'), /Phiên hôm nay/);
+    assert.match(await p.textContent('#view'), /Hôm nay học gì/);
     await noHScroll(p); await shot(p, device + '-1-today');
 
     // 2. Library → open a built-in deck → add it

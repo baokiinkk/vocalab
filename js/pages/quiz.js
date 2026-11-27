@@ -1,5 +1,5 @@
 /* VocaLab — #/quiz : multiple-choice / typing practice (Chọn nghĩa, Chọn từ, Điền chỗ trống, Nghe & chọn, Gõ chính tả).
-   Design: design/project/Quiz.dc.html. Uses VL.session for the queue and recording. */
+   Design: design-v3/project/Quiz.dc.html (+ QuizDetail = correct-answer 3 s detail). Uses VL.session for the queue and recording. */
 (function () {
   'use strict';
   const VL = window.VL;
@@ -46,11 +46,13 @@
     return null;
   }
 
+  // level colour tokens (dark-mode aware) instead of the fixed hexes from VL.srs.level()
+  const LV_VAR = { weak: 'var(--weak)', learning: 'var(--learning-ink)', good: 'var(--good)', master: 'var(--master)' };
   const speakIco = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg>');
   const closeIco = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>');
 
   function promptCard(it, w, lv, lvScore) {
-    const tag = h`<span class="quiz-lv" style="${raw('color:' + lv.text)}">${lv.label} · ${lvScore}%</span>`;
+    const tag = h`<span class="quiz-lv" style="${raw('color:' + (LV_VAR[lv.id] || lv.text))}">${lv.label} · ${lvScore}%</span>`;
     const ipaBtn = h`<button type="button" class="quiz-speak" data-action="speak" data-text="${w.w}" aria-label="${'Nghe phát âm ' + w.w}">${speakIco}${w.ipa || 'Nghe'}</button>`;
     const sayBtn = h`<button type="button" class="quiz-speak" data-action="play" aria-label="Nghe phát âm">${speakIco}Nghe</button>`;
     let body;
