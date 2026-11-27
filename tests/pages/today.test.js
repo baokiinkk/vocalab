@@ -66,7 +66,10 @@ for (const device of DEVICES) {
     const duo = await p.$eval('.today-duo', (g) => getComputedStyle(g).gridTemplateColumns.split(' ')[1]);
     assert.equal(duo, { laptop: '230px', ipad: '200px', iphone: '118px' }[device]);
     const h1 = await p.$eval('.today-h1', (e) => getComputedStyle(e).fontSize);
-    assert.equal(h1, { laptop: '26px', ipad: '24px', iphone: '20px' }[device]);
+    assert.equal(h1, { laptop: '26px', ipad: '24px', iphone: '22px' }[device]);
+    // design update: greeting header sits outside the card; plan box is its own card
+    assert.equal(await p.$eval('.today-top', (e) => !e.closest('.today-head')), true);
+    assert.notEqual(await p.$eval('.today-plan', (e) => getComputedStyle(e).boxShadow), 'none');
     // v3 palette (light): paper background, terracotta ring
     assert.equal(await p.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(251, 247, 240)');
 

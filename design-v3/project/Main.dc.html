@@ -21,18 +21,19 @@ a{color:#CF4822}a:hover{color:#A83A1A}
   <main style="{{ L.main }}">
     <div style="max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px">
 
-      <section aria-label="Hôm nay của bạn" style="{{ L.head }}">
-        <div style="{{ L.topRow }}">
-          <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
-            <h1 style="{{ L.h1 }}">Chào bạn, học tiếp nhé.</h1>
-            <span style="font-size: 13px; color: #6B6358">Còn 3 việc nhỏ cho hôm nay.</span>
-          </div>
-          <span style="{{ L.streakTxt }}"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="#E0612E"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 .2 1.8 1 3 2.5 3.5C11 8.5 11 5 12 2z"></path></svg>12 ngày</span>
+      <header style="{{ L.topRow }}">
+        <h1 style="{{ L.h1 }}">Chào bạn, học tiếp nhé.</h1>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+          <span style="font-size: 13px; color: #6B6358; min-width: 0">Còn 3 việc nhỏ cho hôm nay.</span>
+          <span style="{{ L.streakTxt }}"><svg aria-hidden="true" width="{{ L.flameSize }}" height="{{ L.flameSize }}" viewBox="0 0 24 24"><defs><linearGradient id="flameG" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8361C"></stop><stop offset="0.6" stop-color="#FF6A1A"></stop><stop offset="1" stop-color="#FFA21F"></stop></linearGradient></defs><path d="M12 1.5c1.2 4.2 5.8 6 5.8 12a5.8 5.8 0 0 1-11.6 0c0-2.9 1.4-4.8 3-6 .2 2 1.1 3.3 2.6 3.9C11.1 8.2 10.8 4.6 12 1.5z" fill="url(#flameG)"></path><path d="M12 11.2c.6 2 2.7 2.8 2.7 5.4a2.7 2.7 0 0 1-5.4 0c0-1.3.6-2.2 1.4-2.8.1.9.5 1.5 1.2 1.8-.1-1.6-.4-3 .1-4.4z" fill="#FFD84A"></path></svg>12 ngày</span>
         </div>
+      </header>
+
+      <section aria-label="Hôm nay của bạn" style="{{ L.head }}">
         <div style="{{ L.duo }}">
           <div style="{{ L.planCell }}">
             <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
-              <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #2E2A24"><span style="width: 26px; height: 26px; border-radius: 8px; background: #FFEDB8; color: #8A5D00; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"></path><rect x="4" y="4" width="16" height="16" rx="3"></rect></svg></span>Kế hoạch</span>
+              <span style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #2E2A24"><span style="width: 22px; height: 22px; border-radius: 7px; background: #FFEDB8; color: #8A5D00; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"></path><rect x="4" y="4" width="16" height="16" rx="3"></rect></svg></span>Kế hoạch</span>
               <span style="font-size: 12px; font-weight: 700; color: #6B6358">1/3</span>
             </div>
             <div style="display: flex; flex-direction: column; gap: 2px">
@@ -50,15 +51,15 @@ a{color:#CF4822}a:hover{color:#A83A1A}
               <span role="img" aria-hidden="true" style="{{ L.ring }}"><span style="{{ L.ringIn }}">58%</span></span>
               <b style="font-size: 15px; font-weight: 800; color: #2E2A24; white-space: nowrap">61/248 từ</b>
             </div>
-            <span style="align-self: center; padding: 4px 10px; border-radius: 999px; background: #FFFDF8; font-size: 12px; font-weight: 700; color: #A83A1A; white-space: nowrap">24 từ cần ôn</span>
+            <span style="align-self: center; padding: 2px 8px; border-radius: 999px; background: #FFFDF8; font-size: 11px; font-weight: 700; color: #A83A1A; white-space: nowrap">24 từ cần ôn</span>
           </a>
         </div>
       </section>
 
       <section aria-labelledby="h-what" style="display: flex; flex-direction: column; gap: 14px">
-        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px">
+        <div style="{{ L.secHead }}">
           <h2 id="h-what" style="{{ L.h2 }}">Hôm nay học gì?</h2>
-          <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: #6B6358"><span style="width: 24px; height: 1.5px; background: #B0A693; display: block"></span>Mỗi ngày một chút, đều đặn là nhớ lâu.</span>
+          <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: #6B6358"><span style="{{ L.dash }}"></span>Mỗi ngày một chút, đều đặn là nhớ lâu.</span>
         </div>
         <div style="{{ L.featGrid }}">
           <a href="{{ ln.flash }}" style="{{ f.peach.card }}">
@@ -121,28 +122,31 @@ class Component extends DCLogic {
     return { d, laptop, tablet, phone, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', L: {
       root: laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
       nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
-      main: laptop ? { flex: '999 1 560px', minWidth: 0, padding: '24px 28px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '22px 22px 40px' : '14px 14px 24px', boxSizing: 'border-box' },
-      head: { ...card, position: 'relative', gap: phone ? '12px' : '14px', padding: phone ? '14px' : '18px 20px' },
+      main: laptop ? { flex: '999 1 560px', minWidth: 0, padding: '24px 28px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '24px 24px 40px' : '18px 16px 24px', boxSizing: 'border-box' },
+      head: { position: 'relative', display: 'flex', flexDirection: 'column', gap: '12px', padding: 0 },
       h2: { margin: 0, fontSize: laptop ? '20px' : tablet ? '19px' : '17px', fontWeight: 800, letterSpacing: '-0.015em' },
-      topRow: { display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' },
-      h1: { margin: 0, fontSize: laptop ? '26px' : tablet ? '24px' : '20px', fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.2 },
+      topRow: { padding: '0 4px', marginBottom: '-8px', display: 'flex', flexDirection: 'column', gap: '4px' },
+      secHead: { padding: '0 4px', display: 'flex', flexWrap: 'wrap', alignItems: phone ? 'flex-start' : 'center', flexDirection: phone ? 'column' : 'row', gap: phone ? '2px' : '6px 14px' },
+      dash: { width: '24px', height: '1.5px', background: '#B0A693', display: phone ? 'none' : 'block' },
+      h1: { margin: 0, fontSize: laptop ? '26px' : tablet ? '24px' : '22px', fontWeight: 800, letterSpacing: '-0.025em', lineHeight: 1.2 },
       streakChip: { flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: phone ? '6px 10px' : '8px 14px', borderRadius: '999px', background: '#FFE6D8', border: '1.5px solid #F4C3AB', color: '#2E2A24', whiteSpace: 'nowrap' },
-      ring: { flex: '0 0 auto', width: phone ? '50px' : '56px', height: phone ? '50px' : '56px', borderRadius: '999px', background: 'conic-gradient(#CF4822 0 58%, #FFFDF8 58% 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-      ringIn: { width: phone ? '40px' : '44px', height: phone ? '40px' : '44px', borderRadius: '999px', background: '#FFFDF8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800, color: '#2E2A24' },
+      ring: { flex: '0 0 auto', width: phone ? '44px' : '52px', height: phone ? '44px' : '52px', borderRadius: '999px', background: 'conic-gradient(#CF4822 0 58%, #FFFDF8 58% 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      ringIn: { width: phone ? '35px' : '41px', height: phone ? '35px' : '41px', borderRadius: '999px', background: '#FFFDF8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800, color: '#2E2A24' },
       progTop: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', textAlign: 'center' },
-      streakTxt: { flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: phone ? '15px' : '17px', fontWeight: 800, color: '#2E2A24', whiteSpace: 'nowrap' },
+      flameSize: phone ? '20px' : '22px',
+      streakTxt: { flex: '0 0 auto', display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: phone ? '17px' : '19px', fontWeight: 800, color: '#2E2A24', whiteSpace: 'nowrap' },
       _unused: { display: 'inline-flex', alignItems: 'center', gap: '6px', alignSelf: 'flex-start', padding: '5px 10px', borderRadius: '999px', background: '#FFFDF8', fontSize: '12px', fontWeight: 600, boxShadow: '0 1px 0 #F4C3AB', whiteSpace: 'nowrap' },
       stack: { display: 'flex', height: '8px', borderRadius: '999px', overflow: 'hidden', background: '#FFFDF8', gap: '2px' },
       duo: { display: 'grid', gridTemplateColumns: phone ? 'minmax(0, 1fr) 118px' : 'minmax(0, 1fr) ' + (laptop ? '230px' : '200px'), gap: phone ? '8px' : '12px', alignItems: 'stretch' },
-      planCell: { display: 'flex', flexDirection: 'column', gap: '4px', padding: phone ? '8px 10px' : '10px 14px', borderRadius: '14px', background: '#FBF7F0', border: '1px solid #EFE7D6', minWidth: 0 },
-      streak: { display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '6px', textDecoration: 'none', color: '#2E2A24', padding: phone ? '8px' : '10px 12px', borderRadius: '14px', backgroundColor: '#FFE6D8', backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid #F4C3AB', boxShadow: '0 2px 0 #F4C3AB', minWidth: 0, boxSizing: 'border-box' },
+      planCell: { display: 'flex', flexDirection: 'column', gap: phone ? '2px' : '4px', padding: phone ? '8px 12px' : '10px 14px', borderRadius: '16px', background: '#FFFDF8', border: '1px solid #E8DFCC', boxShadow: '0 2px 0 #EDE4D2', minWidth: 0 },
+      streak: { display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: phone ? '4px' : '6px', textDecoration: 'none', color: '#2E2A24', padding: phone ? '6px' : '8px 12px', borderRadius: '14px', backgroundColor: '#FFE6D8', backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid #F4C3AB', boxShadow: '0 2px 0 #F4C3AB', minWidth: 0, boxSizing: 'border-box' },
       weekBox: { flex: '1 1 440px', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '12px 14px', padding: '8px 14px', borderRadius: '12px', border: '1px solid #E8DFCC', background: '#FBF7F0', boxSizing: 'border-box' },
       cta: { flex: phone ? '1 1 100%' : '0 0 auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px', minHeight: '52px', padding: '0 24px', borderRadius: '14px', background: '#CF4822', color: '#FFFDF8', fontSize: '15px', fontWeight: 800, textDecoration: 'none', boxSizing: 'border-box', boxShadow: '0 3px 0 #A83A1A' },
       featGrid: { display: 'grid', gridTemplateColumns: 'repeat(' + (laptop ? 6 : tablet ? 3 : 2) + ', minmax(0, 1fr))', gap: phone ? '14px 10px' : '20px 14px', paddingTop: '8px' },
       badge: { alignSelf: 'flex-start', padding: '4px 9px', borderRadius: '7px', background: '#FFFDF8', color: '#2E2A24', fontSize: '10px', fontWeight: 800, letterSpacing: '0.05em', boxShadow: '0 1px 0 rgba(46,42,36,0.08)' },
       fTitle: { fontSize: phone ? '16px' : '18px', fontWeight: 800, letterSpacing: '-0.01em', color: '#2E2A24', marginTop: '6px' },
-      fDesc: { fontSize: '13px', lineHeight: 1.4, color: '#4D463C', minHeight: '36px' },
-      art: { width: '100%', height: phone ? '84px' : '96px', marginTop: 'auto' },
+      fDesc: { fontSize: phone ? '12px' : '13px', lineHeight: 1.35, color: '#4D463C', minHeight: phone ? '32px' : '36px' },
+      art: { width: '100%', height: phone ? '60px' : '72px', marginTop: 'auto' },
       lower: { display: 'grid', gridTemplateColumns: laptop ? 'minmax(0, 1.75fr) minmax(0, 1fr)' : 'minmax(0, 1fr)', gap: '18px', alignItems: 'start', paddingTop: '8px' },
       plan: { ...card, position: 'relative', background: '#F5EAD6', border: '1px solid #E3CFA8', boxShadow: '0 2px 0 #E3CFA8' },
       planTape: { position: 'absolute', top: '-9px', left: '40px', width: '72px', height: '18px', borderRadius: '3px', background: 'repeating-linear-gradient(90deg, rgba(214,190,140,0.75) 0 6px, rgba(226,205,160,0.75) 6px 12px)' },
@@ -153,7 +157,7 @@ class Component extends DCLogic {
     const { d, sfx, L, phone } = this.layout();
     const ln = { flash: 'Flashcard' + sfx + '.dc.html', vocab: 'Vocab' + sfx + '.dc.html', add: 'AddWord' + sfx + '.dc.html', quiz: 'Quiz' + sfx + '.dc.html', fresh: 'PracticeNew' + sfx + '.dc.html', weak: 'PracticeWeak' + sfx + '.dc.html' };
     const mk = (bg, bd, tape) => ({
-      card: { position: 'relative', display: 'flex', flexDirection: 'column', gap: '4px', minHeight: phone ? '210px' : '236px', padding: '16px 14px 8px', borderRadius: '18px', backgroundColor: bg, backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid ' + bd, boxShadow: '0 3px 0 ' + bd, textDecoration: 'none', color: '#2E2A24', boxSizing: 'border-box', minWidth: 0 },
+      card: { position: 'relative', display: 'flex', flexDirection: 'column', gap: '4px', minHeight: phone ? '164px' : '190px', padding: phone ? '14px 12px 6px' : '16px 14px 8px', borderRadius: '18px', backgroundColor: bg, backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid ' + bd, boxShadow: '0 3px 0 ' + bd, textDecoration: 'none', color: '#2E2A24', boxSizing: 'border-box', minWidth: 0 },
       tape: { position: 'absolute', top: '-9px', left: '50%', transform: 'translateX(-50%) rotate(-2deg)', width: '52px', height: '16px', borderRadius: '3px', background: 'repeating-linear-gradient(90deg, ' + tape + ' 0 5px, rgba(255,253,248,0.5) 5px 10px)', opacity: 0.9 } });
     const f = { peach: mk('#FFE6D8', '#F4C3AB', '#F4A98A'), lilac: mk('#ECE6FF', '#D3C8F7', '#B8A8F0'), butter: mk('#FFF1C7', '#EFD993', '#EBC966'), mint: mk('#DFF2E5', '#B9DEC6', '#96CFA9'), pink: mk('#FCE4EA', '#F1C2CF', '#EBA3B6'), sky: mk('#E3EEFA', '#BFD5EF', '#9BBFE6') };
     const plan = [
@@ -161,7 +165,7 @@ class Component extends DCLogic {
       ['8 từ đến hạn', 'next', 'Tiếp', ln.quiz],
       ['10 từ mới', 'todo', '~5′', ln.fresh]
     ].map(([title, st, metaText, href]) => ({ title, metaText, href, mark: st === 'done' ? '✓' : '',
-      row: { display: 'flex', alignItems: 'center', gap: phone ? '8px' : '10px', minHeight: phone ? '32px' : '34px', padding: '4px 8px', margin: '0 -8px', borderRadius: '10px', background: st === 'next' ? '#FFF1EA' : 'transparent', textDecoration: 'none', color: '#2E2A24' },
+      row: { display: 'flex', alignItems: 'center', gap: phone ? '8px' : '10px', minHeight: phone ? '26px' : '30px', padding: '4px 8px', margin: '0 -8px', borderRadius: '10px', background: st === 'next' ? '#FFF1EA' : 'transparent', textDecoration: 'none', color: '#2E2A24' },
       box: { flex: '0 0 20px', width: '20px', height: '20px', borderRadius: '6px', boxSizing: 'border-box', border: st === 'done' ? 'none' : st === 'next' ? '2px solid #CF4822' : '1.5px solid #D9CFBB', background: st === 'done' ? '#2F7A4F' : '#FFFDF8', color: '#FFFDF8', fontSize: '12px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' },
       text: { flex: 1, minWidth: 0, fontSize: phone ? '13px' : '14px', fontWeight: st === 'next' ? 700 : 500, color: st === 'done' ? '#8A8378' : '#2E2A24', textDecoration: st === 'done' ? 'line-through' : 'none', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' },
       meta: { display: 'inline', fontSize: '12px', fontWeight: 700, color: st === 'next' ? '#CF4822' : '#8A8378', whiteSpace: 'nowrap' } }));

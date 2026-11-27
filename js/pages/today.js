@@ -1,5 +1,5 @@
 /* VocaLab — "Hôm nay" (dashboard). Design: design-v3/project/Main.dc.html
-   Head card: greeting + streak, "Kế hoạch" (3 live steps: weak words → due words → new words) and the
+   Header (no card): greeting, subtitle + gradient-flame streak. Then "Kế hoạch" card (3 live steps: weak words → due words → new words) and the
    mastery tile (ring = average mastery, mastered / library words, words due).
    "Hôm nay học gì?": 6 pastel tiles (Ôn tập, Từ vựng, Thêm từ, Flashcard, Chọn nghĩa, Bộ có sẵn). */
 (function () {
@@ -12,7 +12,7 @@
   const QUIZ_N = 8;    // "Chọn nghĩa" quick round
 
   const CHECK = raw('<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l2 2 4-4"></path><rect x="4" y="4" width="16" height="16" rx="3"></rect></svg>');
-  const FLAME = raw('<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 .2 1.8 1 3 2.5 3.5C11 8.5 11 5 12 2z"></path></svg>');
+  const FLAME = raw('<svg class="today-flame" aria-hidden="true" viewBox="0 0 24 24"><defs><linearGradient id="flameG" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E8361C"></stop><stop offset="0.6" stop-color="#FF6A1A"></stop><stop offset="1" stop-color="#FFA21F"></stop></linearGradient></defs><path d="M12 1.5c1.2 4.2 5.8 6 5.8 12a5.8 5.8 0 0 1-11.6 0c0-2.9 1.4-4.8 3-6 .2 2 1.1 3.3 2.6 3.9C11.1 8.2 10.8 4.6 12 1.5z" fill="url(#flameG)"></path><path d="M12 11.2c.6 2 2.7 2.8 2.7 5.4a2.7 2.7 0 0 1-5.4 0c0-1.3.6-2.2 1.4-2.8.1.9.5 1.5 1.2 1.8-.1-1.6-.4-3 .1-4.4z" fill="#FFD84A"></path></svg>');
   const ART = {
     peach: '<circle cx="104" cy="60" r="38" fill="#FFC9B0"></circle><path d="M30 28l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFFDF8"></path><rect x="44" y="34" width="62" height="46" rx="7" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5" transform="rotate(-9 75 57)"></rect><rect x="62" y="28" width="62" height="46" rx="7" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5"></rect><path d="M74 44h36M74 56h24" stroke="#CF4822" stroke-width="4.5" stroke-linecap="round"></path>',
     lilac: '<circle cx="104" cy="60" r="38" fill="#D3C7FA"></circle><path d="M30 30l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FFFDF8"></path><rect x="56" y="28" width="56" height="58" rx="6" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5" transform="rotate(-10 84 57)"></rect><rect x="70" y="26" width="56" height="58" rx="6" fill="#FFFDF8" stroke="#2E2A24" stroke-width="2.5"></rect><path d="M80 42h34M80 52h26M80 62h30" stroke="#6A4FD8" stroke-width="4" stroke-linecap="round"></path><circle cx="116" cy="76" r="7" fill="#FFD66B" stroke="#2E2A24" stroke-width="2"></circle>',
@@ -62,14 +62,14 @@
     const libEmpty = !VL.words.library().length;
     const sub = libEmpty ? 'Thêm từ hoặc chọn bộ từ để bắt đầu.' : left ? 'Còn ' + left + ' việc nhỏ cho hôm nay.' : 'Xong hết việc hôm nay rồi, tuyệt!';
     const showStreak = VL.store.settings().sw.streak;
-    return h`<section class="today-head" aria-label="Hôm nay của bạn">
-      <div class="today-top">
-        <div class="today-hello">
-          <h1 class="today-h1">Chào bạn, học tiếp nhé.</h1>
+    return h`<header class="today-top">
+        <h1 class="today-h1">Chào bạn, học tiếp nhé.</h1>
+        <div class="today-subrow">
           <span class="today-sub">${sub}</span>
+          ${showStreak ? h`<span class="today-streak">${FLAME}<span class="sr-only">Chuỗi </span>${VL.srs.streak()} ngày</span>` : ''}
         </div>
-        ${showStreak ? h`<span class="today-streak">${FLAME}<span class="sr-only">Chuỗi </span>${VL.srs.streak()} ngày</span>` : ''}
-      </div>
+      </header>
+      <section class="today-head" aria-label="Hôm nay của bạn">
       <div class="today-duo">
         <div class="today-plan">
           <div class="today-plan-head">
