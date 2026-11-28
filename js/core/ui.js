@@ -13,6 +13,7 @@
     practice: '<rect x="3" y="7" width="13" height="14" rx="3"/><path d="M8 3h10a3 3 0 0 1 3 3v10"/>',
     settings: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
+    write: '<path d="M4 20h4L18.5 9.5a2.12 2.12 0 0 0-3-3L5 17v3z"/><path d="M13.5 8.5l2 2"/><path d="M19 2.5v4M17 4.5h4"/>',
     back: '<path d="M15 18l-6-6 6-6"/>',
     chevron: '<path d="M9 6l6 6-6 6"/>',
     close: '<path d="M6 6l12 12M18 6L6 18"/>',
@@ -56,7 +57,7 @@
   const NAV = [
     { id: 'main', href: '#/today', label: 'Hôm nay', icon: 'home' },
     { id: 'vocab', href: '#/library', label: 'Thư viện', icon: 'book' },
-    { id: 'add', href: '#/add', label: 'Thêm từ', icon: 'plus' },
+    { id: 'add', href: '#/add', label: 'Thêm từ', icon: 'write' },
     { id: 'practice', href: '#/practice', label: 'Luyện tập', icon: 'practice' },
     { id: 'settings', href: '#/settings', label: 'Cài đặt', icon: 'settings' }
   ];
@@ -83,7 +84,9 @@
         </div>
       </nav>`;
     }
-    const item = (n) => h`<a href="${n.href}" class="${cls(n)}"${cur(n)}><span class="nav-pill">${VL.icon(n.icon, 22, n.id === active ? 2.3 : 1.9)}</span><span>${n.label}</span></a>`;
+    const item = (n) => n.id === 'add'
+      ? h`<a href="${n.href}" class="${cls(n) + ' nav-add'}"${cur(n)}><span class="nav-fab">${VL.icon(n.icon, 24, 2.3)}</span><span>${n.label}</span></a>`
+      : h`<a href="${n.href}" class="${cls(n)}"${cur(n)}><span class="nav-pill">${VL.icon(n.icon, 22, n.id === active ? 2.3 : 1.9)}</span><span>${n.label}</span></a>`;
     if (device === 'ipad') {
       return h`<nav class="rail" aria-label="Điều hướng chính">
         <a href="#/today" class="brand-mark" aria-label="VocaLab – Hôm nay">V</a>

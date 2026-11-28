@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Cài đặt · màn phụ</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FBF7F0}
+a{color:#CF4822}a:hover{color:#A83A1A}
+</style>
+</helmet>
+<div style="{{ L.root }}">
+  <main style="{{ L.main }}">
+    <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px">
+      <header style="display: flex; flex-direction: column; gap: 6px">
+        <a href="{{ ln.back }}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; min-height: 40px; font-size: 15px; font-weight: 700; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Cài đặt</a>
+        <h1 style="{{ L.h1 }}">{{ title }}</h1>
+        <span style="font-size: 14px; color: #6B6358">{{ subtitle }}</span>
+      </header>
+
+      <sc-if value="{{ is.reminder }}" hint-placeholder-val="{{ true }}">
+        <div style="{{ L.notif }}">
+          <span style="width: 38px; height: 38px; border-radius: 10px; background: #CF4822; color: #FFFDF8; display: flex; align-items: center; justify-content: center; font-weight: 800; flex: 0 0 auto">V</span>
+          <span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="display: flex; justify-content: space-between; font-size: 12px; color: #6B6358"><b style="color: #2E2A24">VocaLab</b>{{ rm.time }}</span><span style="font-size: 14px; font-weight: 700">8 từ đang chờ bạn ôn</span><span style="font-size: 13px; color: #4D463C">Chỉ mất khoảng 4 phút, giữ chuỗi 12 ngày nhé!</span></span>
+        </div>
+        <div style="{{ L.group }}">
+          <div style="{{ L.row }}">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600">Nhắc ôn mỗi ngày</span><span style="font-size: 12px; color: #6B6358">Gửi thông báo khi có từ đến hạn</span></span>
+            <button type="button" role="switch" aria-label="Nhắc ôn mỗi ngày" aria-checked="{{ sw.notify.on }}" onClick="{{ sw.notify.t }}" style="{{ sw.notify.track }}"><span style="{{ sw.notify.knob }}"></span></button>
+          </div>
+          <div style="{{ L.row }}">
+            <label for="rtime" style="flex: 1; font-size: 15px; font-weight: 600">Giờ nhắc</label>
+            <input id="rtime" type="time" value="{{ rm.time }}" onChange="{{ rm.onTime }}" style="min-height: 40px; padding: 0 10px; border: 1px solid #E8DFCC; border-radius: 10px; font: inherit; font-size: 15px; font-weight: 600; color: #2E2A24; background: #FBF7F0">
+          </div>
+          <div style="{{ L.rowCol }}">
+            <span style="font-size: 15px; font-weight: 600">Ngày nhắc</span>
+            <div role="group" aria-label="Ngày nhắc" style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px">
+              <sc-for list="{{ rm.days }}" as="dd" hint-placeholder-count="7"><button type="button" aria-pressed="{{ dd.on }}" onClick="{{ dd.t }}" style="{{ dd.style }}">{{ dd.label }}</button></sc-for>
+            </div>
+          </div>
+          <div style="{{ L.rowLast }}">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600">Nhắc lần 2 nếu chưa học</span><span style="font-size: 12px; color: #6B6358">Gửi thêm một lần sau 2 tiếng</span></span>
+            <button type="button" role="switch" aria-label="Nhắc lần 2" aria-checked="{{ sw.again.on }}" onClick="{{ sw.again.t }}" style="{{ sw.again.track }}"><span style="{{ sw.again.knob }}"></span></button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ is.widget }}" hint-placeholder-val="{{ false }}">
+        <div role="radiogroup" aria-label="Chọn widget" style="{{ L.wGrid }}">
+          <sc-for list="{{ widgets }}" as="w" hint-placeholder-count="3">
+            <button type="button" role="radio" aria-checked="{{ w.sel }}" onClick="{{ w.pick }}" style="{{ w.card }}">
+              <span style="{{ L.wPrev }}">
+                <span style="display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 800; letter-spacing: 0.04em; color: #A83A1A"><span style="width: 15px; height: 15px; border-radius: 4px; background: #CF4822; color: #FFFDF8; display: inline-flex; align-items: center; justify-content: center; font-size: 9px">V</span>{{ w.tag }}</span>
+                <sc-if value="{{ w.is.word }}" hint-placeholder-val="{{ true }}"><span style="display: flex; flex-direction: column; margin-top: auto; text-align: left"><b style="font-size: 18px; letter-spacing: -0.02em; color: #2E2A24">resilient</b><span style="font-size: 11px; color: #6B4A3A">/rɪˈzɪliənt/</span><sc-if value="{{ meaning }}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; font-weight: 700; color: #2E2A24">kiên cường</span></sc-if></span></sc-if>
+                <sc-if value="{{ w.is.prog }}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 8px; margin-top: auto"><span style="width: 46px; height: 46px; border-radius: 999px; background: conic-gradient(#CF4822 0 58%, #FFFDF8 58% 100%); display: flex; align-items: center; justify-content: center"><span style="width: 36px; height: 36px; border-radius: 999px; background: #FFE6D8; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #2E2A24">58%</span></span><span style="display: flex; flex-direction: column; font-size: 11px; color: #6B4A3A; text-align: left"><b style="font-size: 14px; color: #2E2A24">24 từ</b>cần ôn</span></span></sc-if>
+                <sc-if value="{{ w.is.streak }}" hint-placeholder-val="{{ false }}"><span style="display: flex; flex-direction: column; margin-top: auto; text-align: left"><span style="display: inline-flex; align-items: center; gap: 3px"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24"><path d="M12 1.5c1.2 4.2 5.8 6 5.8 12a5.8 5.8 0 0 1-11.6 0c0-2.9 1.4-4.8 3-6 .2 2 1.1 3.3 2.6 3.9C11.1 8.2 10.8 4.6 12 1.5z" fill="#F0531F"></path><path d="M12 11.2c.6 2 2.7 2.8 2.7 5.4a2.7 2.7 0 0 1-5.4 0c0-1.3.6-2.2 1.4-2.8.1.9.5 1.5 1.2 1.8-.1-1.6-.4-3 .1-4.4z" fill="#FFD84A"></path></svg><b style="font-size: 22px; color: #2E2A24">12</b></span><span style="font-size: 11px; font-weight: 600; color: #6B4A3A">ngày liên tiếp</span></span></sc-if>
+              </span>
+              <span style="{{ L.wLabel }}"><span style="{{ w.dot }}"></span><span style="display: flex; flex-direction: column; gap: 2px; text-align: left"><span style="font-size: 15px; font-weight: 700; color: #2E2A24">{{ w.label }}</span><span style="{{ L.wDesc }}">{{ w.desc }}</span></span></span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="{{ L.group }}">
+          <div style="{{ L.rowLast }}">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600">Hiện nghĩa trên widget</span><span style="font-size: 12px; color: #6B6358">Tắt để tự đoán nghĩa mỗi lần mở máy</span></span>
+            <button type="button" role="switch" aria-label="Hiện nghĩa trên widget" aria-checked="{{ sw.meaning.on }}" onClick="{{ sw.meaning.t }}" style="{{ sw.meaning.track }}"><span style="{{ sw.meaning.knob }}"></span></button>
+          </div>
+        </div>
+        <div style="{{ L.steps }}">
+          <b style="font-size: 14px">Cách thêm widget</b>
+          <span style="display: flex; gap: 10px; font-size: 14px; color: #4D463C"><span style="{{ L.stepNo }}">1</span>Giữ ngón tay lên chỗ trống ở màn hình chính.</span>
+          <span style="display: flex; gap: 10px; font-size: 14px; color: #4D463C"><span style="{{ L.stepNo }}">2</span>Chạm dấu + ở góc trên, tìm “VocaLab”.</span>
+          <span style="display: flex; gap: 10px; font-size: 14px; color: #4D463C"><span style="{{ L.stepNo }}">3</span>Chọn kiểu widget bạn vừa chọn ở trên.</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ is.lock }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; justify-content: center">
+          <div role="img" aria-label="Xem trước màn hình khoá" style="{{ L.lockPrev }}">
+            <span style="font-size: 13px; font-weight: 600; opacity: 0.85">Thứ Sáu, 27 tháng 11</span>
+            <span style="font-size: 60px; font-weight: 700; letter-spacing: -0.02em; line-height: 1">9:41</span>
+            <sc-if value="{{ lk.on }}" hint-placeholder-val="{{ true }}">
+              <span style="{{ L.lockWidget }}"><span style="display: flex; flex-direction: column; line-height: 1.3"><b style="font-size: 15px">{{ lk.l1 }}</b><span style="font-size: 13px; opacity: 0.85">{{ lk.l2 }}</span></span></span>
+            </sc-if>
+          </div>
+        </div>
+        <div style="{{ L.group }}">
+          <div style="{{ L.row }}">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600">Hiện từ trên màn hình khoá</span><span style="font-size: 12px; color: #6B6358">Từ mới đổi mỗi lần mở khoá</span></span>
+            <button type="button" role="switch" aria-label="Hiện từ trên màn hình khoá" aria-checked="{{ sw.lock.on }}" onClick="{{ sw.lock.t }}" style="{{ sw.lock.track }}"><span style="{{ sw.lock.knob }}"></span></button>
+          </div>
+          <div style="{{ L.rowCol }}">
+            <span style="font-size: 15px; font-weight: 600">Kiểu hiển thị</span>
+            <div role="radiogroup" aria-label="Kiểu hiển thị" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; border-radius: 12px; background: #FBF7F0"><sc-for list="{{ lockStyles }}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ o.sel }}" onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+          </div>
+          <div style="{{ L.rowLast }}">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600">Hiện tiến độ khi đang luyện</span><span style="font-size: 12px; color: #6B6358">Số câu còn lại hiện trên màn hình khoá</span></span>
+            <button type="button" role="switch" aria-label="Hiện tiến độ khi đang luyện" aria-checked="{{ sw.live.on }}" onClick="{{ sw.live.t }}" style="{{ sw.live.track }}"><span style="{{ sw.live.knob }}"></span></button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ is.voice }}" hint-placeholder-val="{{ false }}">
+        <div role="radiogroup" aria-label="Giọng phát âm" style="{{ L.group }}">
+          <sc-for list="{{ voices }}" as="v" hint-placeholder-count="2">
+            <div style="{{ v.row }}">
+              <button type="button" role="radio" aria-checked="{{ v.sel }}" onClick="{{ v.pick }}" style="flex: 1; display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 0; border: none; background: transparent; font: inherit; color: #2E2A24; cursor: pointer; text-align: left">
+                <span style="{{ v.radio }}"><span style="{{ v.radioIn }}"></span></span>
+                <span style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 700">{{ v.label }}</span><span style="font-size: 13px; color: #6B6358">schedule {{ v.ipa }}</span></span>
+              </button>
+              <button type="button" aria-label="{{ v.play }}" style="width: 40px; height: 40px; border-radius: 999px; border: none; background: #FFE3D3; color: #CF4822; display: flex; align-items: center; justify-content: center; cursor: pointer; flex: 0 0 auto"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path></svg></button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="{{ L.group }}">
+          <div style="{{ L.rowCol }}">
+            <span style="font-size: 15px; font-weight: 600">Tốc độ đọc</span>
+            <div role="radiogroup" aria-label="Tốc độ đọc" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; border-radius: 12px; background: #FBF7F0"><sc-for list="{{ speeds }}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ o.sel }}" onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
+          </div>
+          <div style="{{ L.rowLast }}">
+            <span style="flex: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600">Tự đọc khi hiện từ</span><span style="font-size: 12px; color: #6B6358">Trong Flashcard và Chọn nghĩa</span></span>
+            <button type="button" role="switch" aria-label="Tự đọc khi hiện từ" aria-checked="{{ sw.auto.on }}" onClick="{{ sw.auto.t }}" style="{{ sw.auto.track }}"><span style="{{ sw.auto.knob }}"></span></button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ is.theme }}" hint-placeholder-val="{{ false }}">
+        <div role="radiogroup" aria-label="Giao diện" style="{{ L.pickGrid }}">
+          <sc-for list="{{ themes }}" as="t" hint-placeholder-count="3">
+            <button type="button" role="radio" aria-checked="{{ t.sel }}" onClick="{{ t.pick }}" style="{{ t.card }}">
+              <span style="{{ t.prev }}">
+                <span style="{{ t.bar }}"></span>
+                <span style="{{ t.cardA }}"></span>
+                <span style="display: flex; gap: 5px"><span style="{{ t.cardB }}"></span><span style="{{ t.cardC }}"></span></span>
+              </span>
+              <span style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 700; color: #2E2A24"><span style="{{ t.dot }}"></span>{{ t.label }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <span style="font-size: 13px; line-height: 1.5; color: #6B6358; padding: 0 4px">“Theo máy” tự đổi Sáng / Tối theo cài đặt của điện thoại.</span>
+      </sc-if>
+
+      <sc-if value="{{ is.reset }}" hint-placeholder-val="{{ false }}">
+        <div style="{{ L.warn }}">
+          <span style="width: 44px; height: 44px; border-radius: 12px; background: #FFFDF8; color: #B0304A; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9.5 17h-19z"></path><path d="M12 10v4M12 17h.01"></path></svg></span>
+          <span style="display: flex; flex-direction: column; gap: 4px"><b style="font-size: 16px; color: #8E2A3D">Không thể hoàn tác</b><span style="font-size: 14px; line-height: 1.5; color: #5A3A40">Từ vựng vẫn giữ nguyên, nhưng toàn bộ tiến độ học sẽ bị xoá.</span></span>
+        </div>
+        <div style="{{ L.group }}">
+          <sc-for list="{{ resetItems }}" as="r" hint-placeholder-count="4">
+            <div style="{{ r.row }}"><span style="width: 8px; height: 8px; border-radius: 999px; background: #C2465E; flex: 0 0 auto"></span><span style="flex: 1; font-size: 15px">{{ r.label }}</span><span style="font-size: 14px; font-weight: 700; color: #6B6358">{{ r.v }}</span></div>
+          </sc-for>
+        </div>
+        <label style="display: flex; flex-direction: column; gap: 8px; font-size: 14px; font-weight: 600; color: #4D463C">Gõ <b style="color: #B0304A">ĐẶT LẠI</b> để xác nhận
+          <input type="text" value="{{ confirmText }}" onChange="{{ onConfirm }}" placeholder="ĐẶT LẠI" style="min-height: 48px; padding: 0 14px; border: 1.5px solid #E8DFCC; border-radius: 12px; background: #FFFDF8; font: inherit; font-size: 16px; font-weight: 700; letter-spacing: 0.04em; color: #2E2A24">
+        </label>
+        <div style="display: flex; gap: 10px">
+          <a href="{{ ln.back }}" style="flex: 1; display: flex; align-items: center; justify-content: center; min-height: 50px; border-radius: 12px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #2E2A24; font-size: 15px; font-weight: 700; text-decoration: none">Huỷ</a>
+          <button type="button" disabled="{{ cantReset }}" style="{{ resetBtn }}">Đặt lại tiến độ</button>
+        </div>
+      </sc-if>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"enum","options":["reminder","widget","lock","voice","theme","reset"],"default":"reminder"},"device":{"editor":"enum","options":["laptop","ipad","iphone"],"default":"laptop"},"frameH":{"editor":null},"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { time: '20:30', days: [true, true, true, true, true, true, false], widget: 'word', lockStyle: 'word', voice: 'uk', speed: 'normal', theme: 'sys', confirm: '', sw: { notify: true, again: false, meaning: true, lock: true, live: false, auto: true } };
+  }
+  layout() {
+    const d = this.props.device ?? 'laptop';
+    const laptop = d === 'laptop', tablet = d === 'ipad', phone = d === 'iphone';
+    const fh = this.props.frameH ?? (tablet ? 1180 : 844);
+    const ink = { background: '#FBF7F0', fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", color: '#2E2A24' };
+    const row = { display: 'flex', alignItems: 'center', gap: '12px', minHeight: '58px', padding: '8px 16px', borderBottom: '1px solid #F1EBDE', boxSizing: 'border-box' };
+    const pastel = { backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px' };
+    return { d, phone, sfx: laptop ? '' : tablet ? 'Tablet' : 'Phone', row, L: {
+      root: laptop ? { ...ink, minHeight: '100vh' } : { ...ink, width: '100%', minHeight: fh + 'px' },
+      main: { padding: laptop ? '28px 40px 56px' : tablet ? '24px 28px 40px' : '16px 16px 32px', boxSizing: 'border-box' },
+      h1: { margin: 0, fontSize: laptop ? '32px' : tablet ? '28px' : '26px', fontWeight: 800, letterSpacing: '-0.025em' },
+      group: { background: '#FFFDF8', border: '1px solid #E8DFCC', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 0 #EDE4D2' },
+      row, rowLast: { ...row, borderBottom: 'none' },
+      rowCol: { display: 'flex', flexDirection: 'column', gap: '10px', padding: '14px 16px', borderBottom: '1px solid #F1EBDE' },
+      notif: { display: 'flex', gap: '12px', padding: '12px 14px', borderRadius: '18px', background: 'rgba(255,253,248,0.9)', border: '1px solid #E8DFCC', boxShadow: '0 8px 20px rgba(46,42,36,0.08)' },
+      pickGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: phone ? '8px' : '14px' },
+      wPrev: { display: 'flex', flexDirection: 'column', width: phone ? '128px' : '100%', flex: phone ? '0 0 128px' : 'none', aspectRatio: '1 / 1', boxSizing: 'border-box', padding: phone ? '10px' : '12px', borderRadius: phone ? '18px' : '22px', backgroundColor: '#FFE6D8', ...pastel, border: '1.5px solid #F4C3AB' },
+      wGrid: { display: 'grid', gridTemplateColumns: phone ? 'minmax(0, 1fr)' : 'repeat(3, minmax(0, 1fr))', gap: phone ? '10px' : '14px' },
+      wLabel: { display: 'flex', alignItems: phone ? 'center' : 'flex-start', justifyContent: phone ? 'flex-start' : 'center', gap: '10px', flex: phone ? '1 1 auto' : 'none', minWidth: 0 },
+      wDesc: { display: phone ? 'block' : 'none', fontSize: '13px', color: '#6B6358', lineHeight: 1.4 },
+      steps: { display: 'flex', flexDirection: 'column', gap: '10px', padding: '16px', borderRadius: '16px', backgroundColor: '#FFF1C7', ...pastel, border: '1.5px solid #EFD993' },
+      stepNo: { flex: '0 0 22px', width: '22px', height: '22px', borderRadius: '999px', background: '#FFFDF8', color: '#8A5D00', fontSize: '12px', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' },
+      lockPrev: { width: phone ? '220px' : '260px', height: phone ? '250px' : '290px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', padding: '22px 16px', borderRadius: '30px', background: 'linear-gradient(160deg, #E8572F 0%, #A83A1A 100%)', color: '#FFFDF8', boxShadow: '0 10px 24px rgba(46,42,36,0.18)' },
+      lockWidget: { marginTop: '14px', width: '100%', boxSizing: 'border-box', display: 'flex', alignItems: 'center', padding: '10px 12px', borderRadius: '14px', background: 'rgba(255,253,248,0.22)' },
+      warn: { display: 'flex', gap: '12px', alignItems: 'flex-start', padding: '16px', borderRadius: '16px', backgroundColor: '#FCE4EA', ...pastel, border: '1.5px solid #F1C2CF' }
+    } };
+  }
+  renderVals() {
+    const { d, phone, sfx, L, row } = this.layout();
+    const s = this.state;
+    const scr = this.props.screen ?? 'reminder';
+    const T = { reminder: ['Nhắc ôn', 'Chọn giờ và ngày nhận thông báo.'], widget: ['Widget màn hình chính', 'Chọn nội dung hiện trên widget.'], lock: ['Màn hình khoá', 'Ôn lướt mỗi lần cầm máy.'], voice: ['Giọng phát âm', 'Giọng đọc dùng trong toàn bộ ứng dụng.'], theme: ['Giao diện', 'Chọn màu nền bạn thấy dễ chịu nhất.'], reset: ['Đặt lại tiến độ học', 'Đưa mọi từ về 0% để học lại từ đầu.'] }[scr];
+    const segBtn = (on) => ({ minHeight: '40px', borderRadius: '10px', border: 'none', background: on ? '#FFFFFF' : 'transparent', color: on ? '#2E2A24' : '#6B6358', font: 'inherit', fontSize: '14px', fontWeight: 700, cursor: 'pointer', boxShadow: on ? '0 1px 3px rgba(46,42,36,0.12)' : 'none' });
+    const radio = (key, opts) => opts.map(([id, label]) => ({ label, sel: String(s[key] === id), pick: () => this.setState({ [key]: id }), style: segBtn(s[key] === id) }));
+    const sw = {};
+    Object.keys(s.sw).forEach((k) => { const on = s.sw[k];
+      sw[k] = { on: String(on), t: () => this.setState({ sw: { ...s.sw, [k]: !on } }),
+        track: { flex: '0 0 50px', width: '50px', height: '30px', borderRadius: '999px', border: 'none', padding: '3px', background: on ? '#CF4822' : '#D9CFBB', cursor: 'pointer', display: 'flex', justifyContent: on ? 'flex-end' : 'flex-start', transition: 'background 200ms ease' },
+        knob: { width: '24px', height: '24px', borderRadius: '999px', background: '#FFFDF8', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', display: 'block' } }; });
+    const pickCard = (on) => ({ display: 'flex', flexDirection: 'column', gap: '10px', padding: phone ? '8px' : '10px', borderRadius: phone ? '20px' : '24px', border: on ? '2px solid #CF4822' : '2px solid transparent', background: on ? '#FFFDF8' : 'transparent', boxShadow: on ? '0 3px 0 #F4C3AB' : 'none', font: 'inherit', cursor: 'pointer', minWidth: 0 });
+    const dot = (on) => ({ width: '14px', height: '14px', borderRadius: '999px', boxSizing: 'border-box', border: on ? '4px solid #CF4822' : '2px solid #B0A693', background: '#FFFDF8', flex: '0 0 auto' });
+    const DN = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
+    const TH = { light: ['#FBF7F0', '#FFFDF8', '#FFE6D8', '#E8DFCC'], dark: ['#1F1C19', '#2C2824', '#5A2E20', '#3A352F'], sys: ['linear-gradient(90deg, #FBF7F0 50%, #1F1C19 50%)', '#FFFDF8', '#FFE6D8', '#E8DFCC'] };
+    const LK = { word: ['resilient', 'kiên cường'], only: ['resilient', '/rɪˈzɪliənt/'], streak: ['12 ngày liên tiếp', '24 từ cần ôn'] };
+    const ok = s.confirm.trim().toUpperCase() === 'ĐẶT LẠI';
+    return {
+      L, title: T[0], subtitle: T[1],
+      is: { reminder: scr === 'reminder', widget: scr === 'widget', lock: scr === 'lock', voice: scr === 'voice', theme: scr === 'theme', reset: scr === 'reset' },
+      ln: { back: 'Settings' + sfx + '.dc.html' }, sw, meaning: s.sw.meaning,
+      rm: { time: s.time, onTime: (e) => this.setState({ time: e.target.value }),
+        days: DN.map((label, i) => ({ label, on: String(s.days[i]), t: () => { const n = s.days.slice(); n[i] = !n[i]; this.setState({ days: n }); },
+          style: { minHeight: '40px', borderRadius: '10px', border: s.days[i] ? '1.5px solid #CF4822' : '1.5px solid #E8DFCC', background: s.days[i] ? '#FFE3D3' : '#FFFDF8', color: s.days[i] ? '#A83A1A' : '#6B6358', font: 'inherit', fontSize: '13px', fontWeight: 700, cursor: 'pointer', padding: 0 } })) },
+      widgets: [['word', 'Từ của ngày', 'TỪ HÔM NAY'], ['prog', 'Tiến độ', 'TIẾN ĐỘ'], ['streak', 'Chuỗi ngày', 'CHUỖI']].map(([id, label, tag]) => ({ label, tag, sel: String(s.widget === id), pick: () => this.setState({ widget: id }), card: { ...pickCard(s.widget === id), flexDirection: phone ? 'row' : 'column', alignItems: phone ? 'center' : 'stretch', gap: phone ? '14px' : '10px', background: s.widget === id ? '#FFFDF8' : (phone ? '#FFFDF8' : 'transparent'), border: s.widget === id ? '2px solid #CF4822' : (phone ? '2px solid #EFE7D6' : '2px solid transparent') }, dot: dot(s.widget === id), desc: { word: 'Một từ mới mỗi ngày, kèm phiên âm và nghĩa.', prog: 'Mức thông thạo và số từ cần ôn.', streak: 'Số ngày học liên tiếp, nhắc giữ lửa.' }[id], is: { word: id === 'word', prog: id === 'prog', streak: id === 'streak' } })),
+      lk: { on: s.sw.lock, l1: LK[s.lockStyle][0], l2: LK[s.lockStyle][1] },
+      lockStyles: radio('lockStyle', [['word', 'Từ + nghĩa'], ['only', 'Chỉ từ'], ['streak', 'Chuỗi']]),
+      voices: [['uk', 'Anh-Anh (UK)', '/ˈʃedjuːl/'], ['us', 'Anh-Mỹ (US)', '/ˈskedʒuːl/']].map(([id, label, ipa], i) => { const on = s.voice === id; return { label, ipa, play: 'Nghe thử ' + label, sel: String(on), pick: () => this.setState({ voice: id }), row: { ...row, borderBottom: i === 0 ? '1px solid #F1EBDE' : 'none' },
+        radio: { width: '22px', height: '22px', borderRadius: '999px', border: on ? '2px solid #CF4822' : '2px solid #B0A693', display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', flex: '0 0 auto' },
+        radioIn: { width: '10px', height: '10px', borderRadius: '999px', background: on ? '#CF4822' : 'transparent', display: 'block' } }; }),
+      speeds: radio('speed', [['slow', 'Chậm'], ['normal', 'Vừa'], ['fast', 'Nhanh']]),
+      themes: [['light', 'Sáng'], ['dark', 'Tối'], ['sys', 'Theo máy']].map(([id, label]) => { const c = TH[id]; const on = s.theme === id; return { label, sel: String(on), pick: () => this.setState({ theme: id }), card: pickCard(on), dot: dot(on),
+        prev: { display: 'flex', flexDirection: 'column', gap: '5px', width: '100%', aspectRatio: '3 / 4', boxSizing: 'border-box', padding: '10px 8px', borderRadius: '16px', background: c[0], border: '1px solid #E8DFCC' },
+        bar: { display: 'block', height: '6px', width: '50%', borderRadius: '4px', background: c[3] },
+        cardA: { display: 'block', flex: '1 1 auto', borderRadius: '8px', background: c[2] },
+        cardB: { display: 'block', flex: 1, height: '28px', borderRadius: '8px', background: c[1], border: '1px solid ' + c[3] },
+        cardC: { display: 'block', flex: 1, height: '28px', borderRadius: '8px', background: c[1], border: '1px solid ' + c[3] } }; }),
+      resetItems: [['Mức thông thạo của 248 từ', '→ 0%'], ['Chuỗi ngày', '12 → 0'], ['Lịch sử luyện tập', 'Xoá'], ['Bộ có sẵn đã thêm', 'Giữ lại']].map(([label, v], i, a) => ({ label, v, row: { ...row, minHeight: '50px', borderBottom: i === a.length - 1 ? 'none' : '1px solid #F1EBDE' } })),
+      confirmText: s.confirm, onConfirm: (e) => this.setState({ confirm: e.target.value }), cantReset: !ok,
+      resetBtn: { flex: 1, minHeight: '50px', borderRadius: '12px', border: 'none', background: ok ? '#C0364A' : '#E9D6DA', color: ok ? '#FFFFFF' : '#9C7A80', font: 'inherit', fontSize: '15px', fontWeight: 800, cursor: ok ? 'pointer' : 'not-allowed', boxShadow: ok ? '0 3px 0 #8E2A3D' : 'none' }
+    };
+  }
+}
+</script>
+</body>
+</html>

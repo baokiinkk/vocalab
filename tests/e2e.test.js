@@ -106,7 +106,7 @@ for (const device of ['laptop', 'ipad', 'iphone']) {
     assert.equal(await p.inputValue('#add-word'), 'serendipity');
 
     // 7. Settings: dark theme persists across reload
-    await p.goto(p.url().split('#')[0] + '#/settings');
+    await p.goto(p.url().split('#')[0] + '#/settings/theme');
     await p.getByRole('radio', { name: 'Tối' }).click();
     assert.equal(await p.evaluate(() => document.documentElement.getAttribute('data-theme')), 'dark');
     await p.reload(); await p.waitForFunction(() => window.VL && VL.current());

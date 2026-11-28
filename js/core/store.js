@@ -23,10 +23,11 @@
     pen: 20,                             // % subtracted on a wrong answer (10 | 20 | 30)
     exn: 2,                              // AI example sentences (1..3)
     voice: 'uk',                         // uk | us
+    speed: 'normal',                     // reading speed: slow | normal | fast (Cài đặt → Giọng phát âm)
     lang: 'vi',                          // AI explanation language: vi | en
     theme: 'sys',                        // light | dark | sys
     size: 'm',                           // flashcard font size s | m | l
-    sw: { notify: true, streak: true, prio: true, review: true, flash: true, auto: true, backup: true },
+    sw: { notify: true, streak: true, prio: true, review: true, flash: true, auto: true, backup: true, again: true, autoSpeak: true }, // again: 2nd reminder · autoSpeak: read words aloud
     groqKey: VL.DEFAULT_GROQ_KEY,
     groqModel: 'openai/gpt-oss-120b'
   };

@@ -11,6 +11,7 @@
      #/quiz                       Chọn nghĩa & other quiz modes (focus screen)
      #/result                     Kết quả phiên (focus screen)
      #/settings                   Cài đặt
+     #/settings/<sub>             Cài đặt · màn phụ (theme | voice | reminder | reset)
 
    Page definition: VL.page(name, {
      nav: 'main'|'vocab'|'practice'|'settings'|'add'|null,  // active nav item
@@ -37,7 +38,8 @@
     [/^\/flash$/, 'flash'],
     [/^\/quiz$/, 'quiz'],
     [/^\/result$/, 'result'],
-    [/^\/settings$/, 'settings']
+    [/^\/settings$/, 'settings'],
+    [/^\/settings\/([^/]+)$/, 'settings', 'sub']   // Cài đặt sub-screens: theme | voice | reminder | reset
   ];
 
   VL.parseHash = (hash) => {
@@ -115,7 +117,24 @@
       const h1 = view.querySelector('h1');
       if (h1 && isNav) { h1.setAttribute('tabindex', '-1'); h1.focus({ preventScroll: true }); }
     }
+    autoSpeak(route.name);
     VL.emit('render', ctx);
+  }
+  /** Cài đặt → Giọng phát âm → "Tự đọc khi hiện từ": read the headword once when a new
+      Flashcard / Chọn nghĩa (word → meaning) item appears. Not for modes where hearing it gives the answer away. */
+  let spokenKey = null;
+  function autoSpeak(name) {
+    if (name !== 'flash' && name !== 'quiz') return;
+    if (navigator.webdriver) return; // automated browsers (tests): headless speech synthesis can stall the page
+    const set = VL.store.settings();
+    if (!set.sw || set.sw.autoSpeak === false) return;
+    const s = VL.session.current(), it = VL.session.item();
+    if (!s || s.done || !it || !it.word || it.answered) return;
+    if (it.mode !== 'flash' && it.mode !== 'mean') return;
+    const id = (s.id || s.startedAt) + ':' + s.idx;
+    if (id === spokenKey) return;
+    spokenKey = id;
+    try { VL.media.speak(it.word.w); } catch (e) { /* speech unavailable */ }
   }
   /** Re-render the current page in place. */
   VL.refresh = () => render(false);
@@ -154,7 +173,7 @@
       const fire = (tag, body) => { try { new Notification('VocaLab · đến giờ ôn', { body, tag }); } catch (e) { /* ignore */ } sent[tag] = 1; VL.ls.set('vocalab.notified', sent); };
       if (mins >= at && !sent[dk]) fire(dk, VL.srs.todayPlan().due.length + ' từ đang chờ bạn ôn hôm nay.');
       // "Nhắc thêm lần nữa nếu chưa ôn": second reminder 2 h later
-      else if (mins >= at + 120 && sent[dk] && !sent[dk + '-2']) fire(dk + '-2', 'Bạn chưa ôn hôm nay. Chỉ cần ~' + VL.srs.todayPlan().minutes + ' phút để giữ chuỗi!');
+      else if (set.sw.again !== false && mins >= at + 120 && sent[dk] && !sent[dk + '-2']) fire(dk + '-2', 'Bạn chưa ôn hôm nay. Chỉ cần ~' + VL.srs.todayPlan().minutes + ' phút để giữ chuỗi!');
     }
   };
 

@@ -333,7 +333,7 @@
    "x": 0,
    "y": 0,
    "w": 1440,
-   "h": 1200,
+   "h": 1000,
    "title": "Cài đặt · Laptop",
    "expand": "fill",
    "is_interactive": true,
@@ -352,7 +352,7 @@
    "x": 2420,
    "y": 0,
    "w": 390,
-   "h": 1400,
+   "h": 1040,
    "title": "Cài đặt · iPhone",
    "is_interactive": true,
    "radius": 40,
@@ -556,6 +556,188 @@
    "h": 48,
    "title": "Icon bộ từ (dùng chung)",
    "page": "parts"
+  },
+  "SetReminder.dc.html": {
+   "x": 0,
+   "y": 1500,
+   "w": 1440,
+   "h": 820,
+   "title": "Nhắc ôn · Laptop",
+   "page": "settings",
+   "is_interactive": true,
+   "expand": "fill"
+  },
+  "SetReminderTablet.dc.html": {
+   "x": 1520,
+   "y": 1500,
+   "w": 820,
+   "h": 1180,
+   "title": "Nhắc ôn · iPad",
+   "page": "settings",
+   "is_interactive": true
+  },
+  "SetReminderPhone.dc.html": {
+   "x": 2420,
+   "y": 1500,
+   "w": 390,
+   "h": 900,
+   "title": "Nhắc ôn · iPhone",
+   "page": "settings",
+   "is_interactive": true,
+   "radius": 40
+  },
+  "SetWidget.dc.html": {
+   "x": 0,
+   "y": 3000,
+   "w": 1440,
+   "h": 820,
+   "title": "Widget màn hình chính · Laptop",
+   "page": "settings",
+   "is_interactive": true,
+   "expand": "fill"
+  },
+  "SetWidgetTablet.dc.html": {
+   "x": 1520,
+   "y": 3000,
+   "w": 820,
+   "h": 1180,
+   "title": "Widget màn hình chính · iPad",
+   "page": "settings",
+   "is_interactive": true
+  },
+  "SetWidgetPhone.dc.html": {
+   "x": 2420,
+   "y": 3000,
+   "w": 390,
+   "h": 920,
+   "title": "Widget màn hình chính · iPhone",
+   "page": "settings",
+   "is_interactive": true,
+   "radius": 40
+  },
+  "SetLock.dc.html": {
+   "x": 0,
+   "y": 4500,
+   "w": 1440,
+   "h": 820,
+   "title": "Màn hình khoá · Laptop",
+   "page": "settings",
+   "is_interactive": true,
+   "expand": "fill"
+  },
+  "SetLockTablet.dc.html": {
+   "x": 1520,
+   "y": 4500,
+   "w": 820,
+   "h": 1180,
+   "title": "Màn hình khoá · iPad",
+   "page": "settings",
+   "is_interactive": true
+  },
+  "SetLockPhone.dc.html": {
+   "x": 2420,
+   "y": 4500,
+   "w": 390,
+   "h": 960,
+   "title": "Màn hình khoá · iPhone",
+   "page": "settings",
+   "is_interactive": true,
+   "radius": 40
+  },
+  "SetVoice.dc.html": {
+   "x": 0,
+   "y": 6000,
+   "w": 1440,
+   "h": 820,
+   "title": "Giọng phát âm · Laptop",
+   "page": "settings",
+   "is_interactive": true,
+   "expand": "fill"
+  },
+  "SetVoiceTablet.dc.html": {
+   "x": 1520,
+   "y": 6000,
+   "w": 820,
+   "h": 1180,
+   "title": "Giọng phát âm · iPad",
+   "page": "settings",
+   "is_interactive": true
+  },
+  "SetVoicePhone.dc.html": {
+   "x": 2420,
+   "y": 6000,
+   "w": 390,
+   "h": 844,
+   "title": "Giọng phát âm · iPhone",
+   "page": "settings",
+   "is_interactive": true,
+   "radius": 40
+  },
+  "SetTheme.dc.html": {
+   "x": 0,
+   "y": 7500,
+   "w": 1440,
+   "h": 820,
+   "title": "Giao diện · Laptop",
+   "page": "settings",
+   "is_interactive": true,
+   "expand": "fill"
+  },
+  "SetThemeTablet.dc.html": {
+   "x": 1520,
+   "y": 7500,
+   "w": 820,
+   "h": 1180,
+   "title": "Giao diện · iPad",
+   "page": "settings",
+   "is_interactive": true
+  },
+  "SetThemePhone.dc.html": {
+   "x": 2420,
+   "y": 7500,
+   "w": 390,
+   "h": 844,
+   "title": "Giao diện · iPhone",
+   "page": "settings",
+   "is_interactive": true,
+   "radius": 40
+  },
+  "SetReset.dc.html": {
+   "x": 0,
+   "y": 9000,
+   "w": 1440,
+   "h": 820,
+   "title": "Đặt lại tiến độ · Laptop",
+   "page": "settings",
+   "is_interactive": true,
+   "expand": "fill"
+  },
+  "SetResetTablet.dc.html": {
+   "x": 1520,
+   "y": 9000,
+   "w": 820,
+   "h": 1180,
+   "title": "Đặt lại tiến độ · iPad",
+   "page": "settings",
+   "is_interactive": true
+  },
+  "SetResetPhone.dc.html": {
+   "x": 2420,
+   "y": 9000,
+   "w": 390,
+   "h": 900,
+   "title": "Đặt lại tiến độ · iPhone",
+   "page": "settings",
+   "is_interactive": true,
+   "radius": 40
+  },
+  "SettingsSub.dc.html": {
+   "x": 748,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "Màn phụ cài đặt (dùng chung)",
+   "page": "parts"
   }
  },
  "order": [
@@ -610,7 +792,26 @@
   "DeckDetail.dc.html",
   "DeckDetailTablet.dc.html",
   "DeckDetailPhone.dc.html",
-  "DeckIcon.dc.html"
+  "DeckIcon.dc.html",
+  "SetReminder.dc.html",
+  "SetReminderTablet.dc.html",
+  "SetReminderPhone.dc.html",
+  "SetWidget.dc.html",
+  "SetWidgetTablet.dc.html",
+  "SetWidgetPhone.dc.html",
+  "SetLock.dc.html",
+  "SetLockTablet.dc.html",
+  "SetLockPhone.dc.html",
+  "SetVoice.dc.html",
+  "SetVoiceTablet.dc.html",
+  "SetVoicePhone.dc.html",
+  "SetTheme.dc.html",
+  "SetThemeTablet.dc.html",
+  "SetThemePhone.dc.html",
+  "SetReset.dc.html",
+  "SetResetTablet.dc.html",
+  "SetResetPhone.dc.html",
+  "SettingsSub.dc.html"
  ],
  "notes": {
   "t1": {
@@ -756,6 +957,60 @@
    "maxW": 2810,
    "page": "quiz",
    "w": 240
+  },
+  "s0": {
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "settings",
+   "text": "Cài đặt › Nhắc ôn",
+   "w": 240,
+   "x": 0,
+   "y": 1200
+  },
+  "s1": {
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "settings",
+   "text": "Cài đặt › Widget màn hình chính",
+   "w": 240,
+   "x": 0,
+   "y": 2700
+  },
+  "s2": {
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "settings",
+   "text": "Cài đặt › Màn hình khoá",
+   "w": 240,
+   "x": 0,
+   "y": 4200
+  },
+  "s3": {
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "settings",
+   "text": "Cài đặt › Giọng phát âm",
+   "w": 240,
+   "x": 0,
+   "y": 5700
+  },
+  "s4": {
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "settings",
+   "text": "Cài đặt › Giao diện",
+   "w": 240,
+   "x": 0,
+   "y": 7200
+  },
+  "s5": {
+   "kind": "title1",
+   "maxW": 2810,
+   "page": "settings",
+   "text": "Cài đặt › Đặt lại tiến độ",
+   "w": 240,
+   "x": 0,
+   "y": 8700
   }
  },
  "designSystems": [],
@@ -776,6 +1031,12 @@
   "p1",
   "p2",
   "p3",
-  "q2"
+  "q2",
+  "s0",
+  "s1",
+  "s2",
+  "s3",
+  "s4",
+  "s5"
  ]
 }

@@ -21,13 +21,14 @@ a{color:#CF4822}a:hover{color:#A83A1A}
   </div>
   </sc-if>
   <main style="{{ L.main }}">
-    <div style="max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px">
+    <div style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px">
       <header style="display: flex; flex-direction: column; gap: 6px">
         <sc-if value="{{ scoped }}" hint-placeholder-val="{{ false }}"><a href="{{ ln.back }}" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; font-size: 15px; font-weight: 700; text-decoration: none"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Luyện tập</a></sc-if>
         <h1 style="{{ L.h1 }}">{{ title }}</h1>
         <span style="font-size: 14px; color: #6B6358">{{ subtitle }}</span>
       </header>
 
+      <sc-if value="{{ scoped }}" hint-placeholder-val="{{ false }}">
       <section aria-labelledby="h-nhac" style="display: flex; flex-direction: column; gap: 8px">
         <h2 id="h-nhac" style="{{ L.h2 }}">Nhắc ôn</h2>
         <div style="{{ L.group }}">
@@ -41,7 +42,9 @@ a{color:#CF4822}a:hover{color:#A83A1A}
           </div>
         </div>
       </section>
+      </sc-if>
 
+      <sc-if value="{{ scoped }}" hint-placeholder-val="{{ false }}">
       <section aria-labelledby="h-phien" style="display: flex; flex-direction: column; gap: 8px">
         <h2 id="h-phien" style="{{ L.h2 }}">Phiên luyện</h2>
         <div style="{{ L.group }}">
@@ -60,33 +63,36 @@ a{color:#CF4822}a:hover{color:#A83A1A}
           <div style="{{ L.noteRow }}">Từ có % thấp sẽ tự động xuất hiện nhiều hơn; từ đã 100% thỉnh thoảng được hỏi lại để không quên.</div>
         </div>
       </section>
+      </sc-if>
 
       <sc-if value="{{ all }}" hint-placeholder-val="{{ true }}">
-        <section aria-labelledby="h-chung" style="display: flex; flex-direction: column; gap: 8px">
-          <h2 id="h-chung" style="{{ L.h2 }}">Chung</h2>
+        <section style="display: flex; flex-direction: column; gap: 8px">
+          <h2 style="{{ L.h2 }}">Học tập</h2>
           <div style="{{ L.group }}">
-            <div style="{{ L.rowCol }}">
-              <span style="font-size: 15px; font-weight: 600">Giọng phát âm</span>
-              <div role="radiogroup" aria-label="Giọng phát âm" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3px; padding: 3px; border-radius: 12px; background: #FBF7F0; max-width: 360px"><sc-for list="{{ voice }}" as="o" hint-placeholder-count="2"><button type="button" role="radio" aria-checked="{{ o.sel }}" onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
-            </div>
-            <div style="{{ L.rowColLast }}">
-              <span style="font-size: 15px; font-weight: 600">Giao diện</span>
-              <div role="radiogroup" aria-label="Giao diện" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 3px; border-radius: 12px; background: #FBF7F0; max-width: 360px"><sc-for list="{{ theme }}" as="o" hint-placeholder-count="3"><button type="button" role="radio" aria-checked="{{ o.sel }}" onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</button></sc-for></div>
-            </div>
+            <div style="{{ L.cRow }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #FFE3D3; color: #CF4822; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10 21h4"></path></svg></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; color: #2E2A24">Nhắc ôn mỗi ngày</span></span><button type="button" role="switch" aria-label="Nhắc ôn mỗi ngày" aria-checked="{{ sw.notify.on }}" onClick="{{ sw.notify.t }}" style="{{ sw.notify.track }}"><span style="{{ sw.notify.knob }}"></span></button></div>
+            <a href="{{ ln.sub.reminder }}" style="{{ L.cRow }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #FFF1C7; color: #8A5D00; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span><span style="flex: 1; font-size: 15px; font-weight: 600; color: #2E2A24">Giờ nhắc</span><span style="font-size: 14px; font-weight: 600; color: #6B6358; white-space: nowrap">20:30 · T2–T7</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0A693" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a>
+            <a href="{{ ln.practiceSettings }}" style="{{ L.cRowLast }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #ECE6FF; color: #5B40C9; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"></path><circle cx="16" cy="6" r="2"></circle><circle cx="10" cy="12" r="2"></circle><circle cx="18" cy="18" r="2"></circle></svg></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; color: #2E2A24">Phiên luyện</span><span style="font-size: 12px; color: #6B6358">{{ practiceSummary }}</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0A693" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a>
           </div>
         </section>
-
-        <section aria-labelledby="h-dl" style="display: flex; flex-direction: column; gap: 8px">
-          <h2 id="h-dl" style="{{ L.h2 }}">Dữ liệu</h2>
+        <section style="display: flex; flex-direction: column; gap: 8px">
+          <h2 style="{{ L.h2 }}">Widget &amp; màn hình khoá</h2>
           <div style="{{ L.group }}">
-            <div style="{{ L.row }}">
-              <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600">Xuất từ vựng</span><span style="font-size: 13px; color: #6B6358">Tự động sao lưu mỗi ngày</span></span>
-              <button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 12px; border: 1px solid #E8DFCC; background: #FFFDF8; color: #2E2A24; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Xuất</button>
-            </div>
-            <div style="{{ L.rowLast }}">
-              <span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 600; color: #C0364A">Đặt lại tiến độ</span><span style="font-size: 13px; color: #6B6358">Đưa mọi từ về 0%, không xoá từ</span></span>
-              <button type="button" style="min-height: 40px; padding: 0 16px; border-radius: 12px; border: 1px solid #F3C9D1; background: #FFFDF8; color: #C0364A; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer">Đặt lại</button>
-            </div>
+            <a href="{{ ln.sub.widget }}" style="{{ L.cRow }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #DFF2E5; color: #2F7A4F; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="2"></rect><rect x="13" y="3" width="8" height="8" rx="2"></rect><rect x="3" y="13" width="8" height="8" rx="2"></rect><rect x="13" y="13" width="8" height="8" rx="2"></rect></svg></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; color: #2E2A24">Widget màn hình chính</span></span><span style="font-size: 14px; font-weight: 600; color: #6B6358; white-space: nowrap">{{ widgetLabel }}</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0A693" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a>
+            <a href="{{ ln.sub.lock }}" style="{{ L.cRow }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #E3EEFA; color: #2F5E99; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; color: #2E2A24">Màn hình khoá</span></span><span style="font-size: 14px; font-weight: 600; color: #6B6358; white-space: nowrap">Bật</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0A693" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a>
+            <div style="{{ L.cRowLast }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #FCE4EA; color: #A8324F; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; color: #2E2A24">Hiện nghĩa</span><span style="font-size: 12px; color: #6B6358">Tắt để tự đoán nghĩa</span></span><button type="button" role="switch" aria-label="Hiện nghĩa trên widget" aria-checked="{{ sw.wMeaning.on }}" onClick="{{ sw.wMeaning.t }}" style="{{ sw.wMeaning.track }}"><span style="{{ sw.wMeaning.knob }}"></span></button></div>
+          </div>
+        </section>
+        <section style="display: flex; flex-direction: column; gap: 8px">
+          <h2 style="{{ L.h2 }}">Chung</h2>
+          <div style="{{ L.group }}">
+            <a href="{{ ln.sub.voice }}" style="{{ L.cRow }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #FFE3D3; color: #CF4822; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H3v6h3l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; color: #2E2A24">Giọng phát âm</span></span><span style="font-size: 14px; font-weight: 600; color: #6B6358; white-space: nowrap">{{ voiceLabel }}</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0A693" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a>
+            <a href="{{ ln.sub.theme }}" style="{{ L.cRowLast }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #ECE6FF; color: #5B40C9; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 600; color: #2E2A24">Giao diện</span></span><span style="font-size: 14px; font-weight: 600; color: #6B6358; white-space: nowrap">{{ themeLabel }}</span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0A693" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a>
+          </div>
+        </section>
+        <section style="display: flex; flex-direction: column; gap: 8px">
+          <div style="{{ L.group }}">
+            <button type="button" style="{{ L.cRowBtn }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #FBF7F0; color: #4D463C; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></span><span style="flex: 1; text-align: left; font-size: 15px; font-weight: 600; color: #2E2A24">Khôi phục cài đặt mặc định</span></button>
+            <a href="{{ ln.sub.reset }}" style="{{ L.cRowLast }}"><span style="width: 32px; height: 32px; border-radius: 9px; background: #FCE4EA; color: #B0304A; display: flex; align-items: center; justify-content: center; flex: 0 0 auto"><svg aria-hidden="true" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"></path></svg></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; text-align: left"><span style="font-size: 15px; font-weight: 700; color: #B0304A">Đặt lại tiến độ học</span><span style="font-size: 12px; color: #6B6358">Mọi từ về 0%. Không thể hoàn tác.</span></span><svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B0A693" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></a>
           </div>
         </section>
       </sc-if>
@@ -98,7 +104,7 @@ a{color:#CF4822}a:hover{color:#A83A1A}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { count: 24, fresh: 10, pen: 20, voice: 'uk', theme: 'sys', sw: { notify: true } };
+    this.state = { count: 24, fresh: 10, pen: 20, voice: 'uk', theme: 'sys', sw: { notify: true, wMeaning: true, lock: true, live: false }, widget: 'word', lockStyle: 'word' };
   }
   layout() {
     const d = this.props.device ?? 'laptop';
@@ -111,10 +117,22 @@ class Component extends DCLogic {
       root: laptop ? { ...ink, display: 'flex', flexWrap: 'wrap', minHeight: '100vh' } : { ...ink, display: 'flex', flexDirection: phone ? 'column' : 'row', width: '100%', minHeight: fh + 'px' },
       nav: laptop ? { flex: '1 1 248px', display: 'flex' } : tablet ? { flex: '0 0 88px', display: 'flex' } : { flex: '0 0 auto', order: 2 },
       main: laptop ? { flex: '999 1 560px', minWidth: 0, padding: '28px 40px 56px', boxSizing: 'border-box' } : { flex: '1 1 auto', minWidth: 0, padding: tablet ? '28px 28px 40px' : '16px 16px 24px', boxSizing: 'border-box' },
-      h1: { margin: 0, fontFamily: "'Be Vietnam Pro', Inter, system-ui, sans-serif", fontSize: laptop ? '32px' : '32px', fontWeight: 700, letterSpacing: '-0.025em' },
+      h1: { margin: 0, fontSize: laptop ? '32px' : tablet ? '28px' : '26px', fontWeight: 800, letterSpacing: '-0.025em' },
       h2: { margin: '0 4px', fontSize: '13px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#6B6358' },
       group: { background: '#FFFDF8', border: '1px solid #E8DFCC', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 2px 0 #EDE4D2' },
       row, rowLast: { ...row, borderBottom: 'none' }, rowCol, rowColLast: { ...rowCol, borderBottom: 'none' },
+      widgetWrap: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px', padding: '16px', borderBottom: '1px solid #F1EBDE' },
+      widget: { flex: '0 0 152px', width: '152px', height: '152px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', padding: '14px', borderRadius: '26px', backgroundColor: '#FFE6D8', backgroundImage: 'radial-gradient(rgba(46,42,36,0.07) 1px, transparent 1.3px)', backgroundSize: '12px 12px', border: '1.5px solid #F4C3AB', boxShadow: '0 6px 16px rgba(46,42,36,0.12)' },
+      resetRow: { ...row, width: '100%', justifyContent: 'flex-start', border: 'none', borderBottom: '1px solid #F1EBDE', background: 'transparent', font: 'inherit', cursor: 'pointer', textAlign: 'left' },
+      resetRowLast: { ...row, width: '100%', justifyContent: 'flex-start', border: 'none', background: 'transparent', font: 'inherit', cursor: 'pointer', textAlign: 'left' },
+      linkRow: { ...row, borderBottom: 'none', justifyContent: 'flex-start', textDecoration: 'none', color: '#2E2A24' },
+      lockPrev: { flex: '0 0 152px', width: '152px', height: '172px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', padding: '16px 10px', borderRadius: '24px', background: 'linear-gradient(160deg, #E8572F 0%, #A83A1A 100%)', color: '#FFFDF8', boxShadow: '0 6px 16px rgba(46,42,36,0.18)' },
+      lockWidget: { marginTop: '10px', width: '100%', boxSizing: 'border-box', display: 'flex', alignItems: 'center', padding: '8px 10px', borderRadius: '12px', background: 'rgba(255,253,248,0.22)', backdropFilter: 'blur(6px)' },
+      cRow: { display: 'flex', alignItems: 'center', gap: '12px', minHeight: '56px', padding: '8px 14px', borderBottom: '1px solid #F1EBDE', boxSizing: 'border-box', textDecoration: 'none', color: '#2E2A24' },
+      cRowLast: { display: 'flex', alignItems: 'center', gap: '12px', minHeight: '56px', padding: '8px 14px', boxSizing: 'border-box', textDecoration: 'none', color: '#2E2A24' },
+      cRowBtn: { display: 'flex', alignItems: 'center', gap: '12px', width: '100%', minHeight: '56px', padding: '8px 14px', border: 'none', borderBottom: '1px solid #F1EBDE', background: 'transparent', font: 'inherit', cursor: 'pointer', boxSizing: 'border-box' },
+      cRowBtnLast: { display: 'flex', alignItems: 'center', gap: '12px', width: '100%', minHeight: '56px', padding: '8px 14px', border: 'none', background: 'transparent', font: 'inherit', cursor: 'pointer', boxSizing: 'border-box' },
+      valBtn: { display: 'inline-flex', alignItems: 'center', gap: '4px', minHeight: '40px', padding: '0 2px 0 8px', border: 'none', background: 'transparent', font: 'inherit', cursor: 'pointer' },
       noteRow: { padding: '12px 16px', background: '#FBF8F1', fontSize: '13px', lineHeight: 1.5, color: '#6B6358' }
     } };
   }
@@ -133,13 +151,23 @@ class Component extends DCLogic {
     return {
       device: d, L, sw, scoped, all: !scoped,
       title: scoped ? 'Cài đặt luyện' : 'Cài đặt',
-      subtitle: scoped ? 'Áp dụng cho mọi phiên luyện.' : 'Chỉ những gì bạn cần chỉnh, còn lại đã được đặt sẵn.',
+      subtitle: scoped ? 'Áp dụng cho mọi phiên luyện.' : 'Những gì bạn hay chỉnh nhất.',
       navActive: scoped ? 'practice' : 'settings',
-      ln: { back: 'PracticeSetup' + (laptop ? '' : d === 'ipad' ? 'Tablet' : 'Phone') + '.dc.html' },
+      ln: { back: 'PracticeSetup' + (laptop ? '' : d === 'ipad' ? 'Tablet' : 'Phone') + '.dc.html', practiceSettings: 'PracticeSettings' + (laptop ? '' : d === 'ipad' ? 'Tablet' : 'Phone') + '.dc.html', sub: ['reminder', 'widget', 'lock', 'voice', 'theme', 'reset'].reduce((o, k) => ({ ...o, [k]: 'Set' + k[0].toUpperCase() + k.slice(1) + (laptop ? '' : d === 'ipad' ? 'Tablet' : 'Phone') + '.dc.html' }), {}) },
+      practiceSummary: s.count + ' từ/phiên · ' + s.fresh + ' từ mới/ngày · sai −' + s.pen + '%',
       pen: [10, 20, 30].map((n) => ({ label: '−' + n + '%', sel: String(s.pen === n), pick: () => this.setState({ pen: n }), style: segBtn(s.pen === n) })),
       voice: radio('voice', [['uk', 'Anh-Anh (UK)'], ['us', 'Anh-Mỹ (US)']]),
       theme: radio('theme', [['light', 'Sáng'], ['dark', 'Tối'], ['sys', 'Theo máy']]),
-      st: { count: step('count', 5, 50, 5), fresh: step('fresh', 0, 50, 5) }
+      st: { count: step('count', 5, 50, 5), fresh: step('fresh', 0, 50, 5) },
+      nextWidget: () => { const o = ['word', 'prog', 'streak']; this.setState({ widget: o[(o.indexOf(s.widget) + 1) % 3] }); },
+      widgetLabel: { word: 'Từ của ngày', prog: 'Tiến độ', streak: 'Chuỗi ngày' }[s.widget],
+      nextVoice: () => this.setState({ voice: s.voice === 'uk' ? 'us' : 'uk' }), voiceLabel: s.voice === 'uk' ? 'Anh-Anh' : 'Anh-Mỹ',
+      nextTheme: () => { const o = ['light', 'dark', 'sys']; this.setState({ theme: o[(o.indexOf(s.theme) + 1) % 3] }); },
+      themeLabel: { light: 'Sáng', dark: 'Tối', sys: 'Theo máy' }[s.theme],
+      lock: radio('lockStyle', [['word', 'Từ + nghĩa'], ['only', 'Chỉ từ'], ['streak', 'Chuỗi']]),
+      lk: { on: s.sw.lock, is: { word: s.lockStyle === 'word', only: s.lockStyle === 'only', streak: s.lockStyle === 'streak' } },
+      widget: radio('widget', [['word', 'Từ của ngày'], ['prog', 'Tiến độ'], ['streak', 'Chuỗi ngày']]),
+      wg: { is: { word: s.widget === 'word', prog: s.widget === 'prog', streak: s.widget === 'streak' }, meaning: s.sw.wMeaning, tag: s.widget === 'word' ? 'TỪ HÔM NAY' : s.widget === 'prog' ? 'TIẾN ĐỘ' : 'CHUỖI NGÀY' }
     };
   }
 }

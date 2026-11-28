@@ -132,7 +132,7 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.015
 .brand-text { display: flex; flex-direction: column; line-height: 1.1; }
 .brand-name { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
 .brand-sub { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: var(--muted-2); }
-.sidebar .nav-group { display: flex; flex-direction: column; gap: 6px; }
+.sidebar .nav-group { display: flex; flex-direction: column; gap: 4px; }
 .sidebar .nav-item { display: flex; align-items: center; gap: 12px; padding: 0 10px; min-height: 46px; border-radius: 12px; text-decoration: none; font-size: 15px; font-weight: 500; color: var(--ink); border: 1.5px solid transparent; }
 .sidebar .nav-item:hover { background: var(--surface); color: var(--ink); }
 .sidebar .nav-item.is-active { background: var(--surface); border-color: #CDB98C; box-shadow: 0 2px 0 #E2D3B0; font-weight: 700; }
@@ -140,7 +140,7 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.015
 .nav-tile { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 30px; height: 30px; border-radius: 9px; }
 .nav-tile-main { background: #FFE3D3; color: #B5501F; }
 .nav-tile-vocab { background: #E6DEFF; color: #5B40C9; }
-.nav-tile-add { background: #FFEDB8; color: #8A5D00; }
+.nav-tile-add { background: #CF4822; color: #FFFDF8; box-shadow: 0 2px 0 #A83A1A; }
 .nav-tile-practice { background: #D9EFE0; color: #2F7A4F; }
 .nav-tile-settings { background: #FFF1C7; color: #8A5D00; }
 .nav-card { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); box-shadow: 0 2px 0 var(--line); }
@@ -167,6 +167,14 @@ h1, h2, h3 { font-family: var(--font-display); margin: 0; letter-spacing: -0.015
 .tabbar .nav-pill { width: 56px; height: 32px; }
 .rail .nav-item.is-active, .tabbar .nav-item.is-active { color: var(--primary); font-weight: 700; }
 .nav-item.is-active .nav-pill { background: var(--primary-soft); }
+/* "Thêm từ": raised terracotta button (rail: 48px, tab bar: 50px lifted above the bar) */
+.nav-fab { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 999px; background: #CF4822; color: #FFFDF8; box-shadow: 0 4px 0 #A83A1A, 0 0 0 4px var(--surface); }
+.rail .nav-item.nav-add, .tabbar .nav-item.nav-add { color: var(--ink-2); font-weight: 700; }
+.rail .nav-item.nav-add.is-active, .tabbar .nav-item.nav-add.is-active { color: var(--primary); }
+.rail .nav-fab { box-shadow: 0 4px 0 #A83A1A, 0 0 0 4px var(--surface-3); }
+.tabbar .nav-fab { width: 50px; height: 50px; margin-top: -22px; }
+.nav-add:hover .nav-fab { filter: brightness(1.06); }
+.nav-add:active .nav-fab { transform: translateY(2px); box-shadow: 0 2px 0 #A83A1A, 0 0 0 4px var(--surface); }
 
 /* tab bar (iPhone) */
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: var(--surface); border-top: 1px solid var(--line); padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 18px)); box-shadow: 0 -6px 18px rgba(46, 42, 36, 0.06); }
