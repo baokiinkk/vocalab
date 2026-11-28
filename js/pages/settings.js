@@ -34,8 +34,11 @@
     reminder: ['Nhắc ôn', 'Chọn giờ và ngày nhận thông báo.'],
     voice: ['Giọng phát âm', 'Giọng đọc dùng trong toàn bộ ứng dụng.'],
     theme: ['Giao diện', 'Chọn màu nền bạn thấy dễ chịu nhất.'],
-    reset: ['Đặt lại tiến độ học', 'Đưa mọi từ về 0% để học lại từ đầu.']
+    reset: ['Đặt lại tiến độ học', 'Đưa mọi từ về 0% để học lại từ đầu.'],
+    widget: ['Widget màn hình chính', 'Chọn nội dung hiện trên widget.'],
+    lock: ['Màn hình khoá', 'Ôn lướt mỗi lần cầm máy.']
   };
+  const SOON = ['widget', 'lock']; // shown as previews only: a web app can't place widgets / lock-screen content
   const RESET_WORD = 'ĐẶT LẠI';
 
   /* icons from the design (stroke 2.2, 24 grid) */
@@ -102,7 +105,6 @@
   function renderMain() {
     const s = set();
     const theme = (THEMES.find((t) => t[0] === s.theme) || THEMES[2])[1];
-    const soon = (color, icon, title) => h`<div class="set-crow is-soon" aria-disabled="true">${tile(color, icon)}<span class="set-ctext"><span class="set-title">${title}</span></span><span class="set-soon">Sắp có</span></div>`;
     return wrap(h`
       ${head('Cài đặt', 'Những gì bạn hay chỉnh nhất.')}
 
@@ -118,9 +120,9 @@
       <section class="set-sec" aria-labelledby="h-widget">
         <h2 id="h-widget" class="set-h2">Widget &amp; màn hình khoá</h2>
         <div class="set-group">
-          ${soon('mint', 'grid', 'Widget màn hình chính')}
-          ${soon('sky', 'lock', 'Màn hình khoá')}
-          <div class="set-crow is-soon" aria-disabled="true">${tile('pink', 'eye')}<span class="set-ctext"><span class="set-title">Hiện nghĩa</span><span class="set-csub">Tắt để tự đoán nghĩa</span></span><span class="set-soon">Sắp có</span></div>
+          <a href="#/settings/widget" class="set-crow is-soon" data-row="widget">${tile('mint', 'grid')}<span class="set-ctext"><span class="set-title">Widget màn hình chính</span></span><span class="set-soon">Sắp có</span>${chev()}</a>
+          <a href="#/settings/lock" class="set-crow is-soon" data-row="lock">${tile('sky', 'lock')}<span class="set-ctext"><span class="set-title">Màn hình khoá</span></span><span class="set-soon">Sắp có</span>${chev()}</a>
+          <a href="#/settings/widget" class="set-crow is-soon" data-row="meaning">${tile('pink', 'eye')}<span class="set-ctext"><span class="set-title">Hiện nghĩa</span><span class="set-csub">Tắt để tự đoán nghĩa</span></span><span class="set-soon">Sắp có</span>${chev()}</a>
         </div>
       </section>
 
@@ -286,7 +288,74 @@
       </div>`;
   }
 
-  const SUB_RENDER = { reminder: renderReminder, voice: renderVoice, theme: renderTheme, reset: renderReset };
+  /* ---------- "Sắp có" previews: Widget màn hình chính / Màn hình khoá ----------
+     Built like the design, with live data, but every control is disabled (a web app can't do this yet). */
+  const soonBanner = () => h`<div class="set-soon-banner" role="note"><span class="set-soon">Sắp có</span><span>Tính năng này cần ứng dụng cài trên máy, nên chưa bật được trên bản web. Đây là bản xem trước.</span></div>`;
+  const offSwitch = (label) => h`<button type="button" role="switch" aria-checked="false" aria-label="${label}" class="switch" disabled><span class="switch-knob"></span></button>`;
+  function wordOfDay() {
+    const keys = VL.words.library();
+    if (!keys.length) return { w: 'resilient', ipa: '/rɪˈzɪliənt/', vi: 'kiên cường' };
+    const idx = Math.floor(Date.now() / VL.DAY) % keys.length;
+    const w = VL.words.get(keys[idx]) || {};
+    return { w: w.w || 'resilient', ipa: w.ipa || '', vi: w.vi || '' };
+  }
+  const FLAME_SM = raw('<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24"><path d="M12 1.5c1.2 4.2 5.8 6 5.8 12a5.8 5.8 0 0 1-11.6 0c0-2.9 1.4-4.8 3-6 .2 2 1.1 3.3 2.6 3.9C11.1 8.2 10.8 4.6 12 1.5z" fill="#F0531F"></path><path d="M12 11.2c.6 2 2.7 2.8 2.7 5.4a2.7 2.7 0 0 1-5.4 0c0-1.3.6-2.2 1.4-2.8.1.9.5 1.5 1.2 1.8-.1-1.6-.4-3 .1-4.4z" fill="#FFD84A"></path></svg>');
+
+  function renderWidget() {
+    const wd = wordOfDay();
+    const ov = VL.srs.overview();
+    const due = VL.srs.todayPlan().due.length;
+    const streak = VL.srs.streak();
+    const W = [
+      ['word', 'Từ của ngày', 'TỪ HÔM NAY', 'Một từ mới mỗi ngày, kèm phiên âm và nghĩa.',
+        h`<span class="set-w-word"><b>${wd.w}</b>${wd.ipa ? h`<span>${wd.ipa}</span>` : ''}<span class="set-w-vi">${wd.vi}</span></span>`],
+      ['prog', 'Tiến độ', 'TIẾN ĐỘ', 'Mức thông thạo và số từ cần ôn.',
+        h`<span class="set-w-prog"><span class="set-w-ring" style="${raw('--p:' + ov.avg + '%')}"><span>${ov.avg}%</span></span><span class="set-w-due"><b>${due + ' từ'}</b>cần ôn</span></span>`],
+      ['streak', 'Chuỗi ngày', 'CHUỖI', 'Số ngày học liên tiếp, nhắc bạn giữ lửa.',
+        h`<span class="set-w-streak"><span class="set-w-fire">${FLAME_SM}<b>${streak}</b></span><span>ngày liên tiếp</span></span>`]
+    ];
+    return h`
+      ${soonBanner()}
+      <div class="set-wgrid" role="radiogroup" aria-label="Chọn widget" aria-disabled="true">
+        ${W.map(([id, name, tag, desc, body], i) => h`<button type="button" role="radio" aria-checked="${String(i === 0)}" class="${'set-wcard' + (i === 0 ? ' is-on' : '')}" disabled>
+          <span class="set-wprev"><span class="set-wtag"><span class="set-wlogo">V</span>${tag}</span>${body}</span>
+          <span class="set-wlabel"><span class="set-dot" aria-hidden="true"></span><span class="set-wtext"><span class="set-title set-strong">${name}</span><span class="set-wdesc">${desc}</span></span></span>
+        </button>`)}
+      </div>
+      <div class="set-group is-disabled">
+        <div class="set-srow">${label('Hiện nghĩa trên widget', 'Tắt để tự đoán nghĩa mỗi lần mở máy')}${offSwitch('Hiện nghĩa trên widget')}</div>
+      </div>
+      <div class="set-steps">
+        <b>Cách thêm widget</b>
+        ${['Giữ ngón tay lên chỗ trống ở màn hình chính.', 'Chạm dấu + ở góc trên, tìm “VocaLab”.', 'Chọn kiểu widget bạn vừa chọn ở trên.'].map((t, i) => h`<span class="set-step"><span class="set-step-no">${i + 1}</span>${t}</span>`)}
+      </div>`;
+  }
+
+  function renderLock() {
+    const wd = wordOfDay();
+    const now = new Date();
+    const DOW = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+    const date = DOW[now.getDay()] + ', ' + now.getDate() + ' tháng ' + (now.getMonth() + 1);
+    const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+    return h`
+      ${soonBanner()}
+      <div class="set-lock-wrap">
+        <div class="set-lock" role="img" aria-label="Xem trước màn hình khoá">
+          <span class="set-lock-date">${date}</span>
+          <span class="set-lock-time">${time}</span>
+          <span class="set-lock-widget"><b>${wd.w}</b><span>${wd.vi}</span></span>
+        </div>
+      </div>
+      <div class="set-group is-disabled">
+        <div class="set-srow">${label('Hiện từ trên màn hình khoá', 'Từ mới đổi mỗi lần mở khoá')}${offSwitch('Hiện từ trên màn hình khoá')}</div>
+        <div class="set-row-col"><span class="set-title">Kiểu hiển thị</span>
+          <div class="seg" role="radiogroup" aria-label="Kiểu hiển thị" aria-disabled="true" style="grid-template-columns:repeat(3,minmax(0,1fr))">${[['word', 'Từ + nghĩa'], ['only', 'Chỉ từ'], ['streak', 'Chuỗi']].map(([v, l], i) => h`<button type="button" role="radio" aria-checked="${String(i === 0)}" class="${'seg-btn' + (i === 0 ? ' is-on' : '')}" disabled>${l}</button>`)}</div>
+        </div>
+        <div class="set-srow">${label('Hiện tiến độ khi đang luyện', 'Số câu còn lại hiện trên màn hình khoá')}${offSwitch('Hiện tiến độ khi đang luyện')}</div>
+      </div>`;
+  }
+
+  const SUB_RENDER = { reminder: renderReminder, voice: renderVoice, theme: renderTheme, reset: renderReset, widget: renderWidget, lock: renderLock };
 
   function render(ctx) {
     const r = { params: ctx.params || {}, query: ctx.query || {} };

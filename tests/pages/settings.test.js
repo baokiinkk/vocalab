@@ -66,8 +66,9 @@ for (const device of ['laptop', 'ipad', 'iphone']) {
     assert.strictEqual(await soon.count(), 3);
     assert.match(await soon.nth(0).innerText(), /Widget màn hình chính[\s\S]*Sắp có/);
     assert.match(await soon.nth(1).innerText(), /Màn hình khoá[\s\S]*Sắp có/);
-    assert.strictEqual(await page.locator('.set-crow.is-soon a, a.set-crow.is-soon, .set-crow.is-soon button').count(), 0);
-    assert.strictEqual(await page.locator('a[href*="widget"], a[href*="lock"]').count(), 0);
+    // they open preview sub-screens (controls disabled)
+    assert.strictEqual(await page.locator('a.set-crow.is-soon[href="#/settings/widget"]').count(), 2);
+    assert.strictEqual(await page.locator('a.set-crow.is-soon[href="#/settings/lock"]').count(), 1);
     for (const sel of ['#groq-key', '[data-action="key-test"]', '[data-action="export"]', '[data-action="import"]', '[data-action="restore"]', 'a[href="#/settings/reset"]', '[data-action="sw-notify"]'])
       assert.strictEqual(await page.locator(sel).count(), 1, sel);
     await noHScroll(page);
@@ -101,8 +102,21 @@ for (const device of ['laptop', 'ipad', 'iphone']) {
     assert.strictEqual(await page.innerText('.set-back'), 'Cài đặt');
     await page.click('.set-back');
     await hashIs(page, '#/settings');
-    // unknown / not-on-web sub-screens fall back to the main list
-    await page.goto(page.url().split('#')[0] + '#/settings/widget');
+    // "Sắp có" previews: built, but nothing can be switched on
+    for (const [scr, title, n] of [['widget', 'Widget màn hình chính', 3], ['lock', 'Màn hình khoá', 3]]) {
+      await page.goto(page.url().split('#')[0] + '#/settings/' + scr);
+      await page.waitForFunction((t) => VL.current() && document.querySelector('#view h1') && document.querySelector('#view h1').textContent.trim() === t, title);
+      assert.ok(await page.locator('.set-soon-banner').isVisible(), scr + ' banner');
+      assert.strictEqual(await page.locator('#nav .nav-item').count(), 0, scr + ' hides nav');
+      const sw = page.locator('#view [role="switch"]');
+      assert.ok(await sw.count() >= 1, scr + ' has switches');
+      for (let i = 0; i < await sw.count(); i++) assert.ok(await sw.nth(i).isDisabled(), scr + ' switch disabled');
+      assert.ok((await page.locator('#view [role="radio"]').count()) >= n, scr + ' options');
+      for (const b of await page.locator('#view [role="radio"]').all()) assert.ok(await b.isDisabled(), scr + ' option disabled');
+      await noHScroll(page);
+      await shoot(page, device + '-' + scr);
+    }
+    await page.goto(page.url().split('#')[0] + '#/settings/nope');
     await page.waitForFunction(() => VL.current() && document.querySelector('#view h1'));
     assert.strictEqual(await page.locator('h1').innerText(), 'Cài đặt');
     assert.deepStrictEqual(page.errors, []);
