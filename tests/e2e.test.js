@@ -61,7 +61,7 @@ for (const device of ['laptop', 'ipad', 'iphone']) {
 
     // 2. Library → open a built-in deck → add it
     await p.locator('#nav a[href="#/library"]').first().click();
-    await p.waitForFunction(() => location.hash === '#/library');
+    await p.waitForFunction(() => location.hash === '#/library' && VL.current() && VL.current().name === 'library' && /Bộ của tôi/.test(document.getElementById('view').textContent));
     assert.match(await p.textContent('#view'), /Bộ của tôi/);
     await p.locator('#view a[href="#/deck/travel"]').first().click();
     await p.waitForFunction(() => location.hash === '#/deck/travel');
